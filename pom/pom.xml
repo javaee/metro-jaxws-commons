@@ -1,0 +1,55 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jvnet.jax-ws-commons</groupId>
+  <artifactId>pom</artifactId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+  
+  <name>JAX-WS RI : super POM for the extension components</name>
+  <url>https://jax-ws-commons.dev.java.net/</url>
+  
+  <scm>
+    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/${project.artifactId}</connection>
+    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/${project.artifactId}</developerConnection>
+    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/${project.artifactId}</url>
+  </scm>
+  
+  <repositories>
+    <repository>
+      <id>java.net</id>
+      <url>https://maven-repository.dev.java.net/nonav/repository</url>
+      <layout>legacy</layout>
+    </repository>
+    <repository>
+      <id>java.net2</id>
+      <url>https://maven2-repository.dev.java.net/nonav/repository</url>
+    </repository>
+  </repositories>
+
+  <distributionManagement>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>local-repository</id>
+      <url>file:${path-to-m2-repo.java.net}</url>
+    </repository>
+  </distributionManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-idea-plugin</artifactId>
+        <configuration>
+          <jdkName>JDK1.5</jdkName>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
