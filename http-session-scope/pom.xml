@@ -11,7 +11,8 @@
   <version>1.0</version>
   <packaging>jar</packaging>
   
-  <name>JAX-WS RI : HTTP session-scope extension</name>
+  <name>HTTP session-scope extension</name>
+  <description>Simplifies the development of services that are tied to HTTP session.</description>
 
   <dependencies>
     <dependency>
