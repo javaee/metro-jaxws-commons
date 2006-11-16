@@ -43,7 +43,6 @@ import java.lang.annotation.Target;
  * is GCed. Refer to servlet documentation for how to configure the timeout behavior.
  *
  * @author Kohsuke Kawaguchi
- * @since JAX-WS 2.1
  */
 @Retention(RUNTIME)
 @Target(TYPE)

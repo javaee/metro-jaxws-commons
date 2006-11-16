@@ -10,7 +10,7 @@ public class HttpSessionScopeFeature extends WebServiceFeature {
     /**
      * Constant value identifying the {@link @HttpSessionScope} feature.
      */
-    public static final String ID = "http://jax-ws.dev.java.net/features/servlet/httpSessionScope";
+    public static final String ID = "http://jax-ws-commons.dev.java.net/features/servlet/httpSessionScope";
 
     public HttpSessionScopeFeature() {
         this.enabled = true;
