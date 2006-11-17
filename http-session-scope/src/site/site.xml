@@ -16,7 +16,7 @@
 
     <menu>
       <item name="Introduction" href="index.html"/>
-      <item name="Download" href="/servlets/ProjectDocumentList?folderID=6358"/>
+      <item name="Download" href="https://jax-ws-commons.dev.java.net/servlets/ProjectDocumentList?folderID=6358"/>
     </menu>
 
     ${reports}
