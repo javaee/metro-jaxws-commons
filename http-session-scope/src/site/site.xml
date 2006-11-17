@@ -16,7 +16,7 @@
 
     <menu>
       <item name="Introduction" href="index.html"/>
-      <item name="Download" href="download.html"/>
+      <item name="Download" href="/servlets/ProjectDocumentList?folderID=6358"/>
     </menu>
 
     ${reports}
