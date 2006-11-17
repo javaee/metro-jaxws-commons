@@ -54,6 +54,19 @@
           <jdkName>JDK1.5</jdkName>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>src</descriptorRef>
+            <descriptorRef>bin</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
+  
+  <modules>
+    <module>../http-session-scope</module>
+  </modules>
 </project>
