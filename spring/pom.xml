@@ -1,0 +1,121 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jvnet.jax-ws-commons</groupId>
+    <artifactId>pom</artifactId>
+    <version>1.0</version>
+    <relativePath>../pom/pom.xml</relativePath>
+  </parent>
+  
+  <artifactId>spring</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  
+  <name>Spring support extension</name>
+  <description>Configure JAX-WS with Spring</description>
+
+  <repositories>
+    <repository>
+      <id>spring-mirror</id>
+      <url>http://ndeloof.free.fr/maven2</url>
+    </repository>
+  </repositories>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.xbean</groupId>
+        <artifactId>maven-xbean-plugin</artifactId>
+        <version>2.7</version>
+        <executions>
+          <execution>
+            <configuration>
+              <namespace>http://jax-ws.dev.java.net/spring/servlet</namespace>
+              <!--schema>target/jax-ws-spring.xsd</schema-->
+            </configuration>
+            <goals>
+              <goal>mapping</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!--plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <taskdef name="xbeangen"
+                         classname="org.apache.xbean.spring.generator.MappingGeneratorTask">
+                  <classpath>
+                    <pathelement path="${basedir}/target/classes"/>
+                    <path refid="maven.dependency.classpath"/>
+                  </classpath>
+                </taskdef>
+                <xbeangen
+                    namespace="http://jax-ws.dev.java.net/spring"
+                    srcdir="src/main/java"
+                    destFile="target/generated/jax-ws-spring.xsd"
+                    metaInfDir="${basedir}/target/generated/"/>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin-->
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>jaxws-rt</artifactId>
+      <version>2.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version><!-- doesn't really matter -->
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring</artifactId>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>2.0</version><!-- doesn't really matter -->
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.xbean</groupId>
+      <artifactId>xbean-spring</artifactId>
+      <version>2.7</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- shouldn't be needed once JAX-WS RT POM properly declares the dependency -->
+    <dependency>
+      <groupId>javax.jws</groupId>
+      <artifactId>jsr181-api</artifactId>
+      <version>1.0-MR1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>2.1-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+</project>

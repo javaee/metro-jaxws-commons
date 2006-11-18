@@ -1,0 +1,22 @@
+<beans
+    xmlns:ws= "http://jax-ws.dev.java.net/spring"
+    xmlns:wss="http://jax-ws.dev.java.net/spring/servlet">
+
+  <wss:bindings id="jax-ws.http">
+    <wss:bindings>
+      <wss:binding url="/add" service="#addService" />
+      <wss:binding url="/sub" service="#addService" />
+    </wss:bindings>
+  </wss:bindings>
+
+  <bean id="addService" class="java.lang.String">
+  </bean>
+
+  <!--
+  <ws:service id="addService">
+    
+  </ws:service>
+  -->
+
+</beans>
+
