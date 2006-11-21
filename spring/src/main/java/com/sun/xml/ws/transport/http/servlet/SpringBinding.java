@@ -1,6 +1,5 @@
 package com.sun.xml.ws.transport.http.servlet;
 
-import org.jvnet.jax_ws_commons.spring.SpringBean;
 import org.springframework.beans.factory.BeanNameAware;
 import com.sun.xml.ws.api.server.WSEndpoint;
 
@@ -10,7 +9,6 @@ import com.sun.xml.ws.api.server.WSEndpoint;
  * @author Kohsuke Kawaguchi
  * @org.apache.xbean.XBean element="binding"
  */
-@SpringBean
 public class SpringBinding implements BeanNameAware {
     private String beanName;
     private String urlPattern;
@@ -23,7 +21,7 @@ public class SpringBinding implements BeanNameAware {
     public void create(ServletAdapterList owner) {
         String name = beanName;
         if(name==null)      name=urlPattern;
-        owner.createHttpAdapter(name, urlPattern,endpoint);
+        owner.createHttpAdapter(name, urlPattern, endpoint);
     }
 
     public void setUrl(String urlPattern) {

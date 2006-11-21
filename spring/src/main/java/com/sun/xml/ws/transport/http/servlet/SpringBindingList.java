@@ -1,7 +1,5 @@
 package com.sun.xml.ws.transport.http.servlet;
 
-import org.jvnet.jax_ws_commons.spring.SpringBean;
-
 import java.util.List;
 
 /**
@@ -10,7 +8,6 @@ import java.util.List;
  * @author Kohsuke Kawaguchi
  * @org.apache.xbean.XBean element="bindings" rootElement="true"
  */
-@SpringBean
 public class SpringBindingList {
     private List<SpringBinding> bindings;
 

@@ -9,6 +9,7 @@ public class ToyTest extends TestCase {
 
     public void test1() throws Exception {
         XBeanXmlBeanFactory factory = new XBeanXmlBeanFactory(new ClassPathResource("config.xml"));
-        System.out.println(factory.getBean("jax-ws.http").toString());
+        Object bean = factory.getBean("jax-ws.http");
+        System.out.println(bean.toString());
     }
 }

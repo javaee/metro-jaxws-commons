@@ -1,0 +1,3 @@
+# See XBEAN-60. To work around the overwriting issue, this file is maintained manually
+http\://jax-ws.dev.java.net/spring/core=spring-jax-ws-core.xsd
+http\://jax-ws.dev.java.net/spring/servlet=spring-jax-ws-servlet.xsd
