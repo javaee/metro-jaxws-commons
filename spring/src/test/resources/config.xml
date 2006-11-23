@@ -10,8 +10,9 @@
   </wss:bindings>
 
   <!-- simplest definition only needs the class name -->
-  <ws:service id="addService" impl="foo.MyService" />
+  <ws:service id="addService" impl="foo.MyService" handlers="#myHandler"/>
 
+  <bean id="myHandler" class="foo.MyHandler" />
 
 </beans>
 

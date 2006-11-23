@@ -7,6 +7,7 @@ import com.sun.xml.ws.api.server.Container;
 import com.sun.xml.ws.api.server.Invoker;
 import com.sun.xml.ws.api.server.SDDocumentSource;
 import com.sun.xml.ws.api.server.WSEndpoint;
+import com.sun.xml.ws.binding.BindingImpl;
 import org.springframework.beans.factory.FactoryBean;
 import org.xml.sax.EntityResolver;
 
@@ -120,6 +121,11 @@ public class SpringService implements FactoryBean {
             if(handlers!=null) {
                 // configure handlers. doing this here ensures
                 // that we are not doing this more than once.
+
+                if(binding==null)
+                    binding = BindingImpl.create(BindingID.parse(implType));
+
+
                 List<Handler> chain = binding.getHandlerChain();
                 chain.addAll(handlers);
                 binding.setHandlerChain(chain);
