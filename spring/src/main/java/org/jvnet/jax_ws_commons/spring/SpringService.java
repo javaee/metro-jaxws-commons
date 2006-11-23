@@ -11,7 +11,9 @@ import org.springframework.beans.factory.FactoryBean;
 import org.xml.sax.EntityResolver;
 
 import javax.xml.namespace.QName;
+import javax.xml.ws.handler.Handler;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Wraps {@link WSEndpoint}.
@@ -33,6 +35,15 @@ public class SpringService implements FactoryBean {
     private SDDocumentSource primaryWsdl;
     private Collection<? extends SDDocumentSource> metadata;
     private EntityResolver resolver;
+
+    /**
+     * Technically speaking, handlers belong to
+     * {@link WSBinding} and as such it should be configured there,
+     * but it's just more convenient to let people do so at this object,
+     * because often people use a stock binding ID constant
+     * instead of a configured {@link WSBinding} bean.
+     */
+    private List<Handler> handlers;
 
     ///**
     // * @org.apache.xbean.Property alias="clazz"
@@ -83,6 +94,10 @@ public class SpringService implements FactoryBean {
     }
 
 
+    public void setHandlers(List<Handler> handlers) {
+        this.handlers = handlers;
+    }
+
     public void setPrimaryWsdl(SDDocumentSource primaryWsdl) {
         this.primaryWsdl = primaryWsdl;
     }
@@ -101,8 +116,16 @@ public class SpringService implements FactoryBean {
     private WSEndpoint<?> endpoint;
 
     public Object getObject() throws Exception {
-        if(endpoint==null)
+        if(endpoint==null) {
+            if(handlers!=null) {
+                // configure handlers. doing this here ensures
+                // that we are not doing this more than once.
+                List<Handler> chain = binding.getHandlerChain();
+                chain.addAll(handlers);
+                binding.setHandlerChain(chain);
+            }
             endpoint = WSEndpoint.create(implType,false,invoker,serviceName,portName,container,binding,primaryWsdl,metadata,resolver,true);
+        }
         return endpoint;
     }
 
