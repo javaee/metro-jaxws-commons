@@ -7,12 +7,16 @@ import com.sun.xml.ws.api.server.Container;
 import com.sun.xml.ws.api.server.Invoker;
 import com.sun.xml.ws.api.server.SDDocumentSource;
 import com.sun.xml.ws.api.server.WSEndpoint;
+import com.sun.xml.ws.api.server.InstanceResolver;
 import com.sun.xml.ws.binding.BindingImpl;
 import org.springframework.beans.factory.FactoryBean;
 import org.xml.sax.EntityResolver;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.handler.Handler;
+import javax.xml.ws.soap.SOAPBinding;
+import javax.xml.ws.http.HTTPBinding;
+import javax.xml.ws.BindingType;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,6 +26,7 @@ import java.util.List;
  * @org.apache.xbean.XBean element="service"
  * @author Kohsuke Kawaguchi
  */
+// javadoc for this class is used to auto-generate documentation.
 public class SpringService implements FactoryBean {
 
     @NotNull
@@ -50,22 +55,40 @@ public class SpringService implements FactoryBean {
     // * @org.apache.xbean.Property alias="clazz"
     // */
     // I wanted to use alias="class", but @class is reserved in Spring, apparently
+    /**
+     * Fully qualified class name of the SEI class. Required.
+     */
     public void setImpl(Class implType) {
         this.implType = implType;
     }
 
+    /**
+     * Sets {@link Invoker} for this endpoint.
+     * Defaults to {@link InstanceResolver#createDefault(Class) the standard invoker}.
+     */
     public void setInvoker(Invoker invoker) {
         this.invoker = invoker;
     }
 
+    /**
+     * Sets the service name of this endpoint.
+     * Defaults to the name inferred from the impl attribute.
+     */
     public void setServiceName(QName serviceName) {
         this.serviceName = serviceName;
     }
 
+    /**
+     * Sets the port name of this endpoint.
+     * Defaults to the name inferred from the impl attribute.
+     */
     public void setPortName(QName portName) {
         this.portName = portName;
     }
 
+    /**
+     * Sets the custom {@link Container}. Optional.
+     */
     public void setContainer(Container container) {
         this.container = container;
     }
@@ -73,6 +96,14 @@ public class SpringService implements FactoryBean {
     /**
      * Accepts a configured {@link WSBinding}, a {@link BindingID},
      * or {@link String} that represents the binding ID constant.
+     *
+     * <p>
+     * If none is specified, {@link BindingType} annotation on SEI is consulted.
+     * If that fails, {@link SOAPBinding#SOAP11HTTP_BINDING}.
+     *
+     * @see SOAPBinding#SOAP11HTTP_BINDING
+     * @see SOAPBinding#SOAP12HTTP_BINDING
+     * @see HTTPBinding#HTTP_BINDING
      */
     // is there a better way to do this in Spring?
     // http://opensource.atlassian.com/projects/spring/browse/SPR-2528?page=all
@@ -94,7 +125,16 @@ public class SpringService implements FactoryBean {
         throw new IllegalArgumentException("Unsupported binding type "+binding.getClass());
     }
 
-
+    /**
+     * {@link Handler}s for this endpoint.
+     * Note that the order is significant.
+     *
+     * <p>
+     * If there's just one handler and that handler is declared elsewhere,
+     * you can use this as a nested attribute like <tt>handlers="#myHandler"</tt>.
+     * Or otherwise nesteed &lt;bean> or &lt;ref> tag can be used to specify
+     * multiple handlers.
+     */
     public void setHandlers(List<Handler> handlers) {
         this.handlers = handlers;
     }
@@ -107,6 +147,10 @@ public class SpringService implements FactoryBean {
         this.metadata = metadata;
     }
 
+    /**
+     * Sets the {@link EntityResolver} to be used for resolving schemas/WSDLs
+     * that are referenced. Optional.
+     */
     public void setResolver(EntityResolver resolver) {
         this.resolver = resolver;
     }

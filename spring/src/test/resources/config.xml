@@ -4,15 +4,30 @@
 
   <wss:bindings id="jax-ws.http">
     <wss:bindings>
-      <wss:binding url="/add" service="#addService" />
-      <wss:binding url="/sub" service="#addService" />
+      <wss:binding url="/simple" service="#simplestService" />
+      <wss:binding url="/nestedHandler" service="#nestedHandlerService" />
+      <wss:binding url="/singleHandler" service="#singleHandlerService" />
     </wss:bindings>
   </wss:bindings>
 
   <!-- simplest definition only needs the class name -->
-  <ws:service id="addService" impl="foo.MyService" handlers="#myHandler"/>
+  <ws:service id="simplestService" impl="foo.MyService"/>
 
-  <bean id="myHandler" class="foo.MyHandler" />
+  <!-- handlers can be specified as nested elements -->
+  <ws:service id="nestedHandlerService" impl="foo.MyService">
+    <ws:handlers>
+      <bean class="foo.MyHandler" />
+      <bean class="foo.MyHandler" />
+      <ref bean="aHandler" />
+    </ws:handlers>
+  </ws:service>
+
+  <!-- ... or just as an attribute -->
+  <ws:service id="singleHandlerService" impl="foo.MyService" handlers="#aHandler" />
+  <bean id="aHandler" class="foo.MyHandler" />
+  <!-- unfortunately this doesn't work
+    <ws:service id="twoHandlerService" impl="foo.MyService" handlers="#aHandler, #aHandler" />
+  -->
 
 </beans>
 
