@@ -19,6 +19,8 @@ import javax.xml.ws.http.HTTPBinding;
 import javax.xml.ws.BindingType;
 import java.util.Collection;
 import java.util.List;
+import java.net.URL;
+import java.io.IOException;
 
 /**
  * Wraps {@link WSEndpoint}.
@@ -139,8 +141,28 @@ public class SpringService implements FactoryBean {
         this.handlers = handlers;
     }
 
-    public void setPrimaryWsdl(SDDocumentSource primaryWsdl) {
-        this.primaryWsdl = primaryWsdl;
+    /**
+     * Optional WSDL for this endpoint.
+     *
+     * <p>
+     * Defaults to the WSDL discovered in <tt>META-INF/wsdl</tt>,
+     *
+     * <p>
+     * It can be either {@link String} (treated as an URL)
+     * {@link URL} or {@link SDDocumentSource}.
+     */
+    // TODO: how do we discover this automatically in servlet environment?
+    public void setPrimaryWsdl(Object primaryWsdl) throws IOException {
+        if(primaryWsdl instanceof String) {
+            this.primaryWsdl = SDDocumentSource.create(new URL(primaryWsdl.toString()));
+        } else
+        if(primaryWsdl instanceof URL) {
+            this.primaryWsdl = SDDocumentSource.create((URL)primaryWsdl);
+        } else
+        if(primaryWsdl instanceof SDDocumentSource) {
+            this.primaryWsdl = (SDDocumentSource) primaryWsdl;
+        }
+        throw new IllegalArgumentException("Unknown type "+primaryWsdl);
     }
 
     public void setMetadata(Collection<? extends SDDocumentSource> metadata) {
