@@ -29,7 +29,7 @@ public class SpringBinding implements BeanNameAware {
     }
 
     public void setService(Object endpoint) {
-        // this.endpoint = (WSEndpoint<?>) endpoint;
+        this.endpoint = (WSEndpoint<?>) endpoint;
     }
 
 }
