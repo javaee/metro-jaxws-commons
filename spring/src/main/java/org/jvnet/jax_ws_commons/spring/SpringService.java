@@ -17,15 +17,16 @@ import javax.xml.ws.handler.Handler;
 import javax.xml.ws.soap.SOAPBinding;
 import javax.xml.ws.http.HTTPBinding;
 import javax.xml.ws.BindingType;
+import javax.xml.ws.WebServiceFeature;
 import java.util.Collection;
 import java.util.List;
 import java.net.URL;
 import java.io.IOException;
 
 /**
- * Wraps {@link WSEndpoint}.
+ * Endpoint. A service object and the infrastructure around it.
  *
- * @org.apache.xbean.XBean element="service"
+ * @org.apache.xbean.XBean element="service" rootElement="true"
  * @author Kohsuke Kawaguchi
  */
 // javadoc for this class is used to auto-generate documentation.
@@ -39,10 +40,22 @@ public class SpringService implements FactoryBean {
     private QName serviceName;
     private QName portName;
     private Container container;
-    private WSBinding binding;
     private SDDocumentSource primaryWsdl;
     private Collection<? extends SDDocumentSource> metadata;
     private EntityResolver resolver;
+
+
+    // binding.
+
+    // either everything is null, in which case we default to SOAP 1.1 + features from annotation
+
+    // ... or a WSBinding configured externally
+    private WSBinding binding;
+
+    // ... or a BindingID and features
+    private BindingID bindingID;
+    private List<WebServiceFeature> features;
+
 
     /**
      * Technically speaking, handlers belong to
@@ -91,13 +104,25 @@ public class SpringService implements FactoryBean {
     /**
      * Sets the custom {@link Container}. Optional.
      */
+    // TODO: how to set the default container?
     public void setContainer(Container container) {
         this.container = container;
     }
 
     /**
-     * Accepts a configured {@link WSBinding}, a {@link BindingID},
-     * or {@link String} that represents the binding ID constant.
+     * Accepts an externally configured {@link WSBinding}
+     * for advanced users.
+     */
+    // is there a better way to do this in Spring?
+    // http://opensource.atlassian.com/projects/spring/browse/SPR-2528?page=all
+    // says it doesn't support method overloading, so that's out.
+    public void setBinding(WSBinding binding) {
+        this.binding = binding;
+    }
+
+    /**
+     * Sets the binding ID, such as <tt>{@value SOAPBinding#SOAP11HTTP_BINDING}</tt>
+     * or <tt>{@value SOAPBinding#SOAP12HTTP_BINDING}</tt>.
      *
      * <p>
      * If none is specified, {@link BindingType} annotation on SEI is consulted.
@@ -107,24 +132,15 @@ public class SpringService implements FactoryBean {
      * @see SOAPBinding#SOAP12HTTP_BINDING
      * @see HTTPBinding#HTTP_BINDING
      */
-    // is there a better way to do this in Spring?
-    // http://opensource.atlassian.com/projects/spring/browse/SPR-2528?page=all
-    // says it doesn't support method overloading, so that's out.
-    public void setBinding(Object binding) {
-        if(binding instanceof String) {
-            this.binding = BindingID.parse((String)binding).createBinding();
-            return;
-        }
-        if(binding instanceof BindingID) {
-            this.binding = ((BindingID) binding).createBinding();
-            return;
-        }
-        if(binding instanceof WSBinding) {
-            this.binding = (WSBinding) binding;
-            return;
-        }
+    public void setBindingID(String id) {
+        this.bindingID = BindingID.parse(id);
+    }
 
-        throw new IllegalArgumentException("Unsupported binding type "+binding.getClass());
+    /**
+     * {@link WebServiceFeature}s that are activated in this endpoint.
+     */
+    public void setFeatures(List<WebServiceFeature> features) {
+        this.features = features;
     }
 
     /**
@@ -184,14 +200,23 @@ public class SpringService implements FactoryBean {
 
     public Object getObject() throws Exception {
         if(endpoint==null) {
+            if(binding==null) {
+                if(bindingID==null)
+                    bindingID = BindingID.parse(implType);
+                if(features==null || features.isEmpty())
+                    binding = BindingImpl.create(bindingID);
+                else
+                    binding = BindingImpl.create(bindingID, features.toArray(new WebServiceFeature[features.size()]));
+            } else {
+                if(bindingID!=null)
+                    throw new IllegalStateException("Both bindingID and binding are configured");
+                if(features!=null)
+                    throw new IllegalStateException("Both features and binding are configured");
+            }
+
+            // configure handlers. doing this here ensures
+            // that we are not doing this more than once.
             if(handlers!=null) {
-                // configure handlers. doing this here ensures
-                // that we are not doing this more than once.
-
-                if(binding==null)
-                    binding = BindingImpl.create(BindingID.parse(implType));
-
-
                 List<Handler> chain = binding.getHandlerChain();
                 chain.addAll(handlers);
                 binding.setHandlerChain(chain);
