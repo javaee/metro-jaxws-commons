@@ -2,24 +2,17 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.jvnet.jax-ws-commons</groupId>
-    <artifactId>pom</artifactId>
-    <version>1.0</version>
-    <relativePath>../pom/pom.xml</relativePath>
+    <artifactId>spring</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   
-  <artifactId>spring</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <groupId>org.jvnet.jax-ws-commons.spring</groupId>
+  <artifactId>spring-core</artifactId>
   <packaging>jar</packaging>
   
   <name>Spring support extension</name>
   <description>Configure JAX-WS with Spring</description>
-
-  <repositories>
-    <repository>
-      <id>spring-mirror</id>
-      <url>http://ndeloof.free.fr/maven2</url>
-    </repository>
-  </repositories>
 
   <build>
     <plugins>

@@ -1,0 +1,39 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jvnet.jax-ws-commons</groupId>
+    <artifactId>pom</artifactId>
+    <version>1.0</version>
+    <relativePath>../pom/pom.xml</relativePath>
+  </parent>
+  
+  <artifactId>spring</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  
+  <name>Spring support extension</name>
+  <description>Configure JAX-WS with Spring</description>
+
+  <repositories>
+    <repository>
+      <id>spring-mirror</id>
+      <url>http://ndeloof.free.fr/maven2</url>
+    </repository>
+  </repositories>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-idea-plugin</artifactId>
+        <configuration>
+          <downloadSources>true</downloadSources>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
+  <modules>
+    <module>spring</module>
+    <module>test-app</module>
+  </modules>
+</project>
