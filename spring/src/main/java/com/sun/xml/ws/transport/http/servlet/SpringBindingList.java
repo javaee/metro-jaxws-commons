@@ -15,6 +15,11 @@ public class SpringBindingList {
         return bindings;
     }
 
+    /**
+     * Individual bindings. 
+     *
+     * @org.xbean.Property nestedType="SpringBinding" 
+     */
     public void setBindings(List<SpringBinding> bindings) {
         this.bindings = bindings;
     }
