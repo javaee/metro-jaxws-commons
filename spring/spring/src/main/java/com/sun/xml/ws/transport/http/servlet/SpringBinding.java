@@ -21,7 +21,7 @@ public class SpringBinding implements BeanNameAware {
     public void create(ServletAdapterList owner) {
         String name = beanName;
         if(name==null)      name=urlPattern;
-        owner.createHttpAdapter(name, urlPattern, endpoint);
+        owner.createAdapter(name, urlPattern, endpoint);
     }
 
     /**
