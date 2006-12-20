@@ -1,6 +1,10 @@
 package foo;
 
 import javax.jws.WebService;
+import javax.jws.soap.SOAPBinding;
+import javax.jws.soap.SOAPBinding.Style;
+import javax.jws.soap.SOAPBinding.ParameterStyle;
+import javax.jws.soap.SOAPBinding.Use;
 import java.util.Random;
 
 /**
@@ -8,6 +12,7 @@ import java.util.Random;
  * @author Kohsuke Kawaguchi
  */
 @WebService
+@SOAPBinding(style=Style.RPC, use=Use.LITERAL)
 public class MyService {
     Random r = new Random();
     public double quote(String ticker) {
