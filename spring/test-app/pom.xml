@@ -32,7 +32,7 @@
   <dependencies>
     <dependency>
       <groupId>org.jvnet.jax-ws-commons.spring</groupId>
-      <artifactId>spring</artifactId>
+      <artifactId>spring-core</artifactId>
       <version>${version}</version>
     </dependency>
   </dependencies>
