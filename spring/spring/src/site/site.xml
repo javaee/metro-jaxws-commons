@@ -14,7 +14,7 @@
       <item name="Glassfish" href="http://glassfishi.dev.java.net/"/>
     </links>
 
-    <menu>
+    <menu name="JAX-WS Spring extension">
       <item name="Introduction" href="index.html"/>
       <!--
       <item name="Download" href="https://jax-ws-commons.dev.java.net/servlets/ProjectDocumentList?folderID=6358"/>
