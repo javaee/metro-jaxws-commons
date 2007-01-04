@@ -25,6 +25,21 @@
           <scanIntervalSeconds>1</scanIntervalSeconds>
         </configuration>
       </plugin>
+      <!--plugin>
+        <groupId>eviware</groupId>
+        <artifactId>maven-soapui-plugin</artifactId>
+        <version>1.0-beta1</version>
+        <executions>
+          <execution>
+            <id>ui-test</id>
+            <phase>test</phase>
+            <configuration>
+              <projectFile>soapui.xml</projectFile>
+              <host>http://localhost:8080/</host>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin-->
     </plugins>
   </build>
   
@@ -36,4 +51,11 @@
       <version>${version}</version>
     </dependency>
   </dependencies>
+  
+  <pluginRepositories>
+     <pluginRepository>
+        <id>eviwarePluginRepository</id>
+        <url>http://www.eviware.com/repository/maven2/</url>
+     </pluginRepository>
+  </pluginRepositories>
 </project>
