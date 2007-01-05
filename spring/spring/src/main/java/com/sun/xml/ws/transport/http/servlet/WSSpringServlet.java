@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 /**
  * {@link HttpServlet} that uses
@@ -26,7 +27,14 @@ public class WSSpringServlet extends HttpServlet {
         // get the configured adapters from Spring
         WebApplicationContext wac = WebApplicationContextUtils
             .getRequiredWebApplicationContext(getServletContext());
-        SpringBindingList list = (SpringBindingList)wac.getBean("jax-ws.http", SpringBindingList.class);
+        Map m = wac.getBeansOfType(SpringBindingList.class);
+
+        if(m.size()>1)
+            throw new ServletException("More than one servlet bindings configuration is available");
+        if(m.isEmpty())
+            throw new ServletException("No bindings configuration is available");
+
+        SpringBindingList list = (SpringBindingList)m.values().iterator().next();
 
         delegate = new WSServletDelegate(list.create(),getServletContext());
     }
