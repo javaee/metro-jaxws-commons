@@ -12,7 +12,7 @@ http://jax-ws.dev.java.net/spring/servlet http://jax-ws.dev.java.net/spring/serv
     <wss:bindings>
       <wss:binding url="/stockQuote">
         <wss:service><!-- nested bean is of course fine -->
-          <ws:service impl="foo.MyService">
+          <ws:service bean="#myService">
             <ws:handlers>
               <ref bean="myHandler" />
             </ws:handlers>
@@ -21,6 +21,8 @@ http://jax-ws.dev.java.net/spring/servlet http://jax-ws.dev.java.net/spring/serv
       </wss:binding>
     </wss:bindings>
   </wss:bindings>
+
+  <bean id="myService" class="foo.MyService" />
 
   <bean id="myHandler" class="foo.MyHandler" />
 </beans>
