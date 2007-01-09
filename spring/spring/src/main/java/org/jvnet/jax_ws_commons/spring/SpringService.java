@@ -78,6 +78,17 @@ public class SpringService implements FactoryBean {
     }
 
     /**
+     * Sets the bean that implements the web service methods.
+     */
+    public void setServiceBean(Object sei) {
+        this.invoker = InstanceResolver.createSingleton(sei).createInvoker();
+        if(this.implType==null)
+            // sei could be a AOP proxy, so getClass() is not always reliable.
+            // so if set explicitly via setImpl, don't override that.
+            this.implType = sei.getClass();
+    }
+
+    /**
      * Sets {@link Invoker} for this endpoint.
      * Defaults to {@link InstanceResolver#createDefault(Class) the standard invoker}.
      */
