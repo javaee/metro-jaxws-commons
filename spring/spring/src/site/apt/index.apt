@@ -65,11 +65,14 @@ gotten rid of this altogether!)
       <wss:binding url="/add" service="#addService" />
       <wss:binding url="/sub">
         <wss:service><!-- nested bean is of course fine -->
-          <ws:service impl="foo.MySubtractService" />
+          <ws:service bean="#myService" />
         </wss:service>
       </wss:binding>
     </wss:bindings>
   </wss:bindings>
+
+  <!-- this bean implements web service methods -->
+  <bean id="myService" class="foo.MyService" />
 
   <!-- simplest definition only needs the class name -->
   <ws:service id="addService" impl="foo.MyAddService" handlers="#myHandler"/>
