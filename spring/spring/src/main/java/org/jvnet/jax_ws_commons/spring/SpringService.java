@@ -80,7 +80,7 @@ public class SpringService implements FactoryBean {
     /**
      * Sets the bean that implements the web service methods.
      */
-    public void setServiceBean(Object sei) {
+    public void setBean(Object sei) {
         this.invoker = InstanceResolver.createSingleton(sei).createInvoker();
         if(this.implType==null)
             // sei could be a AOP proxy, so getClass() is not always reliable.
