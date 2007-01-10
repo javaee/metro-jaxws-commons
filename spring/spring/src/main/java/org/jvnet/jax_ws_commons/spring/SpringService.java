@@ -9,7 +9,10 @@ import com.sun.xml.ws.api.server.SDDocumentSource;
 import com.sun.xml.ws.api.server.WSEndpoint;
 import com.sun.xml.ws.api.server.InstanceResolver;
 import com.sun.xml.ws.binding.BindingImpl;
+import com.sun.xml.ws.server.EndpointFactory;
+import com.sun.xml.ws.server.ServerRtException;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.web.context.ServletContextAware;
 import org.xml.sax.EntityResolver;
 
 import javax.xml.namespace.QName;
@@ -18,9 +21,11 @@ import javax.xml.ws.soap.SOAPBinding;
 import javax.xml.ws.http.HTTPBinding;
 import javax.xml.ws.BindingType;
 import javax.xml.ws.WebServiceFeature;
+import javax.servlet.ServletContext;
 import java.util.Collection;
 import java.util.List;
 import java.net.URL;
+import java.net.MalformedURLException;
 import java.io.IOException;
 
 /**
@@ -30,7 +35,7 @@ import java.io.IOException;
  * @author Kohsuke Kawaguchi
  */
 // javadoc for this class is used to auto-generate documentation.
-public class SpringService implements FactoryBean {
+public class SpringService implements FactoryBean, ServletContextAware {
 
     @NotNull
     private Class<?> implType;
@@ -65,6 +70,15 @@ public class SpringService implements FactoryBean {
      * instead of a configured {@link WSBinding} bean.
      */
     private List<Handler> handlers;
+
+    private ServletContext servletContext;
+
+    /**
+     * Set automatically by Spring if JAX-WS is used inside web container.
+     */
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
 
     ///**
     // * @org.apache.xbean.Property alias="clazz"
@@ -175,13 +189,17 @@ public class SpringService implements FactoryBean {
      * Defaults to the WSDL discovered in <tt>META-INF/wsdl</tt>,
      *
      * <p>
-     * It can be either {@link String} (treated as an URL)
-     * {@link URL} or {@link SDDocumentSource}.
+     * It can be either {@link String},
+     * {@link URL}, or {@link SDDocumentSource}.
+     *
+     * If this is string, {@link ServletContext} (if available) and
+     * {@link ClassLoader} are searched by this path, then failing that,
+     * it's treated as an absolute {@link URL}.
      */
     // TODO: how do we discover this automatically in servlet environment?
     public void setPrimaryWsdl(Object primaryWsdl) throws IOException {
         if(primaryWsdl instanceof String) {
-            this.primaryWsdl = SDDocumentSource.create(new URL(primaryWsdl.toString()));
+            this.primaryWsdl = convertStringToSource((String)primaryWsdl);
         } else
         if(primaryWsdl instanceof URL) {
             this.primaryWsdl = SDDocumentSource.create((URL)primaryWsdl);
@@ -232,9 +250,42 @@ public class SpringService implements FactoryBean {
                 chain.addAll(handlers);
                 binding.setHandlerChain(chain);
             }
+
+            if(primaryWsdl==null) {
+                // attempt to find it on the impl class.
+                String wsdlLocation = EndpointFactory.getWsdlLocation(implType);
+                if (wsdlLocation != null)
+                    primaryWsdl = convertStringToSource(wsdlLocation);
+            }
+
             endpoint = WSEndpoint.create(implType,false,invoker,serviceName,portName,container,binding,primaryWsdl,metadata,resolver,true);
         }
         return endpoint;
+    }
+
+    /**
+     * Converts {@link String} into {@link SDDocumentSource}.
+     *
+     * See {@link #setPrimaryWsdl(Object)} for the conversion rule.
+     */
+    private SDDocumentSource convertStringToSource(String wsdlLocation) throws MalformedURLException {
+        URL url=null;
+
+        if(servletContext!=null)
+                        // in the servlet environment, consult ServletContext so that we can load
+            // WEB-INF/wsdl/... and so on.
+            url = servletContext.getResource(wsdlLocation);
+
+        if(url==null) {
+            // also check a resource in classloader.
+            ClassLoader cl = implType.getClassLoader();
+            url = cl.getResource(wsdlLocation);
+        }
+
+        if (url==null)
+            throw new ServerRtException("cannot.load.wsdl", wsdlLocation);
+
+        return SDDocumentSource.create(url);
     }
 
     public boolean isSingleton() {

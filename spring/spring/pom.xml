@@ -13,7 +13,13 @@
   
   <name>Spring support extension</name>
   <description>Configure JAX-WS with Spring</description>
-
+  
+  <distributionManagement>
+    <site>
+      <url>file:../../www/spring/</url>
+    </site>
+  </distributionManagement>
+  
   <build>
     <plugins>
       <plugin>
