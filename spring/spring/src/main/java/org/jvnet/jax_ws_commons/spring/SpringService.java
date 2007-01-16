@@ -3,11 +3,13 @@ package org.jvnet.jax_ws_commons.spring;
 import com.sun.istack.NotNull;
 import com.sun.xml.ws.api.BindingID;
 import com.sun.xml.ws.api.WSBinding;
+import com.sun.xml.ws.api.pipe.TubelineAssembler;
+import com.sun.xml.ws.api.pipe.TubelineAssemblerFactory;
 import com.sun.xml.ws.api.server.Container;
+import com.sun.xml.ws.api.server.InstanceResolver;
 import com.sun.xml.ws.api.server.Invoker;
 import com.sun.xml.ws.api.server.SDDocumentSource;
 import com.sun.xml.ws.api.server.WSEndpoint;
-import com.sun.xml.ws.api.server.InstanceResolver;
 import com.sun.xml.ws.binding.BindingImpl;
 import com.sun.xml.ws.server.EndpointFactory;
 import com.sun.xml.ws.server.ServerRtException;
@@ -15,18 +17,18 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.web.context.ServletContextAware;
 import org.xml.sax.EntityResolver;
 
+import javax.servlet.ServletContext;
 import javax.xml.namespace.QName;
-import javax.xml.ws.handler.Handler;
-import javax.xml.ws.soap.SOAPBinding;
-import javax.xml.ws.http.HTTPBinding;
 import javax.xml.ws.BindingType;
 import javax.xml.ws.WebServiceFeature;
-import javax.servlet.ServletContext;
+import javax.xml.ws.handler.Handler;
+import javax.xml.ws.http.HTTPBinding;
+import javax.xml.ws.soap.SOAPBinding;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.List;
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.io.IOException;
 
 /**
  * Endpoint. A service object and the infrastructure around it.
@@ -48,6 +50,11 @@ public class SpringService implements FactoryBean, ServletContextAware {
     private SDDocumentSource primaryWsdl;
     private Collection<? extends SDDocumentSource> metadata;
     private EntityResolver resolver;
+
+    /**
+     * Either {@link TubelineAssembler} or {@link TubelineAssemblerFactory}.
+     */
+    private Object assembler;
 
 
     // binding.
@@ -108,6 +115,20 @@ public class SpringService implements FactoryBean, ServletContextAware {
      */
     public void setInvoker(Invoker invoker) {
         this.invoker = invoker;
+    }
+
+    /**
+     * Sets the {@link TubelineAssembler} or {@link TubelineAssemblerFactory} instance.
+     * <p>
+     * This is an advanced configuration option for those who would like to control
+     * what processing JAX-WS runtime performs. The default value is {@code null},
+     * in which case the {@link TubelineAssemblerFactory} is looked up from the <tt>META-INF/services</tt>.
+     */
+    public void setAssembler(Object assembler) {
+        if(assembler instanceof TubelineAssembler || assembler instanceof TubelineAssemblerFactory)
+            this.assembler = assembler;
+        else
+            throw new IllegalArgumentException("Invalid type for assembler "+assembler);
     }
 
     /**
@@ -258,7 +279,7 @@ public class SpringService implements FactoryBean, ServletContextAware {
                     primaryWsdl = convertStringToSource(wsdlLocation);
             }
 
-            endpoint = WSEndpoint.create(implType,false,invoker,serviceName,portName,container,binding,primaryWsdl,metadata,resolver,true);
+            endpoint = WSEndpoint.create(implType,false,invoker,serviceName,portName,new ContainerWrapper(),binding,primaryWsdl,metadata,resolver,true);
         }
         return endpoint;
     }
@@ -294,5 +315,28 @@ public class SpringService implements FactoryBean, ServletContextAware {
 
     public Class getObjectType() {
         return WSEndpoint.class;
+    }
+
+    private class ContainerWrapper extends Container {
+
+        public <T> T getSPI(Class<T> spiType) {
+            // allow specified TubelineAssembler to be used
+            if(spiType==TubelineAssemblerFactory.class) {
+                if(assembler instanceof TubelineAssemblerFactory)
+                    return spiType.cast(assembler);
+                if(assembler instanceof TubelineAssembler) {
+                    return spiType.cast(new TubelineAssemblerFactory() {
+                        public TubelineAssembler doCreate(BindingID bindingId) {
+                            return (TubelineAssembler)assembler;
+                        }
+                    });
+                }
+            }
+            if(container!=null)
+                // delegate to the specified container
+                return container.getSPI(spiType);
+
+            return null;
+        }
     }
 }
