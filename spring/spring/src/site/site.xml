@@ -5,11 +5,11 @@
     <src>https://jaxb.dev.java.net/javaxml-duke.gif</src>
     <href>https://jax-ws.dev.java.net/</href>
   </bannerLeft>
-  <!--skin>
+  <skin>
     <groupId>org.jvnet.maven-javanet-skin</groupId>
     <artifactId>maven-javanet-skin</artifactId>
-    <version>1.0-SNAPSHOT</version>
-  </skin-->
+    <version>1.0</version>
+  </skin>
   <!--bannerRight>
     <src>https://jax-ws.dev.java.net/images/glassfish_logo.gif</src>
   </bannerRight-->
@@ -21,9 +21,7 @@
 
     <menu name="JAX-WS Spring extension">
       <item name="Introduction" href="index.html"/>
-      <!--
-      <item name="Download" href="https://jax-ws-commons.dev.java.net/servlets/ProjectDocumentList?folderID=6358"/>
-      -->
+      <item name="Download" href="https://maven2-repository.dev.java.net/source/browse/maven2-repository/trunk/www/repository/org/jvnet/jax-ws-commons/spring/spring-core/"/>
       <!--
       <item name="Reference" href="reference.html"/>
       -->
