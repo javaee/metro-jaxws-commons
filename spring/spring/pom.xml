@@ -53,7 +53,10 @@
           </execution>
         </executions>
       </plugin>
-      <!-- to work around XBEAN-60, remove those files so that our versions in the source tree takes precedence. -->
+      <!--
+        to work around XBEAN-60, remove those files so that our versions
+        in the source tree takes precedence.
+      -->
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
@@ -63,6 +66,12 @@
               <tasks>
                 <delete file="target/xbean/META-INF/spring.handlers" />
                 <delete file="target/xbean/META-INF/spring.schemas" />
+                
+                <!-- copy the HTML files to site -->
+                <mkdir dir="target/site/references" />
+                <copy todir="target/site/references">
+                  <fileset dir="target/xbean" includes="*.html" />
+                </copy>
               </tasks>
             </configuration>
             <goals>
