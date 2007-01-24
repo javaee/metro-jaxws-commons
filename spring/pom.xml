@@ -13,13 +13,19 @@
   
   <name>Spring support extension</name>
   <description>Configure JAX-WS with Spring</description>
-
+  
   <repositories>
     <repository>
       <id>spring-mirror</id>
       <url>http://ndeloof.free.fr/maven2</url>
     </repository>
   </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>java.net2</id>
+      <url>https://maven2-repository.dev.java.net/nonav/repository</url>
+    </pluginRepository>
+  </pluginRepositories>
   
   <build>
     <plugins>
