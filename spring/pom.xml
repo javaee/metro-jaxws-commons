@@ -14,6 +14,12 @@
   <name>Spring support extension</name>
   <description>Configure JAX-WS with Spring</description>
   
+  <scm>
+    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/trunk/spring</connection>
+    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/trunk/spring</developerConnection>
+    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/spring</url>
+  </scm>
+  
   <repositories>
     <repository>
       <id>spring-mirror</id>
@@ -39,7 +45,7 @@
   </build>
   
   <modules>
-    <module>spring</module>
+    <module>spring-core</module>
     <module>test-app</module>
   </modules>
 </project>
