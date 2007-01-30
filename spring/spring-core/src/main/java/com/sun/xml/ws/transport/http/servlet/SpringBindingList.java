@@ -18,7 +18,7 @@ public class SpringBindingList {
     /**
      * Individual bindings. 
      *
-     * @org.xbean.Property nestedType="SpringBinding" 
+     * @org.apache.xbean.Property nestedType="com.sun.xml.ws.transport.http.servlet.SpringBinding" 
      */
     public void setBindings(List<SpringBinding> bindings) {
         this.bindings = bindings;
