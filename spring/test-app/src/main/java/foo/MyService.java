@@ -14,6 +14,20 @@ import java.util.Random;
 @SOAPBinding(style=Style.RPC, use=Use.LITERAL)
 public class MyService {
     Random r = new Random();
+
+    /**
+     * This field illustrates how you can configure this bean from SPring.
+     */
+    private double base;
+
+    public double getBase() {
+        return base;
+    }
+
+    public void setBase(double base) {
+        this.base = base;
+    }
+
     public double quote(String ticker) {
         return r.nextDouble()*100;
     }
