@@ -1,0 +1,24 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jvnet.jax-ws-commons</groupId>
+    <artifactId>pom</artifactId>
+    <version>1.0</version>
+    <relativePath>../pom/pom.xml</relativePath>
+  </parent>
+  
+  <artifactId>thread-scope</artifactId>
+  <version>1.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  
+  <name>thread-scope extension</name>
+  <description>Simplifies the development of services that are tied to Thread scope.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>jaxws-rt</artifactId>
+      <version>2.1-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+</project>
