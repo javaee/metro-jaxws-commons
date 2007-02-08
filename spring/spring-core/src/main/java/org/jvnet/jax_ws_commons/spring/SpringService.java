@@ -356,6 +356,6 @@ public class SpringService implements FactoryBean, ServletContextAware {
             public @NotNull List<BoundEndpoint> getBoundEndpoints() {
                 return endpoints;
             }
-        }
+        };
     }
 }
