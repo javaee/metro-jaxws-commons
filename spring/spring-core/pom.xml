@@ -8,7 +8,7 @@
   </parent>
   
   <groupId>org.jvnet.jax-ws-commons.spring</groupId>
-  <artifactId>spring-core</artifactId>
+  <artifactId>jaxws-spring</artifactId>
   <packaging>jar</packaging>
   
   <name>Spring support extension</name>

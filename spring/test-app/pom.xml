@@ -47,7 +47,7 @@
   <dependencies>
     <dependency>
       <groupId>org.jvnet.jax-ws-commons.spring</groupId>
-      <artifactId>spring-core</artifactId>
+      <artifactId>jaxws-spring</artifactId>
       <version>${version}</version>
     </dependency>
   </dependencies>
