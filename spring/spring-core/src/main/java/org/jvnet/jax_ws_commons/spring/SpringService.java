@@ -227,8 +227,8 @@ public class SpringService implements FactoryBean, ServletContextAware {
         } else
         if(primaryWsdl instanceof SDDocumentSource) {
             this.primaryWsdl = (SDDocumentSource) primaryWsdl;
-        }
-        throw new IllegalArgumentException("Unknown type "+primaryWsdl);
+        } else
+            throw new IllegalArgumentException("Unknown type "+primaryWsdl);
     }
 
     public void setMetadata(Collection<? extends SDDocumentSource> metadata) {
