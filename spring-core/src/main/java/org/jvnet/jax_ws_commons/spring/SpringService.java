@@ -10,6 +10,8 @@ import com.sun.xml.ws.api.server.InstanceResolver;
 import com.sun.xml.ws.api.server.Invoker;
 import com.sun.xml.ws.api.server.SDDocumentSource;
 import com.sun.xml.ws.api.server.WSEndpoint;
+import com.sun.xml.ws.api.server.Module;
+import com.sun.xml.ws.api.server.BoundEndpoint;
 import com.sun.xml.ws.binding.BindingImpl;
 import com.sun.xml.ws.server.EndpointFactory;
 import com.sun.xml.ws.server.ServerRtException;
@@ -29,6 +31,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Endpoint. A service object and the infrastructure around it.
@@ -332,11 +335,27 @@ public class SpringService implements FactoryBean, ServletContextAware {
                     });
                 }
             }
-            if(container!=null)
+            if(container!=null) {
                 // delegate to the specified container
-                return container.getSPI(spiType);
+                T t = container.getSPI(spiType);
+                if(t!=null)
+                    return t;
+            }
+
+            if(spiType==Module.class) {
+                // fall back default implementation
+                return spiType.cast(module);
+            }
 
             return null;
         }
+
+        private final Module module = new Module() {
+            private final List<BoundEndpoint> endpoints = new ArrayList<BoundEndpoint>();
+
+            public @NotNull List<BoundEndpoint> getBoundEndpoints() {
+                return endpoints;
+            }
+        };
     }
 }
