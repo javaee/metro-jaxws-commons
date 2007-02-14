@@ -199,8 +199,8 @@ public class SpringService implements FactoryBean, ServletContextAware {
      * <p>
      * If there's just one handler and that handler is declared elsewhere,
      * you can use this as a nested attribute like <tt>handlers="#myHandler"</tt>.
-     * Or otherwise nesteed &lt;bean> or &lt;ref> tag can be used to specify
-     * multiple handlers.
+     * Or otherwise a nested &lt;bean&gt; or &lt;ref&gt; tag can be used to
+     * specify multiple handlers.
      */
     public void setHandlers(List<Handler> handlers) {
         this.handlers = handlers;
