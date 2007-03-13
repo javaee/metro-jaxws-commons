@@ -277,6 +277,7 @@ public class SpringService implements FactoryBean, ServletContextAware {
 
             if(primaryWsdl==null) {
                 // attempt to find it on the impl class.
+                EndpointFactory.verifyImplementorClass(implType);
                 String wsdlLocation = EndpointFactory.getWsdlLocation(implType);
                 if (wsdlLocation != null)
                     primaryWsdl = convertStringToSource(wsdlLocation);
