@@ -1,0 +1,38 @@
+ ------
+ Maven 2 Jaxws maven plugin
+ ------
+ Dan T. Tran
+ <dantran@gmail.com>
+ ------
+ December 02, 2006
+
+JAX-WS Maven Plugin
+
+  This plugin contains Maven adapter for {{{https://jax-ws.dev.java.net/}JAX-WS}}'s
+  toolset. The original version of this was developed in the codehaus mojo project,
+  but as of March 2007, the project is moved to jax-ws-commons.
+
+* Usage
+  
+  Instructions on how to use the JAX-WS Maven Plugin can be found {{{usage.html}here}}.
+  
+* Goals Overview
+  
+  * {{{wsimport-mojo.html}jaxws:wsimport}}: generates JAX-WS portable artifacts used in JAX-WS 
+     clients and services. The tool reads a WSDL and generates all the required artifacts 
+     for web service development, deployment, and invocation. 
+  
+  * {{{wsgen-mojo.html}jaxws:wsgen}}: reads a service endpoint implementation class 
+     and generates all of the portable artifacts for a JAX-WS web service.
+    
+  []
+  
+* Examples
+
+  There are a number of buildable examples in 
+  {{{https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/jaxws-maven-plugin/src/it/}
+  SVN repository}}.
+
+  
+
+

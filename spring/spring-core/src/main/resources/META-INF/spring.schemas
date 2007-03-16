@@ -1,5 +1,0 @@
-# See XBEAN-60. To work around the overwriting issue, this file is maintained manually.
-# this file is used by Spring to resolve resources locally.
-# the key is the system ID and the value is the actual file location in this jar.
-http\://jax-ws.dev.java.net/spring/core.xsd=spring-jax-ws-core.xsd
-http\://jax-ws.dev.java.net/spring/servlet.xsd=spring-jax-ws-servlet.xsd
