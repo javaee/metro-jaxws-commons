@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="json-app" default="run" basedir=".">
+
+  <property environment="env"/>
+  <property name="jaxws.home" value="${env.JAXWS_HOME}"/>
+  <property name="build.classes" value="${basedir}/build/classes"/>
+  <property name="build.temp" value="${basedir}/build/temp"/>
+  <property name="srcdir" value="${basedir}/src"/>
+
+  <path id="run.classpath">
+    <fileset dir="${jaxws.home}/lib" includes="*.jar" />
+    <!-- jettison.jar -->
+    <fileset dir="${basedir}/../lib" includes="*.jar" />
+    <!-- jaxws-json.jar -->
+    <fileset dir="${basedir}/../build/lib" includes="*.jar" />
+    <pathelement location="${build.classes}"/>
+  </path>
+
+  <taskdef name="wsgen" classname="com.sun.tools.ws.ant.WsGen">
+    <classpath refid="run.classpath"/>
+  </taskdef>
+
+  <target name="run" depends="wsgen">
+    <java classname="foo.MyDeployment" fork="true" >
+<!--
+<jvmarg value="-Xdebug"/>
+<jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,address=8000"/>
+-->
+      <classpath refid="run.classpath" />
+    </java>
+  </target>
+
+  <target name="compile">
+    <javac srcdir="${srcdir}"
+      fork="true"
+      destdir="${build.classes}"
+      debug="true"
+      includes="**">
+      <classpath>
+        <path refid="run.classpath"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="wsgen" depends="init,compile">
+    <wsgen
+      debug="true"
+      extension="${extension}"
+      keep="true"
+      destdir="${build.classes}"
+      resourcedestdir="${build.temp}"
+      verbose="true"
+      sei="foo.MyService"
+      genwsdl="false"
+      servicename="${serviceName}"
+      portname="${portName}"
+      protocol="${protocol}">
+      <jvmarg line="${jvmargs}"/>
+      <classpath refid="run.classpath"/>
+    </wsgen>
+  </target>
+
+  <target name="init">
+    <mkdir dir="${build.classes}" />
+    <mkdir dir="${build.temp}" />
+  </target>
+
+  <target name="client">
+    <java classname="foo.MyClient" fork="true" >
+      <classpath refid="run.classpath" />
+    </java>
+  </target>
+
+</project>

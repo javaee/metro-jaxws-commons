@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="jaxws-json" default="create-jar" basedir=".">
+
+  <property environment="env"/>
+  <property name="jaxws.home" value="${env.JAXWS_HOME}"/>
+  <property name="build.home" value="${basedir}/build"/>
+  <property name="build.classes" value="${basedir}/build/classes"/>
+  <property name="srcdir" value="${basedir}/src"/>
+
+  <path id="run.classpath">
+    <fileset dir="${jaxws.home}/lib" includes="*.jar" />
+    <fileset dir="${basedir}/lib" includes="*.jar" />
+  </path>
+
+  <target name="compile" depends="init">
+    <javac srcdir="${srcdir}"
+      fork="true"
+      destdir="${build.classes}"
+      debug="true"
+      includes="**">
+      <classpath>
+        <path refid="run.classpath"/>
+      </classpath>
+    </javac>
+    <copy todir="${build.home}/classes/META-INF/services">
+      <fileset dir="${basedir}/etc/" includes="com.sun.*"/>
+    </copy> 
+  </target>
+
+  <target name="create-jar" depends="compile">
+    <jar jarfile="${build.home}/lib/jaxws-json.jar">
+      <fileset dir="${build.home}/classes"/>
+    </jar>
+  </target>
+
+  <target name="init">
+    <mkdir dir="${build.classes}" />
+    <mkdir dir="${build.home}/lib" />
+  </target>
+
+</project>
