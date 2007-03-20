@@ -251,7 +251,7 @@ public class SpringService implements FactoryBean, ServletContextAware {
      */
     private WSEndpoint<?> endpoint;
 
-    public Object getObject() throws Exception {
+    public WSEndpoint getObject() throws Exception {
         if(endpoint==null) {
             if(binding==null) {
                 if(bindingID==null)
