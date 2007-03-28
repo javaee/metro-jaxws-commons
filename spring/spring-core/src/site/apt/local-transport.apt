@@ -1,0 +1,30 @@
+                                    ------
+                                    Configuring In-VM Local Transport
+                                    ------
+                                    ------
+                                    ------
+
+  In-VM local transport allows TCP loop-back like SOAP communication between the client and the server in the same virtual machine. It is primarily designed to enable testing of web service endpoints without using a fully-fledged web container.
+
+  To use this transport, you need to declare one more namespace URI:
+
+---------------------------
+<beans ...
+  xmlns:wsl="http://jax-ws.dev.java.net/spring/local-transport"
+  xsi:schemaLocation="
+    http://jax-ws.dev.java.net/spring/local-transport
+    http://jax-ws.dev.java.net/spring/local-transport.xsd">
+---------------------------
+
+  Then you can export a bunch of services by using an ID of your choice:
+
+---------------------------
+<wsl:bindings id="test-local-endpoint">
+  <wsl:endpoints>
+    <ws:service ... />       <!-- either define a service inline -->
+    <ref bean="myService" /> <!-- or refer to another bean -->
+  </wsl:endpoints>
+</wsl:bindings>
+---------------------------
+
+  These services can be accessed by setting the endpoint address URI as <<<in-vm://test-local-endpoint/>>> (the spring bean ID becomes a part of the URI.) If multiple endpoints are deployed in a single local transport server, you can distinguish them by using the local name of the port QName as the query parameter, like <<<?port1>>>
