@@ -1,5 +1,7 @@
 package org.jvnet.jax_ws_commons.http_session_scope;
 
+import com.sun.xml.ws.api.FeatureConstructor;
+
 import javax.xml.ws.WebServiceFeature;
 
 /**
@@ -12,6 +14,7 @@ public class HttpSessionScopeFeature extends WebServiceFeature {
      */
     public static final String ID = "http://jax-ws-commons.dev.java.net/features/servlet/httpSessionScope";
 
+    @FeatureConstructor
     public HttpSessionScopeFeature() {
         this.enabled = true;
     }
