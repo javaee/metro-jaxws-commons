@@ -55,10 +55,4 @@
       </plugin>
     </plugins>
   </build>
-
-  <scm>
-    <connection>scm:svn:https://svn.dev.java.net/svn/http-session-scope/tags/http-session-scope-1.1</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/http-session-scope/tags/http-session-scope-1.1</developerConnection>
-    <url>https://jax-ws-commons.dev.java.net/source/browse/http-session-scope/tags/http-session-scope-1.1</url>
-  </scm>
 </project>
