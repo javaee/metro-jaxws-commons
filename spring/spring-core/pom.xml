@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jvnet.jax-ws-commons</groupId>
     <artifactId>spring</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
@@ -46,6 +46,18 @@
               <namespace>http://jax-ws.dev.java.net/spring/core</namespace>
               <schema>target/xbean/spring-jax-ws-core.xsd</schema>
               <srcDir>src/main/java/org/jvnet/jax_ws_commons/spring</srcDir>
+            </configuration>
+            <goals>
+              <goal>mapping</goal>
+            </goals>
+          </execution>
+          <!-- for local transport -->
+          <execution>
+            <id>local-transport</id>
+            <configuration>
+              <namespace>http://jax-ws.dev.java.net/spring/local-transport</namespace>
+              <schema>target/xbean/spring-jax-ws-local-transport.xsd</schema>
+              <srcDir>src/main/java/com/sun/xml/ws/transport/local</srcDir>
             </configuration>
             <goals>
               <goal>mapping</goal>
