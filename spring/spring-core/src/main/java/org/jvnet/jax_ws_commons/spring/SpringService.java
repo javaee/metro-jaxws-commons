@@ -50,7 +50,7 @@ public class SpringService implements FactoryBean, ServletContextAware {
     private QName serviceName;
     private QName portName;
     private Container container;
-    private SDDocumentSource primaryWsdl;
+    private Object primaryWsdl;
     private Collection<? extends SDDocumentSource> metadata;
     private EntityResolver resolver;
 
@@ -220,18 +220,8 @@ public class SpringService implements FactoryBean, ServletContextAware {
      * {@link ClassLoader} are searched by this path, then failing that,
      * it's treated as an absolute {@link URL}.
      */
-    // TODO: how do we discover this automatically in servlet environment?
     public void setPrimaryWsdl(Object primaryWsdl) throws IOException {
-        if(primaryWsdl instanceof String) {
-            this.primaryWsdl = convertStringToSource((String)primaryWsdl);
-        } else
-        if(primaryWsdl instanceof URL) {
-            this.primaryWsdl = SDDocumentSource.create((URL)primaryWsdl);
-        } else
-        if(primaryWsdl instanceof SDDocumentSource) {
-            this.primaryWsdl = (SDDocumentSource) primaryWsdl;
-        } else
-            throw new IllegalArgumentException("Unknown type "+primaryWsdl);
+        this.primaryWsdl = primaryWsdl;
     }
 
     public void setMetadata(Collection<? extends SDDocumentSource> metadata) {
@@ -283,9 +273,23 @@ public class SpringService implements FactoryBean, ServletContextAware {
                     primaryWsdl = convertStringToSource(wsdlLocation);
             }
 
-            endpoint = WSEndpoint.create(implType,false,invoker,serviceName,portName,new ContainerWrapper(),binding,primaryWsdl,metadata,resolver,true);
+            endpoint = WSEndpoint.create(implType,false,invoker,serviceName,portName,new ContainerWrapper(),binding,getPrimaryWsdl(),metadata,resolver,true);
         }
         return endpoint;
+    }
+
+
+    private SDDocumentSource getPrimaryWsdl() throws MalformedURLException {
+        if(primaryWsdl==null)
+            return null;
+        if(primaryWsdl instanceof String)
+            return convertStringToSource((String)primaryWsdl);
+        if(primaryWsdl instanceof URL)
+            return SDDocumentSource.create((URL)primaryWsdl);
+        if(primaryWsdl instanceof SDDocumentSource)
+            return (SDDocumentSource)primaryWsdl;
+
+            throw new IllegalArgumentException("primaryWsdl is of unknown type "+primaryWsdl);
     }
 
     /**
