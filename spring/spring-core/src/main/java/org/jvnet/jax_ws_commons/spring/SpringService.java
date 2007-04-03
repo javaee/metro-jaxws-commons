@@ -16,6 +16,7 @@ import com.sun.xml.ws.binding.BindingImpl;
 import com.sun.xml.ws.server.EndpointFactory;
 import com.sun.xml.ws.server.ServerRtException;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.context.ServletContextAware;
 import org.xml.sax.EntityResolver;
 
@@ -40,7 +41,7 @@ import java.util.ArrayList;
  * @author Kohsuke Kawaguchi
  */
 // javadoc for this class is used to auto-generate documentation.
-public class SpringService implements FactoryBean, ServletContextAware {
+public class SpringService implements FactoryBean, ServletContextAware, InitializingBean {
 
     @NotNull
     private Class<?> implType;
@@ -50,8 +51,38 @@ public class SpringService implements FactoryBean, ServletContextAware {
     private QName serviceName;
     private QName portName;
     private Container container;
-    private Object primaryWsdl;
+
+    /**
+     * Source for the service's primary WSDL.
+     * Set by {@link #afterPropertiesSet()}.
+     */
+    private SDDocumentSource primaryWsdl;
+
+    /**
+     * Resource for the service's primary WSDL.
+     *
+     * @see #setPrimaryWsdl(Object)
+     */
+    private Object primaryWSDLResource;
+
+    /**
+     * Sources for the service's metadata.
+     * Set by {@link #afterPropertiesSet()}.
+     */
     private Collection<? extends SDDocumentSource> metadata;
+
+    /**
+     * Resources for the service's metadata.
+     *
+     * @see #setMetadata(java.util.Collection<java.lang.Object>)
+     */
+    private Collection<Object> metadataResources;
+
+    /**
+     * Entity resolver to use for resolving XML resources.
+     *
+     * @see #setResolver(org.xml.sax.EntityResolver)
+     */
     private EntityResolver resolver;
 
     /**
@@ -208,24 +239,33 @@ public class SpringService implements FactoryBean, ServletContextAware {
 
     /**
      * Optional WSDL for this endpoint.
-     *
      * <p>
      * Defaults to the WSDL discovered in <tt>META-INF/wsdl</tt>,
-     *
      * <p>
-     * It can be either {@link String},
-     * {@link URL}, or {@link SDDocumentSource}.
-     *
-     * If this is string, {@link ServletContext} (if available) and
-     * {@link ClassLoader} are searched by this path, then failing that,
-     * it's treated as an absolute {@link URL}.
+     * It can be either {@link String}, {@link URL}, or {@link SDDocumentSource}.
+     * <p>
+     * If <code>primaryWsdl</code> is a <code>String</code>,
+     * {@link ServletContext} (if available) and {@link ClassLoader}
+     * are searched for this path, then failing that, it's treated as an
+     * absolute {@link URL}.
      */
     public void setPrimaryWsdl(Object primaryWsdl) throws IOException {
-        this.primaryWsdl = primaryWsdl;
+        this.primaryWSDLResource = primaryWsdl;
     }
 
-    public void setMetadata(Collection<? extends SDDocumentSource> metadata) {
-        this.metadata = metadata;
+    /**
+     * Optional metadata for this endpoint.
+     * <p>
+     * The collection can contain {@link String}, {@link URL}, or {@link SDDocumentSource}
+     * elements.
+     * <p>
+     * If element is a <code>String</code>,
+     * {@link ServletContext} (if available) and {@link ClassLoader}
+     * are searched for this path, then failing that, it's treated as an
+     * absolute {@link URL}.
+     */
+    public void setMetadata(Collection<Object> metadata) {
+        this.metadataResources = metadata;
     }
 
     /**
@@ -249,7 +289,8 @@ public class SpringService implements FactoryBean, ServletContextAware {
                 if(features==null || features.isEmpty())
                     binding = BindingImpl.create(bindingID);
                 else
-                    binding = BindingImpl.create(bindingID, features.toArray(new WebServiceFeature[features.size()]));
+                    binding = BindingImpl.create(bindingID,
+                            features.toArray(new WebServiceFeature[features.size()]));
             } else {
                 if(bindingID!=null)
                     throw new IllegalStateException("Both bindingID and binding are configured");
@@ -273,46 +314,124 @@ public class SpringService implements FactoryBean, ServletContextAware {
                     primaryWsdl = convertStringToSource(wsdlLocation);
             }
 
-            endpoint = WSEndpoint.create(implType,false,invoker,serviceName,portName,new ContainerWrapper(),binding,getPrimaryWsdl(),metadata,resolver,true);
+            endpoint = WSEndpoint.create(implType,false,invoker,serviceName,
+                    portName,new ContainerWrapper(),binding,primaryWsdl,metadata,resolver,true);
         }
         return endpoint;
     }
 
+    /**
+     * Called automatically by Spring after all properties have been set, including
+     * {@link #servletContext}.  This implementation creates
+     * <code>SDDocumentSource</code>s from the {@link #primaryWSDLResource} and
+     * {@link #metadataResources} properties, if provided.
+     *
+     * <p>See {@link #setMetadata(java.util.Collection<java.lang.Object>)} and
+     * {@link #setPrimaryWsdl(Object)} for conversion rules.
+     *
+     * @throws Exception if an error occurs while creating
+     * <code>SDDocumentSource</code>s from the {@link #primaryWSDLResource} and
+     * {@link #metadataResources} properties
+     *
+     * @see #resolveSDDocumentSource(Object)
+     */
+    public void afterPropertiesSet() throws Exception {
+        if (this.primaryWSDLResource != null) {
+            this.primaryWsdl = this.resolveSDDocumentSource(this.primaryWSDLResource);
+        }
 
-    private SDDocumentSource getPrimaryWsdl() throws MalformedURLException {
-        if(primaryWsdl==null)
-            return null;
-        if(primaryWsdl instanceof String)
-            return convertStringToSource((String)primaryWsdl);
-        if(primaryWsdl instanceof URL)
-            return SDDocumentSource.create((URL)primaryWsdl);
-        if(primaryWsdl instanceof SDDocumentSource)
-            return (SDDocumentSource)primaryWsdl;
+        if (this.metadataResources != null) {
+            List<SDDocumentSource> tempList =
+                    new ArrayList<SDDocumentSource>(this.metadataResources.size());
 
-            throw new IllegalArgumentException("primaryWsdl is of unknown type "+primaryWsdl);
+            for (Object resource : this.metadataResources) {
+                tempList.add(this.resolveSDDocumentSource(resource));
+            }
+
+            this.metadata = tempList;
+        }
+    }
+
+    /**
+     * Resolves a resource ({@link String}, {@link URL}, or {@link SDDocumentSource})
+     * to a {@link SDDocumentSource}.
+     * <p/>
+     * See {@link #convertStringToSource(String)} for processing rules relating
+     * to a <code>String</code> argument.
+     *
+     * @param resource the <code>String</code>, <code>URL</code>,
+     * or <code>SDDocumentSource</code> to resolve
+     *
+     * @return a <code>SDDocumentSource</code> for the provided <code>resource</code>
+     *
+     * @throws IllegalArgumentException if <code>resource</code> is not an
+     * instance of <code>String</code>, <code>URL</code>, or
+     * <code>SDDocumentSource</code>
+     *
+     * @see #convertStringToSource(String)
+     * @see SDDocumentSource#create(java.net.URL)
+     */
+    private SDDocumentSource resolveSDDocumentSource(Object resource) {
+        SDDocumentSource source;
+
+        if (resource instanceof String) {
+            source = this.convertStringToSource((String) resource);
+        }
+        else if (resource instanceof URL) {
+            source = SDDocumentSource.create((URL) resource);
+        }
+        else if (resource instanceof SDDocumentSource) {
+            source = (SDDocumentSource) resource;
+        }
+        else {
+            throw new IllegalArgumentException("Unknown type " + resource);
+        }
+
+        return source;
     }
 
     /**
      * Converts {@link String} into {@link SDDocumentSource}.
+     * <p/>
+     * If <code>resourceLocation</code> is a <code>String</code>,
+     * {@link ServletContext} (if available) and {@link ClassLoader}
+     * are searched for this path, then failing that, it's treated as an
+     * absolute {@link URL}.
      *
-     * See {@link #setPrimaryWsdl(Object)} for the conversion rule.
+     * @throws ServerRtException if <code>resourceLocation</code> cannot be
+     * resolved through {@link ServletContext} (if available), {@link ClassLoader},
+     * or as an absolute {@link java.net.URL}.
      */
-    private SDDocumentSource convertStringToSource(String wsdlLocation) throws MalformedURLException {
-        URL url=null;
+    private SDDocumentSource convertStringToSource(String resourceLocation) {
+        URL url = null;
 
-        if(servletContext!=null)
-                        // in the servlet environment, consult ServletContext so that we can load
+        if (servletContext != null) {
+            // in the servlet environment, consult ServletContext so that we can load
             // WEB-INF/wsdl/... and so on.
-            url = servletContext.getResource(wsdlLocation);
-
-        if(url==null) {
-            // also check a resource in classloader.
-            ClassLoader cl = implType.getClassLoader();
-            url = cl.getResource(wsdlLocation);
+            try {
+                url = servletContext.getResource(resourceLocation);
+            } catch (MalformedURLException e) {
+                // ignore it and try the next method
+            }
         }
 
-        if (url==null)
-            throw new ServerRtException("cannot.load.wsdl", wsdlLocation);
+        if (url == null) {
+            // also check a resource in classloader.
+            ClassLoader cl = implType.getClassLoader();
+            url = cl.getResource(resourceLocation);
+        }
+
+        if (url == null) {
+            try {
+                url = new URL(resourceLocation);
+            } catch (MalformedURLException e) {
+                // ignore it throw exception later
+            }
+        }
+
+        if (url == null) {
+            throw new ServerRtException("cannot.load.wsdl", resourceLocation);
+        }
 
         return SDDocumentSource.create(url);
     }
