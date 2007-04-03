@@ -50,6 +50,16 @@
       <artifactId>jaxws-spring</artifactId>
       <version>${version}</version>
     </dependency>
+    <!--
+      for this test to run correctly we need more recent SJSXP,
+      but having that dependency prevents our release. So this
+      is commented out.
+    -->
+    <!--dependency>
+      <groupId>com.sun.xml.stream</groupId>
+      <artifactId>sjsxp</artifactId>
+      <version>SNAPSHOT</version>
+    </dependency-->
   </dependencies>
   
   <pluginRepositories>
