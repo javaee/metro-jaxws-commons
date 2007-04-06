@@ -10,13 +10,17 @@ public class MyClient {
 
     public static void main(String ... args) throws Exception {
         URL url = new URL("http://localhost:1111/book");
+        hitEndpoint(url);
+    }
+
+    static void hitEndpoint(URL url) throws IOException {
         HttpURLConnection con = (HttpURLConnection)url.openConnection();
         con.setRequestMethod("POST");
         con.addRequestProperty("Content-Type", "application/json");
         con.setDoInput(true);
         con.setDoOutput(true);
         // Write JSON request
-        String json = "{ \"tns.get\":{} }"; 
+        String json = "{ \"tns.get\":{} }";
         OutputStream out = con.getOutputStream();
         out.write(json.getBytes());
         out.close();

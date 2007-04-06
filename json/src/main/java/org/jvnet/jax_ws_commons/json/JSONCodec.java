@@ -7,11 +7,7 @@ import com.sun.xml.ws.api.message.Messages;
 import com.sun.xml.ws.api.message.Packet;
 import com.sun.xml.ws.api.pipe.Codec;
 import com.sun.xml.ws.api.pipe.ContentType;
-import org.codehaus.jettison.mapped.MappedXMLInputFactory;
-import org.codehaus.jettison.mapped.MappedXMLOutputFactory;
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -20,39 +16,40 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.json.JSONTokener;
+import org.json.JSONException;
 
 
 /**
- * author Jitendra Kotamraju
+ * Server-side {@link Codec} that generates JSON. 
+ *
+ * @author Jitendra Kotamraju
  */
 class JSONCodec implements Codec {
 
     private static final String JSON_MIME_TYPE = "application/json";
     private static final ContentType jsonContentType = new JSONContentType();
-    private static final Map<String, String> nstojns;
-    static {
-        Map<String, String> tmp = new HashMap<String, String>();
-        tmp.put( "http://schemas.xmlsoap.org/soap/envelope/", "s");
-        tmp.put( "http://jax-ws.dev.java.net/json", "tns");
-        nstojns = Collections.unmodifiableMap(tmp);
-    }
-
-    // TODO Thread-safe ??
-    private static final XMLOutputFactory xof = new MappedXMLOutputFactory(nstojns);
-    private static final XMLInputFactory xif = new MappedXMLInputFactory(nstojns);
-
 
     private final WSBinding binding;
     private final SOAPVersion soapVersion;
 
+    private SchemaInfo schemaInfo;
+
     public JSONCodec(WSBinding binding) {
+        this(binding,null);
+    }
+
+    public JSONCodec(WSBinding binding, SchemaInfo schemaInfo) {
         this.binding = binding;
         this.soapVersion = binding.getSOAPVersion();
+        this.schemaInfo = schemaInfo;
     }
 
     public String getMimeType() {
@@ -68,7 +65,7 @@ class JSONCodec implements Codec {
         if (message != null) {
             XMLStreamWriter sw = null;
             try {
-                sw = xof.createXMLStreamWriter(out);
+                sw = updateSchemaInfo(packet).createXMLStreamWriter(new OutputStreamWriter(out,"UTF-8"));
                 sw.writeStartDocument();
                 message.writePayloadTo(sw);
                 sw.writeEndDocument();
@@ -79,7 +76,7 @@ class JSONCodec implements Codec {
                     try {
                         sw.close();
                     } catch(XMLStreamException xe) {
-                        throw new WebServiceException(xe);
+                        // let the original exception get through
                     }
                 }
             }
@@ -89,6 +86,18 @@ class JSONCodec implements Codec {
 
     public ContentType encode(Packet packet, WritableByteChannel buffer) {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets the up-to-date {@link SchemaInfo} for the current endpoint,
+     * by either using a cache or by parsing new.
+     */
+    private SchemaInfo updateSchemaInfo(Packet packet) {
+        if(packet.endpoint==null)
+            throw new IllegalStateException("JSON binding is only available for the server");
+        if(schemaInfo==null || schemaInfo.endpoint!=packet.endpoint)
+            schemaInfo = new SchemaInfo(packet.endpoint);
+        return schemaInfo;
     }
 
     public Codec copy() {
@@ -103,9 +112,21 @@ class JSONCodec implements Codec {
         } else {
             XMLStreamReader reader;
             try {
-                reader = xif.createXMLStreamReader(in);
-            } catch(XMLStreamException xe) {
-                throw new WebServiceException(xe);
+                StringWriter sw = new StringWriter();
+                // TODO: RFC-4627 calls for BOM check
+                // TODO: honor charset sub header.
+                Reader r = new InputStreamReader(in,"UTF-8");
+                char[] buf = new char[1024];
+                int len;
+                while((len=r.read(buf))>=0)
+                    sw.write(buf,0,len);
+                r.close();
+
+                reader = updateSchemaInfo(response).createXMLStreamReader(new JSONTokener(sw.toString()));
+            } catch(XMLStreamException e) {
+                throw new WebServiceException(e);
+            } catch (JSONException e) {
+                throw new WebServiceException(e);
             }
             message = Messages.createUsingPayload(reader, soapVersion);
         }

@@ -9,12 +9,12 @@ import org.jvnet.jax_ws_commons.json.JSONBindingID;
  *
  * @author Jitendra Kotamraju
  */
-@WebService(targetNamespace="http://jax-ws.dev.java.net/json")
+@WebService(targetNamespace = "http://jax-ws.dev.java.net/json")
 @BindingType(JSONBindingID.JSON_BINDING)
 public class MyService {
 
     public Book get() {
-	return new Book();
+        return new Book();
     }
 
     public static final class Book {
