@@ -7,6 +7,10 @@ import com.sun.xml.ws.api.message.Messages;
 import com.sun.xml.ws.api.message.Packet;
 import com.sun.xml.ws.api.pipe.Codec;
 import com.sun.xml.ws.api.pipe.ContentType;
+import com.sun.xml.ws.api.server.EndpointAwareCodec;
+import com.sun.xml.ws.api.server.WSEndpoint;
+import org.json.JSONException;
+import org.json.JSONTokener;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -15,16 +19,13 @@ import javax.xml.ws.WebServiceException;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.StringWriter;
-import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
-
-import org.json.JSONTokener;
-import org.json.JSONException;
 
 
 /**
@@ -32,7 +33,7 @@ import org.json.JSONException;
  *
  * @author Jitendra Kotamraju
  */
-class JSONCodec implements Codec {
+class JSONCodec implements EndpointAwareCodec {
 
     private static final String JSON_MIME_TYPE = "application/json";
     private static final ContentType jsonContentType = new JSONContentType();
@@ -52,6 +53,10 @@ class JSONCodec implements Codec {
         this.schemaInfo = schemaInfo;
     }
 
+    public void setEndpoint(WSEndpoint endpoint) {
+        schemaInfo = new SchemaInfo(endpoint);
+    }
+
     public String getMimeType() {
         return JSON_MIME_TYPE;
     }
@@ -65,7 +70,7 @@ class JSONCodec implements Codec {
         if (message != null) {
             XMLStreamWriter sw = null;
             try {
-                sw = updateSchemaInfo(packet).createXMLStreamWriter(new OutputStreamWriter(out,"UTF-8"));
+                sw = checkSchemaInfo().createXMLStreamWriter(new OutputStreamWriter(out,"UTF-8"));
                 sw.writeStartDocument();
                 message.writePayloadTo(sw);
                 sw.writeEndDocument();
@@ -92,16 +97,14 @@ class JSONCodec implements Codec {
      * Gets the up-to-date {@link SchemaInfo} for the current endpoint,
      * by either using a cache or by parsing new.
      */
-    private SchemaInfo updateSchemaInfo(Packet packet) {
-        if(packet.endpoint==null)
+    private SchemaInfo checkSchemaInfo() {
+        if(schemaInfo==null)
             throw new IllegalStateException("JSON binding is only available for the server");
-        if(schemaInfo==null || schemaInfo.endpoint!=packet.endpoint)
-            schemaInfo = new SchemaInfo(packet.endpoint);
         return schemaInfo;
     }
 
     public Codec copy() {
-        return new JSONCodec(binding);
+        return new JSONCodec(binding,schemaInfo);
     }
 
     public void decode(InputStream in, String contentType, Packet response) throws IOException {
@@ -122,7 +125,7 @@ class JSONCodec implements Codec {
                     sw.write(buf,0,len);
                 r.close();
 
-                reader = updateSchemaInfo(response).createXMLStreamReader(new JSONTokener(sw.toString()));
+                reader = checkSchemaInfo().createXMLStreamReader(new JSONTokener(sw.toString()));
             } catch(XMLStreamException e) {
                 throw new WebServiceException(e);
             } catch (JSONException e) {
