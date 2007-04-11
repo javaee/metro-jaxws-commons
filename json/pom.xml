@@ -70,6 +70,11 @@
       <version>4.3</version>
       <scope>test</scope>
     </dependency>
+    <dependency><!-- once xsom adds this dependency we shouldn't need it -->
+        <groupId>com.sun.xml</groupId>
+        <artifactId>relaxngDatatype</artifactId>
+        <version>1.0</version>
+    </dependency>
     <dependency>
       <groupId>com.sun.net.httpserver</groupId>
       <artifactId>http</artifactId>
