@@ -1,0 +1,30 @@
+                                    ------
+                                    JSON support for JAX-WS
+                                    ------
+                                    ------
+                                    ------
+
+What is this?
+
+  JAX-WS supports a "pluggable encoding" --- meaning it can use formats other than textual XML. This extension takes advantage of this and allows JAX-WS services to be exposed via JSON.
+
+  JSON support is implemented as a custom binding. So just like there are SOAP/HTTP binding or Plain Old XML binding, you can specify JSON binding to expose a service as JSON service. The following code shows one way of exposing a service over JSON:
+
+---------------------------
+@BindingType(JSONBindingID.JSON_BINDING)
+public class MyService {
+
+    public Book get() {
+        return new Book();
+    }
+
+    public static final class Book {
+        public int id = 1;
+        public String title = "Java";
+    }
+
+}
+---------------------------
+
+  TODO: talk about how to deploy the same service in two bindings.
+
