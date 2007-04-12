@@ -20,7 +20,7 @@ public class MyClient {
         con.setDoInput(true);
         con.setDoOutput(true);
         // Write JSON request
-        String json = "{ \"tns.get\":{} }";
+        String json = "{get:{} }";
         OutputStream out = con.getOutputStream();
         out.write(json.getBytes());
         out.close();
