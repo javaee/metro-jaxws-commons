@@ -35,7 +35,9 @@ final class ClientGenerator {
     }
 
     private void writeOperation(WSDLBoundOperation op, PrintStream os) {
-        os.append("function "+op.getName().getLocalPart()+"(obj, func) {\n");
+        os.append("function ");
+        os.append(op.getName().getLocalPart());
+        os.append("(obj, func) {\n");
         os.append("\treq = init();\n");
         os.append("\tpost(req, url, func);\n");
         os.append("}\n");
@@ -71,7 +73,7 @@ final class ClientGenerator {
         os.append("function postFunc(req, func) {\n");
         os.append("\tif (req.readyState == 4) {\n");
         os.append("\t\tif(req.status == 200) {\n");
-        os.append("\t\t\tfunc();\n");
+        os.append("\t\t\tfunc(req.responseText);\n");
         os.append("\t\t} else {\n");
         os.append("\t\t\talert(\"Error:\"+req.status+\":\"+req.statusText);\n");
         os.append("\t\t}\n");

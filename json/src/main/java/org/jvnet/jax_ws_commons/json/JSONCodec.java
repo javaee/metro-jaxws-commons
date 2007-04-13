@@ -134,6 +134,9 @@ class JSONCodec implements EndpointAwareCodec {
             message = Messages.createUsingPayload(reader, soapVersion);
         }
         response.setMessage(message);
+
+        // To see the javascript is working or not
+        new ClientGenerator(schemaInfo.endpoint.getPort()).generate();
     }
 
     public void decode(ReadableByteChannel in, String contentType, Packet response) {
