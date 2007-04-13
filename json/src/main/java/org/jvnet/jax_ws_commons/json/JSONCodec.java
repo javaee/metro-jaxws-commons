@@ -9,6 +9,8 @@ import com.sun.xml.ws.api.pipe.Codec;
 import com.sun.xml.ws.api.pipe.ContentType;
 import com.sun.xml.ws.api.server.EndpointAwareCodec;
 import com.sun.xml.ws.api.server.WSEndpoint;
+import com.sun.xml.ws.server.WSEndpointImpl;
+import com.sun.xml.ws.model.AbstractSEIModelImpl;
 import org.json.JSONException;
 import org.json.JSONTokener;
 
@@ -136,7 +138,9 @@ class JSONCodec implements EndpointAwareCodec {
         response.setMessage(message);
 
         // To see the javascript is working or not
-        new ClientGenerator(schemaInfo.endpoint.getPort()).generate();
+        WSEndpointImpl endpoint = (WSEndpointImpl)schemaInfo.endpoint;
+        AbstractSEIModelImpl model = (AbstractSEIModelImpl)endpoint.getSEIModel();
+        new ClientGenerator(model).generate();
     }
 
     public void decode(ReadableByteChannel in, String contentType, Packet response) {

@@ -1,10 +1,12 @@
 package org.jvnet.jax_ws_commons.json;
 
-import com.sun.xml.ws.api.model.wsdl.WSDLPort;
-import com.sun.xml.ws.api.model.wsdl.WSDLBoundPortType;
-import com.sun.xml.ws.api.model.wsdl.WSDLBoundOperation;
+import com.sun.xml.ws.model.AbstractSEIModelImpl;
+import com.sun.xml.ws.model.JavaMethodImpl;
 
-import java.io.*;
+import javax.xml.namespace.QName;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 
 /**
  * Generates javascript stub code that is used to access the endpoint.
@@ -12,9 +14,9 @@ import java.io.*;
  * @author Jitendra Kotamraju
  */
 final class ClientGenerator {
-    private final WSDLPort model;
+    private final AbstractSEIModelImpl model;
 
-    ClientGenerator(WSDLPort model) {
+    ClientGenerator(AbstractSEIModelImpl model) {
         this.model = model;
     }
 
@@ -28,18 +30,21 @@ final class ClientGenerator {
     }
 
     private void writeOperations(PrintStream os) {
-        WSDLBoundPortType portType = model.getBinding();
-        for(WSDLBoundOperation op : portType.getBindingOperations()) {
+        for(JavaMethodImpl op : model.getJavaMethods()) {
             writeOperation(op, os);
         }
     }
 
-    private void writeOperation(WSDLBoundOperation op, PrintStream os) {
+    // TODO: need to declare URL as global variable
+    private void writeOperation(JavaMethodImpl jm, PrintStream os) {
+        QName payload = model.getQNameForJM(jm);
         os.append("function ");
-        os.append(op.getName().getLocalPart());
-        os.append("(obj, func) {\n");
+        os.append(jm.getMethod().getName());
+        os.append("(url, obj, func) {\n");
         os.append("\treq = init();\n");
-        os.append("\tpost(req, url, func);\n");
+        os.append("\tvar wrapperObj = new Object();\n");
+        os.append("\twrapperObj."+payload.getLocalPart()+" = obj;\n");
+        os.append("\tpost(req, url, wrapperObj, func);\n");
         os.append("}\n");
         os.append("\n");
     }
@@ -58,7 +63,7 @@ final class ClientGenerator {
     }
 
     private void writePost(PrintStream os) {
-        os.append("function post(req, url, func) {\n");
+        os.append("function post(req, url, obj, func) {\n");
         os.append("\tif (req) {\n");
         os.append("\t\treq.onreadystatechange = postFunc(req,func);\n");
         os.append("\t\treq.open(\"POST\", url, true);\n");
