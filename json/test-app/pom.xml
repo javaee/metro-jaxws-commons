@@ -2,9 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.jvnet.jax-ws-commons</groupId>
-    <artifactId>pom</artifactId>
+    <artifactId>json</artifactId>
     <version>1.0</version>
-    <relativePath>../../pom/pom.xml</relativePath>
+    <relativePath>../pom/pom.xml</relativePath>
   </parent>
   
   <artifactId>jaxws-json-testapp</artifactId>
