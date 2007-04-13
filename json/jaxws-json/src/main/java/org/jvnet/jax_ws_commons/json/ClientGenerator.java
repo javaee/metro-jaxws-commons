@@ -3,10 +3,12 @@ package org.jvnet.jax_ws_commons.json;
 import com.sun.xml.ws.model.AbstractSEIModelImpl;
 import com.sun.xml.ws.model.JavaMethodImpl;
 
-import javax.xml.namespace.QName;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.InputStream;
+import java.util.Iterator;
+import java.text.MessageFormat;
 
 /**
  * Generates javascript stub code that is used to access the endpoint.
@@ -22,69 +24,68 @@ final class ClientGenerator {
 
     void generate() throws IOException {
         PrintStream os = new PrintStream(new FileOutputStream("jaxws.js"));
-        writeInit(os);
-        writePost(os);
-        writePostFunc(os);
+        writeGlobal(os);
+        writeStatic(os);
         writeOperations(os);
+        writeClosure(os);
         os.close();
     }
 
+    // TODO: need to declare URL as global variable
+    private void writeGlobal(PrintStream os) throws IOException {
+        String serviceName = model.getServiceQName().getLocalPart();
+        os.append("var ");
+        os.append(serviceName);
+        os.append(" = {\n");
+        shift(os);
+        os.append("url : \"TODO\",\n");
+    }
+
+    private void writeStatic(PrintStream os) throws IOException {
+        InputStream is = getClass().getClassLoader().getResourceAsStream("jaxws.js");
+        int ch;
+        while((ch = is.read()) != -1) {
+            os.write(ch);
+        }
+        is.close();
+    }
+
     private void writeOperations(PrintStream os) {
-        for(JavaMethodImpl op : model.getJavaMethods()) {
-            writeOperation(op, os);
+        Iterator<JavaMethodImpl> it = model.getJavaMethods().iterator();
+        while(it.hasNext()) {
+            writeOperation(it.next(), it.hasNext(), os);
         }
     }
 
-    // TODO: need to declare URL as global variable
-    private void writeOperation(JavaMethodImpl jm, PrintStream os) {
-        QName payload = model.getQNameForJM(jm);
-        os.append("function ");
-        os.append(jm.getMethod().getName());
-        os.append("(url, obj, func) {\n");
-        os.append("\treq = init();\n");
-        os.append("\tvar wrapperObj = new Object();\n");
-        os.append("\twrapperObj."+payload.getLocalPart()+" = obj;\n");
-        os.append("\tpost(req, url, wrapperObj, func);\n");
-        os.append("}\n");
-        os.append("\n");
+    private void writeOperation(JavaMethodImpl jm, boolean next, PrintStream os) {
+        String reqName = model.getQNameForJM(jm).getLocalPart();
+        String methodName = jm.getMethod().getName();
+        String resName = "getResponse"; // TODO
+
+        shift(os);
+        os.append(methodName);
+        os.append(" : function(obj, callback) {\n");
+        shift2(os);
+        os.append("post({");
+        os.append(reqName);
+        os.append(" : obj}, function(obj) { callback(obj.");
+        os.append(resName);
+        os.append("); });\n");
+        shift(os);
+        if (next) { os.append("},\n\n"); } else { os.append("}\n\n"); }
     }
 
-    private void writeInit(PrintStream os) {
-        os.append("function init() {\n");
-        os.append("\tvar req;\n");
-        os.append("\tif (window.XMLHttpRequest) {\n");
-        os.append("\t\treq = new XMLHttpRequest();\n");
-        os.append("\t} else if (window.ActiveXObject) {\n");
-        os.append("\t\treq = new ActiveXObject(\"Microsoft.XMLHTTP\");\n");
-        os.append("\t}\n");
-        os.append("\treturn req;\n");
-        os.append("}\n");
-        os.append("\n");
+    private static void shift(PrintStream os) {
+        os.append("    ");
     }
 
-    private void writePost(PrintStream os) {
-        os.append("function post(req, url, obj, func) {\n");
-        os.append("\tif (req) {\n");
-        os.append("\t\treq.onreadystatechange = postFunc(req,func);\n");
-        os.append("\t\treq.open(\"POST\", url, true);\n");
-        os.append("\t\treq.setRequestHeader(\"Content-Type\", \"application/json\");\n");
-        os.append("\t\treq.send(obj);\n");
-        os.append("\t}\n");
-        os.append("}\n");
-        os.append("\n");
+    private static void shift2(PrintStream os) {
+        shift(os);
+        shift(os);
     }
 
-    private void writePostFunc(PrintStream os) {
-        os.append("function postFunc(req, func) {\n");
-        os.append("\tif (req.readyState == 4) {\n");
-        os.append("\t\tif(req.status == 200) {\n");
-        os.append("\t\t\tfunc(req.responseText);\n");
-        os.append("\t\t} else {\n");
-        os.append("\t\t\talert(\"Error:\"+req.status+\":\"+req.statusText);\n");
-        os.append("\t\t}\n");
-        os.append("\t}\n");
-        os.append("}\n");
-        os.append("\n");
+    private void writeClosure(PrintStream os) {
+        os.append("};\n");
     }
     
 }
