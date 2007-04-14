@@ -25,7 +25,6 @@ import org.xml.sax.SAXException;
 import org.codehaus.jettison.mapped.MappedXMLOutputFactory;
 import org.codehaus.jettison.mapped.MappedXMLInputFactory;
 import org.codehaus.jettison.mapped.MappedXMLStreamWriter;
-import org.codehaus.jettison.mapped.MappedXMLStreamReader;
 import org.json.JSONTokener;
 import org.json.JSONObject;
 import org.json.JSONException;

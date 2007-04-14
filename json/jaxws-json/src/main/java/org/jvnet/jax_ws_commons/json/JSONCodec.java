@@ -20,7 +20,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.ws.WebServiceException;
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -127,31 +126,32 @@ class JSONCodec implements EndpointAwareCodec, EndpointComponent {
     }
 
     public void decode(InputStream in, String contentType, Packet response) throws IOException {
-        in = JSONCodec.hasSomeData(in);
         Message message;
-        if (in == null) {
-            message = Messages.createEmpty(soapVersion);
-        } else {
-            XMLStreamReader reader;
-            try {
-                StringWriter sw = new StringWriter();
-                // TODO: RFC-4627 calls for BOM check
-                // TODO: honor charset sub header.
-                Reader r = new InputStreamReader(in,"UTF-8");
-                char[] buf = new char[1024];
-                int len;
-                while((len=r.read(buf))>=0)
-                    sw.write(buf,0,len);
-                r.close();
 
-                reader = checkSchemaInfo().createXMLStreamReader(new JSONTokener(sw.toString()));
-            } catch(XMLStreamException e) {
-                throw new WebServiceException(e);
-            } catch (JSONException e) {
-                throw new WebServiceException(e);
+        try {
+            StringWriter sw = new StringWriter();
+            // TODO: RFC-4627 calls for BOM check
+            // TODO: honor charset sub header.
+            Reader r = new InputStreamReader(in,"UTF-8");
+            char[] buf = new char[1024];
+            int len;
+            while((len=r.read(buf))>=0)
+                sw.write(buf,0,len);
+            r.close();
+
+            if(sw.getBuffer().length()==0) {
+                // no content
+                message = Messages.createEmpty(soapVersion);
+            } else {
+                XMLStreamReader reader = checkSchemaInfo().createXMLStreamReader(new JSONTokener(sw.toString()));
+                message = Messages.createUsingPayload(reader, soapVersion);
             }
-            message = Messages.createUsingPayload(reader, soapVersion);
+        } catch(XMLStreamException e) {
+            throw new WebServiceException(e);
+        } catch (JSONException e) {
+            throw new WebServiceException(e);
         }
+
         response.setMessage(message);
     }
 
@@ -176,29 +176,4 @@ class JSONCodec implements EndpointAwareCodec, EndpointComponent {
         }
 
     }
-
-    /**
-     * Finds if the stream has some content or not
-     * @param in input content
-     * @return null if there is no data
-     *         else stream to be used
-     * @throws IOException if any I/O error happens
-     */
-    private static InputStream hasSomeData(InputStream in) throws IOException {
-        if (in != null) {
-            if (in.available() < 1) {
-                if (!in.markSupported()) {
-                    in = new BufferedInputStream(in);
-                }
-                in.mark(1);
-                if (in.read() != -1) {
-                    in.reset();
-                } else {
-                    in = null;          // No data
-                }
-            }
-        }
-        return in;
-    }
-
 }
