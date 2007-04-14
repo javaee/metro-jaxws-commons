@@ -16,7 +16,7 @@ import java.net.HttpURLConnection;
  *
  * @author Kohsuke Kawaguchi
  */
-public class MetadataPublisherImpl extends HttpMetadataPublisher {
+final class MetadataPublisherImpl extends HttpMetadataPublisher {
     private SEIModel model;
 
     public MetadataPublisherImpl(SEIModel model) {
@@ -25,13 +25,19 @@ public class MetadataPublisherImpl extends HttpMetadataPublisher {
 
     @Override
     public boolean handleMetadataRequest(@NotNull HttpAdapter adapter, @NotNull WSHTTPConnection con) throws IOException {
-        if(!con.getQueryString().equals("js"))
+        QueryStringParser qsp = new QueryStringParser(con);
+        if(!qsp.containsKey("js"))
             return false;
 
         con.setStatus(HttpURLConnection.HTTP_OK);
         con.setContentTypeResponseHeader("application/javascript;charset=utf-8");
 
-        new ClientGenerator(model,con,adapter).generate(new PrintWriter(
+        ClientGenerator gen = new ClientGenerator(model, con, adapter);
+        String varName = qsp.get("var");
+        if(varName!=null)
+            gen.setVariableName(varName);
+
+        gen.generate(new PrintWriter(
             new OutputStreamWriter(con.getOutput(),"UTF-8")));
 
         return true;

@@ -20,11 +20,17 @@ final class ClientGenerator {
     private final SEIModel model;
     private final WSHTTPConnection connection;
     private final HttpAdapter adapter;
+    private String name;
 
     public ClientGenerator(SEIModel model, WSHTTPConnection connection, HttpAdapter adapter) {
         this.model = model;
         this.connection = connection;
         this.adapter = adapter;
+        this.name = model.getServiceQName().getLocalPart();
+    }
+
+    public void setVariableName(String name) {
+        this.name = name;
     }
 
     void generate(PrintWriter os) throws IOException {
@@ -37,8 +43,7 @@ final class ClientGenerator {
 
     // TODO: need to declare URL as global variable
     private void writeGlobal(PrintWriter os) throws IOException {
-        String serviceName = model.getServiceQName().getLocalPart();
-        os.printf("var %s = {\n",serviceName);
+        os.printf("var %s = {\n",name);
         shift(os);
         os.printf("url : \"%s\",\n", connection.getBaseAddress()+adapter.urlPattern);
     }
@@ -85,5 +90,4 @@ final class ClientGenerator {
     private void writeClosure(PrintWriter os) {
         os.println("};");
     }
-    
 }
