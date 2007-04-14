@@ -1,5 +1,7 @@
 package org.jvnet.jax_ws_commons.json;
 
+import com.sun.istack.NotNull;
+import com.sun.istack.Nullable;
 import com.sun.xml.ws.api.SOAPVersion;
 import com.sun.xml.ws.api.WSBinding;
 import com.sun.xml.ws.api.message.Message;
@@ -8,9 +10,9 @@ import com.sun.xml.ws.api.message.Packet;
 import com.sun.xml.ws.api.pipe.Codec;
 import com.sun.xml.ws.api.pipe.ContentType;
 import com.sun.xml.ws.api.server.EndpointAwareCodec;
+import com.sun.xml.ws.api.server.EndpointComponent;
 import com.sun.xml.ws.api.server.WSEndpoint;
-import com.sun.xml.ws.server.WSEndpointImpl;
-import com.sun.xml.ws.model.AbstractSEIModelImpl;
+import com.sun.xml.ws.transport.http.HttpMetadataPublisher;
 import org.json.JSONException;
 import org.json.JSONTokener;
 
@@ -35,7 +37,7 @@ import java.nio.channels.WritableByteChannel;
  *
  * @author Jitendra Kotamraju
  */
-class JSONCodec implements EndpointAwareCodec {
+class JSONCodec implements EndpointAwareCodec, EndpointComponent {
 
     private static final String JSON_MIME_TYPE = "application/json";
     private static final ContentType jsonContentType = new JSONContentType();
@@ -44,19 +46,24 @@ class JSONCodec implements EndpointAwareCodec {
     private final SOAPVersion soapVersion;
 
     private SchemaInfo schemaInfo;
+    private HttpMetadataPublisher metadataPublisher;
+    private WSEndpoint endpoint;
 
     public JSONCodec(WSBinding binding) {
-        this(binding,null);
-    }
-
-    public JSONCodec(WSBinding binding, SchemaInfo schemaInfo) {
         this.binding = binding;
         this.soapVersion = binding.getSOAPVersion();
-        this.schemaInfo = schemaInfo;
+    }
+
+    public JSONCodec(JSONCodec that) {
+        this(that.binding);
+        this.schemaInfo = that.schemaInfo;
+        this.endpoint = that.endpoint;
     }
 
     public void setEndpoint(WSEndpoint endpoint) {
+        this.endpoint = endpoint;
         schemaInfo = new SchemaInfo(endpoint);
+        endpoint.getComponentRegistry().add(this);
     }
 
     public String getMimeType() {
@@ -65,6 +72,16 @@ class JSONCodec implements EndpointAwareCodec {
 
     public ContentType getStaticContentType(Packet packet) {
         return jsonContentType;
+    }
+
+
+    public @Nullable <T> T getSPI(@NotNull Class<T> type) {
+        if(type==HttpMetadataPublisher.class) {
+            if(metadataPublisher==null)
+                metadataPublisher = new MetadataPublisherImpl(endpoint.getSEIModel());
+            return type.cast(metadataPublisher);
+        }
+        return null;
     }
 
     public ContentType encode(Packet packet, OutputStream out) throws IOException {
@@ -106,7 +123,7 @@ class JSONCodec implements EndpointAwareCodec {
     }
 
     public Codec copy() {
-        return new JSONCodec(binding,schemaInfo);
+        return new JSONCodec(this);
     }
 
     public void decode(InputStream in, String contentType, Packet response) throws IOException {
@@ -136,11 +153,6 @@ class JSONCodec implements EndpointAwareCodec {
             message = Messages.createUsingPayload(reader, soapVersion);
         }
         response.setMessage(message);
-
-        // To see the javascript is working or not
-        WSEndpointImpl endpoint = (WSEndpointImpl)schemaInfo.endpoint;
-        AbstractSEIModelImpl model = (AbstractSEIModelImpl)endpoint.getSEIModel();
-        new ClientGenerator(model).generate();
     }
 
     public void decode(ReadableByteChannel in, String contentType, Packet response) {
