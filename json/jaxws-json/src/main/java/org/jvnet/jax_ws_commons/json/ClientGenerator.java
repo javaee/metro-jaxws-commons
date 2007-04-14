@@ -1,14 +1,13 @@
 package org.jvnet.jax_ws_commons.json;
 
-import com.sun.xml.ws.model.AbstractSEIModelImpl;
-import com.sun.xml.ws.model.JavaMethodImpl;
+import com.sun.xml.ws.api.model.JavaMethod;
+import com.sun.xml.ws.api.model.SEIModel;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.Iterator;
-import java.text.MessageFormat;
 
 /**
  * Generates javascript stub code that is used to access the endpoint.
@@ -16,9 +15,9 @@ import java.text.MessageFormat;
  * @author Jitendra Kotamraju
  */
 final class ClientGenerator {
-    private final AbstractSEIModelImpl model;
+    private final SEIModel model;
 
-    ClientGenerator(AbstractSEIModelImpl model) {
+    ClientGenerator(SEIModel model) {
         this.model = model;
     }
 
@@ -51,14 +50,14 @@ final class ClientGenerator {
     }
 
     private void writeOperations(PrintStream os) {
-        Iterator<JavaMethodImpl> it = model.getJavaMethods().iterator();
+        Iterator<? extends JavaMethod> it = model.getJavaMethods().iterator();
         while(it.hasNext()) {
             writeOperation(it.next(), it.hasNext(), os);
         }
     }
 
-    private void writeOperation(JavaMethodImpl jm, boolean next, PrintStream os) {
-        String reqName = model.getQNameForJM(jm).getLocalPart();
+    private void writeOperation(JavaMethod jm, boolean next, PrintStream os) {
+        String reqName = jm.getPayloadName().getLocalPart();
         String methodName = jm.getMethod().getName();
         String resName = "getResponse"; // TODO
 
