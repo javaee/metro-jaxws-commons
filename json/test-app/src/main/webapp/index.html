@@ -1,5 +1,15 @@
 <html>
+<head>
+  <script  src="./json?js&var=svc"></script>
+  <script>
+    function go() {
+      svc.quote(32,function(r) { alert(r['return']); });
+    }
+  </script>
+</head>
 <body>
 This is a test application for JAX-WS JSON extension.
+
+<input type="button" onclick="go()"/>
 </body>
 </html>
