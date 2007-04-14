@@ -68,12 +68,11 @@ final class ClientGenerator {
     private void writeOperation(JavaMethod jm, boolean next, PrintWriter os) {
         String reqName = jm.getPayloadName().getLocalPart();
         String methodName = jm.getMethod().getName();
-        String resName = "getResponse"; // TODO
 
         shift(os);
         os.printf("%s : function(obj, callback) {\n",methodName);
         shift2(os);
-        os.printf("this.post({%s:obj}, function(obj) { callback(obj.%s); });\n", reqName,resName);
+        os.printf("this.post({%s:obj},callback);\n", reqName);
         shift(os);
         if (next) { os.append("},\n\n"); } else { os.append("}\n\n"); }
     }
