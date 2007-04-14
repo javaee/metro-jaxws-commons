@@ -3,6 +3,7 @@ package org.jvnet.jax_ws_commons.json;
 import com.sun.istack.NotNull;
 import com.sun.xml.ws.transport.http.HttpMetadataPublisher;
 import com.sun.xml.ws.transport.http.WSHTTPConnection;
+import com.sun.xml.ws.transport.http.HttpAdapter;
 import com.sun.xml.ws.api.model.SEIModel;
 
 import java.io.OutputStreamWriter;
@@ -23,14 +24,14 @@ public class MetadataPublisherImpl extends HttpMetadataPublisher {
     }
 
     @Override
-    public boolean handleMetadataRequest(@NotNull WSHTTPConnection con) throws IOException {
+    public boolean handleMetadataRequest(@NotNull HttpAdapter adapter, @NotNull WSHTTPConnection con) throws IOException {
         if(!con.getQueryString().equals("js"))
             return false;
 
         con.setStatus(HttpURLConnection.HTTP_OK);
         con.setContentTypeResponseHeader("application/javascript;charset=utf-8");
 
-        new ClientGenerator(model).generate(new PrintWriter(
+        new ClientGenerator(model,con,adapter).generate(new PrintWriter(
             new OutputStreamWriter(con.getOutput(),"UTF-8")));
 
         return true;

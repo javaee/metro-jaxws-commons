@@ -2,6 +2,8 @@ package org.jvnet.jax_ws_commons.json;
 
 import com.sun.xml.ws.api.model.JavaMethod;
 import com.sun.xml.ws.api.model.SEIModel;
+import com.sun.xml.ws.transport.http.WSHTTPConnection;
+import com.sun.xml.ws.transport.http.HttpAdapter;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,9 +18,13 @@ import java.util.Iterator;
  */
 final class ClientGenerator {
     private final SEIModel model;
+    private final WSHTTPConnection connection;
+    private final HttpAdapter adapter;
 
-    ClientGenerator(SEIModel model) {
+    public ClientGenerator(SEIModel model, WSHTTPConnection connection, HttpAdapter adapter) {
         this.model = model;
+        this.connection = connection;
+        this.adapter = adapter;
     }
 
     void generate(PrintWriter os) throws IOException {
@@ -34,7 +40,7 @@ final class ClientGenerator {
         String serviceName = model.getServiceQName().getLocalPart();
         os.printf("var %s = {\n",serviceName);
         shift(os);
-        os.println("url : \"TODO\",\n");
+        os.printf("url : \"%s\",\n", connection.getBaseAddress()+adapter.urlPattern);
     }
 
     private void writeStatic(PrintWriter os) throws IOException {
