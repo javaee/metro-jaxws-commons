@@ -3,6 +3,7 @@
   <script  src="./json?js&var=svc"></script>
   <script>
     function go() {
+      // TODO: shall we also unwrap 'return' ?
       svc.quote(32,function(r) { alert(r['return']); });
     }
   </script>
