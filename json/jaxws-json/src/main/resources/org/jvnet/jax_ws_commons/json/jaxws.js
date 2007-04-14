@@ -14,7 +14,15 @@
         req.onreadystatechange = function() {
             if (req.readyState == 4) {
                 if (req.status == 200) {
-                    func(eval(req.responseText));
+                    // unwarp
+                    var rsp = eval(req.responseText);
+                    for( p in rsp ) {
+                        if(rsp.hasOwnProperty(p)) {
+                            rsp = rsp[p];
+                            break;
+                        }
+                    }
+                    func(rsp);
                 } else {
                     throw "Error:"+req.status+":"+req.statusText;
                 }
