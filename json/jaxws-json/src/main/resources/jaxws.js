@@ -4,6 +4,8 @@
             return new XMLHttpRequest();
         } else if (window.ActiveXObject) {
             return new ActiveXObject("Microsoft.XMLHTTP");
+        } else {
+            throw "XMLHttpRequest not available";
         }
     },
 
@@ -14,7 +16,7 @@
                 if (req.status == 200) {
                     func(eval(req.responseText));
                 } else {
-                    alert("Error:"+req.status+":"+req.statusText);
+                    throw "Error:"+req.status+":"+req.statusText;
                 }
             }
         };
