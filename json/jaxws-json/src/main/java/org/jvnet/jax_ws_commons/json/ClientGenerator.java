@@ -73,7 +73,7 @@ final class ClientGenerator {
         shift(os);
         os.printf("%s : function(obj, callback) {\n",methodName);
         shift2(os);
-        os.printf("post({%s:obj}, function(obj) { callback(obj.%s); });\n", reqName,resName);
+        os.printf("this.post({%s:obj}, function(obj) { callback(obj.%s); });\n", reqName,resName);
         shift(os);
         if (next) { os.append("},\n\n"); } else { os.append("}\n\n"); }
     }
