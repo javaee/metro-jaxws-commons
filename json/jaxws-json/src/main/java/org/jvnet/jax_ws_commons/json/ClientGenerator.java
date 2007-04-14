@@ -49,7 +49,7 @@ final class ClientGenerator {
     }
 
     private void writeStatic(PrintWriter os) throws IOException {
-        Reader is = new InputStreamReader(getClass().getClassLoader().getResourceAsStream("jaxws.js"));
+        Reader is = new InputStreamReader(getClass().getResourceAsStream("jaxws.js"));
         char[] buf = new char[256];
         int len;
         while((len = is.read(buf)) != -1) {
