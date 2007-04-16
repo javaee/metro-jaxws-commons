@@ -41,7 +41,6 @@ final class ClientGenerator {
         os.close();
     }
 
-    // TODO: need to declare URL as global variable
     private void writeGlobal(PrintWriter os) throws IOException {
         os.printf("var %s = {\n",name);
         shift(os);
@@ -66,7 +65,7 @@ final class ClientGenerator {
     }
 
     private void writeOperation(JavaMethod jm, boolean next, PrintWriter os) {
-        String reqName = jm.getPayloadName().getLocalPart();
+        String reqName = jm.getRequestPayloadName().getLocalPart();
         String methodName = jm.getMethod().getName();
 
         shift(os);
