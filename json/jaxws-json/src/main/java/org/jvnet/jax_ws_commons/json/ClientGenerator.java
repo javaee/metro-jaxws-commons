@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.Iterator;
+import java.beans.Introspector;
 
 /**
  * Generates javascript stub code that is used to access the endpoint.
@@ -26,7 +27,10 @@ final class ClientGenerator {
         this.model = model;
         this.connection = connection;
         this.adapter = adapter;
-        this.name = model.getServiceQName().getLocalPart();
+        this.name = Introspector.decapitalize(model.getServiceQName().getLocalPart());
+        if(name.endsWith("ServiceService"))
+            // when doing java2wsdl and the class name ends with 'Service', you get this.
+            name = name.substring(0,name.length()-7);
     }
 
     public void setVariableName(String name) {
