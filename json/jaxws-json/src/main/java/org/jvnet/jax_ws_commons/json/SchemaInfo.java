@@ -15,6 +15,9 @@ import com.sun.xml.xsom.parser.JAXPParser;
 import com.sun.xml.xsom.parser.XMLParser;
 import com.sun.xml.xsom.parser.XSOMParser;
 import com.sun.xml.xsom.visitor.XSVisitor;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.ContentHandler;
@@ -22,20 +25,12 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.codehaus.jettison.mapped.MappedXMLOutputFactory;
-import org.codehaus.jettison.mapped.MappedXMLInputFactory;
-import org.codehaus.jettison.mapped.MappedXMLStreamWriter;
-import org.json.JSONTokener;
-import org.json.JSONObject;
-import org.json.JSONException;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
@@ -132,7 +127,21 @@ final class SchemaInfo {
     }
 
     public XMLStreamWriter createXMLStreamWriter(Writer writer) throws XMLStreamException {
-        return new MappedXMLStreamWriter(convention, writer);
+        return new MappedXMLStreamWriter(convention, writer) {
+            public void writeEndDocument() throws XMLStreamException {
+                try {
+                    // unwrap the root
+                    root = root.getJSONObject((String)root.keys().next());
+
+                    // if this is the sole return value unwrap that, too
+                    if(root.length()==1)
+                        root = root.getJSONObject((String)root.keys().next());
+                } catch (JSONException e) {
+                    throw new XMLStreamException(e);
+                }
+                super.writeEndDocument();
+            }
+        };
     }
 
     public XMLStreamReader createXMLStreamReader(JSONTokener tokener) throws JSONException, XMLStreamException {
