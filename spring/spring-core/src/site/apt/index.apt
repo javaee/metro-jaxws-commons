@@ -96,3 +96,9 @@ it deploys two services on two URLs, and one with a handler.
 
   If you know Spring, you should know the "rest", like how to
 configure your own service beans.
+
+
+
+Sample Project
+
+  {{{https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/spring/test-app/}A complete sample application}} is also available.
