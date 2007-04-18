@@ -22,7 +22,7 @@
   
   <distributionManagement>
     <site>
-      <url>file:../www/json/</url>
+      <url>file:../../www/json/</url>
     </site>
   </distributionManagement>
 
