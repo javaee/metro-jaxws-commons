@@ -17,7 +17,7 @@ http://jax-ws.dev.java.net/spring/servlet http://jax-ws.dev.java.net/spring/serv
       </wss:binding>
       <wss:binding url="/json">
         <wss:service>
-          <ws:service bean="#myService" bindingID="org.jvnet.jax_ws_commons.json" />
+          <ws:service bean="#myService" bindingID="https://jax-ws-commons.dev.java.net/json/" />
         </wss:service>
       </wss:binding>
     </wss:bindings>
