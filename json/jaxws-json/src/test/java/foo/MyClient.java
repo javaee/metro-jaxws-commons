@@ -20,7 +20,7 @@ public class MyClient {
         con.setDoInput(true);
         con.setDoOutput(true);
         // Write JSON request
-        String json = "{get:{} }";
+        String json = "{get:{p1:50, p2:\"test\"} }";
         OutputStream out = con.getOutputStream();
         out.write(json.getBytes());
         out.close();
