@@ -11,7 +11,7 @@ import com.sun.istack.NotNull;
  */
 public class JSONBindingID extends BindingID {
 
-    public static final String JSON_BINDING = "org.jvnet.jax_ws_commons.json";
+    public static final String JSON_BINDING = "https://jax-ws-commons.dev.java.net/json/";
 
     public SOAPVersion getSOAPVersion() {
         return SOAPVersion.SOAP_11;
