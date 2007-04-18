@@ -155,12 +155,10 @@ public class MappedXMLStreamReader extends AbstractXMLStreamReader {
     }
 
     public int getTextLength() {
-        // TODO Auto-generated method stub
-        return 0;
+        return currentValue.length();
     }
 
     public int getTextStart() {
-        // TODO Auto-generated method stub
         return 0;
     }
 }
