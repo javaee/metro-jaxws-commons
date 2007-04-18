@@ -233,7 +233,7 @@ public class EmailEndpoint {
     protected void onNewMessage(MimeMessage msg) {
         if (handler != null) {
             try {
-                handler.onNewMail(new MimeMessageEx(msg));
+                handler.onNewMail(msg);
             } catch (Exception e) {
                 logger.log(Level.WARNING, "Unhandled exception", e);
             }
@@ -301,28 +301,6 @@ public class EmailEndpoint {
         } catch (MessagingException e) {
             throw new EmailException(e);
         }
-    }
-
-    /**
-     * Creates a new empty e-mail to be sent to the given address.
-     * <p/>
-     * <p/>
-     * The newly created e-mail has:
-     * <ol>
-     * <li>The <tt>To</tt> header set to the given recipient.
-     * <li>The <tt>Subject</tt> header set to the given string.
-     * <li>The <tt>From</tt> header set to the e-mail address associated with this endpoint.
-     * </ol>
-     *
-     * @param to      The recipient of the newly created e-mail.
-     * @param subject The subject of the e-mail.
-     */
-    public MimeMessageEx createTextMessage(InternetAddress to, String subject) throws MessagingException {
-        MimeMessageEx msg = new MimeMessageEx(session);
-        msg.setFrom(getAddress());
-        msg.setRecipient(Message.RecipientType.TO, to);
-        msg.setSubject(subject);
-        return msg;
     }
 
     public void enableLog() {

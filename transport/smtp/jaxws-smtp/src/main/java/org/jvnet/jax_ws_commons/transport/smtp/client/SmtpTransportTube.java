@@ -7,7 +7,6 @@ import com.sun.xml.ws.api.pipe.*;
 import com.sun.xml.ws.api.pipe.helper.AbstractTubeImpl;
 import org.jvnet.jax_ws_commons.transport.smtp.mail.EmailEndpoint;
 import org.jvnet.jax_ws_commons.transport.smtp.mail.MailHandler;
-import org.jvnet.jax_ws_commons.transport.smtp.mail.MimeMessageEx;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -46,7 +45,7 @@ public class SmtpTransportTube extends AbstractTubeImpl {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
             ContentType ct = codec.encode(request, os);
-            MimeMessageEx msg = new MimeMessageEx(endpoint.getSession());
+            MimeMessage msg = new MimeMessage(endpoint.getSession());
             msg.setContent(new String(os.toByteArray()), ct.getContentType());
             endpoint.send(msg);
         } catch (IOException e) {
