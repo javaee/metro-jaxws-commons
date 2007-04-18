@@ -149,6 +149,8 @@ final class SchemaInfo {
                         ((JSONArray)v).write(writer);
                     } else if (v==null) {
                         writer.write("null");
+                    } else if (v instanceof String) {
+                        writer.write('"'+v.toString()+'"');
                     } else {
                         writer.write(v.toString());
                     }
