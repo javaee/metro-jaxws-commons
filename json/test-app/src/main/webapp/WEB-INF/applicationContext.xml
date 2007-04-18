@@ -23,7 +23,7 @@ http://jax-ws.dev.java.net/spring/servlet http://jax-ws.dev.java.net/spring/serv
     </wss:bindings>
   </wss:bindings>
 
-  <bean id="myService" class="foo.MyService">
+  <bean id="myService" class="greeter.GreetingService">
     <property name="prefix" value="Bonjour, " />
   </bean>
 </beans>

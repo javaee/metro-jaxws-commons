@@ -1,4 +1,4 @@
-package foo;
+package greeter;
 
 import javax.jws.WebService;
 import javax.jws.WebMethod;
@@ -8,7 +8,7 @@ import java.math.BigInteger;
 import java.util.Random;
 
 @WebService
-public class MyService {
+public class GreetingService {
     private String prefix = "Hello, ";
 
     public void setPrefix(String prefix) {
