@@ -132,10 +132,6 @@ final class SchemaInfo {
                 try {
                     // unwrap the root
                     root = root.getJSONObject((String)root.keys().next());
-
-                    // if this is the sole return value unwrap that, too
-                    if(root.length()==1)
-                        root = root.getJSONObject((String)root.keys().next());
                 } catch (JSONException e) {
                     throw new XMLStreamException(e);
                 }
