@@ -1,6 +1,7 @@
 package org.jvnet.jax_ws_commons.json;
 
 import com.sun.istack.NotNull;
+import com.sun.istack.XMLStreamException2;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.stream.buffer.MutableXMLStreamBuffer;
 import com.sun.xml.stream.buffer.stax.StreamWriterBufferCreator;
@@ -18,6 +19,7 @@ import com.sun.xml.xsom.visitor.XSVisitor;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.json.JSONArray;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.ContentHandler;
@@ -132,10 +134,30 @@ final class SchemaInfo {
                 try {
                     // unwrap the root
                     root = root.getJSONObject((String)root.keys().next());
+
+                    Object v;
+                    // if this is the sole return value unwrap that, too
+                    if(root.length()==1)
+                        v = root.get((String)root.keys().next());
+                    else
+                        v = root;
+
+                    // write
+                    if (v instanceof JSONObject) {
+                        ((JSONObject)v).write(writer);
+                    } else if (v instanceof JSONArray) {
+                        ((JSONArray)v).write(writer);
+                    } else if (v==null) {
+                        writer.write("null");
+                    } else {
+                        writer.write(v.toString());
+                    }
+                    writer.flush();
                 } catch (JSONException e) {
-                    throw new XMLStreamException(e);
+                    throw new XMLStreamException2(e);
+                } catch (IOException e) {
+                    throw new XMLStreamException2(e);
                 }
-                super.writeEndDocument();
             }
         };
     }

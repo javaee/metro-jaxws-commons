@@ -42,18 +42,7 @@
         req.onreadystatechange = function() {
             if (req.readyState == 4) {
                 if (req.status == 200) {
-                    // unwarp
-                    var rsp = eval('('+req.responseText+')');
-                    var unwrapped = [];
-                    for( p in rsp ) {
-                        if(rsp.hasOwnProperty(p)) {
-                            unwraped.push(rsp[p]);
-                            break;
-                        }
-                    }
-
-                    if(unwrapped.length==1) func(unwrapped[0]);
-                    else                    func(rsp);
+                    func(eval('('+req.responseText+')'));
                 } else {
                     throw "Error:"+req.status+":"+req.statusText;
                 }
