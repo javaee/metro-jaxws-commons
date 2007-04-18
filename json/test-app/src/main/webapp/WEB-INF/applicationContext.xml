@@ -24,8 +24,6 @@ http://jax-ws.dev.java.net/spring/servlet http://jax-ws.dev.java.net/spring/serv
   </wss:bindings>
 
   <bean id="myService" class="foo.MyService">
-    <property name="range">
-      <value>20</value>
-    </property>
+    <property name="prefix" value="Bonjour, " />
   </bean>
 </beans>
