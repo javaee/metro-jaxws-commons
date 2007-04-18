@@ -195,7 +195,7 @@ public class EmailEndpoint {
     /**
      * Sets the handler that receives uncorrelated incoming e-mails.
      *
-     * @see NewMailHandler
+     * @see MailHandler
      */
     public void setMailHandler(MailHandler handler) {
         this.handler = handler;
