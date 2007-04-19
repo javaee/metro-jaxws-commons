@@ -46,7 +46,7 @@ final class ClientGenerator {
     }
 
     private void writeGlobal(PrintWriter os) throws IOException {
-        os.printf("var %s = {\n",name);
+        os.printf("%s = {\n",name);
         shift(os);
         os.printf("url : \"%s\",\n", connection.getBaseAddress()+adapter.urlPattern);
     }
