@@ -1,5 +1,7 @@
 package org.jvnet.jax_ws_commons.transport.smtp;
 
+import com.sun.xml.ws.api.FeatureConstructor;
+
 import javax.xml.ws.WebServiceFeature;
 
 /**
@@ -9,6 +11,10 @@ import javax.xml.ws.WebServiceFeature;
  */
 public class SMTPFeature extends WebServiceFeature {
     public static final String ID = "http://jax-ws.dev.java.net/smtp/";
+
+    @FeatureConstructor
+    public SMTPFeature() {
+    }
 
     public String getID() {
         return ID;
