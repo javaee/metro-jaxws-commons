@@ -78,5 +78,6 @@
     <module>../http-session-scope</module>
     <module>../spring</module>
     <module>../json</module>
+    <module>../transport/smtp</module>
   </modules>
 </project>
