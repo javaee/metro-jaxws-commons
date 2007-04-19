@@ -15,13 +15,9 @@ import javax.xml.ws.WebServiceException;
  */
 public class SmtpTransportTubeFactory extends TransportTubeFactory {
     public Tube doCreate(@NotNull ClientTubeAssemblerContext context) {
-         EndpointAddress address = context.getAddress();
+        EndpointAddress address = context.getAddress();
         String scheme = address.getURI().getScheme();
-        if (scheme != null) {
-            if(scheme.equalsIgnoreCase("smtp"))
-                return new SmtpTransportTube(context.getCodec(), address);
-        }
-
-        throw new WebServiceException("Unsupported endpoint address: "+context.getAddress());
+        return (scheme == null || !scheme.equalsIgnoreCase("smtp"))
+                ? null : new SmtpTransportTube(context.getCodec(), address);
     }
 }
