@@ -4,7 +4,7 @@
     <groupId>org.jvnet.jax-ws-commons</groupId>
     <artifactId>json</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <relativePath>../pom/pom.xml</relativePath>
+    <relativePath>../../pom/pom.xml</relativePath>
   </parent>
   
   <artifactId>jaxws-json-testapp</artifactId>
