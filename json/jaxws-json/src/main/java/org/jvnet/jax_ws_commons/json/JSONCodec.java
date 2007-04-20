@@ -77,7 +77,7 @@ class JSONCodec implements EndpointAwareCodec, EndpointComponent {
     public @Nullable <T> T getSPI(@NotNull Class<T> type) {
         if(type==HttpMetadataPublisher.class) {
             if(metadataPublisher==null)
-                metadataPublisher = new MetadataPublisherImpl(endpoint.getSEIModel());
+                metadataPublisher = new MetadataPublisherImpl(checkSchemaInfo());
             return type.cast(metadataPublisher);
         }
         return null;

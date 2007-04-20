@@ -7,6 +7,7 @@ import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSSchemaSet;
 
 import javax.jws.soap.SOAPBinding.Style;
+import java.beans.Introspector;
 import java.util.Map;
 
 /**
@@ -15,10 +16,20 @@ import java.util.Map;
  * @author Kohsuke Kawaguchi
  */
 public class JsonOperation {
-
+    /**
+     * Method name of this operation, inferred from the operation name.
+     */
+    public final String methodName;
     public final JsonType input,output;
+    /**
+     * This JSON operation is modeled after this WSDL operation.
+     */
+    public final WSDLBoundOperation operation;
 
     public JsonOperation(WSDLBoundOperation bo, XSSchemaSet schemas, JsonTypeBuilder builder, Style style) {
+        operation = bo;
+        methodName = Introspector.decapitalize(bo.getName().getLocalPart());
+
         input = build(schemas, bo.getInParts(), builder, style);
         // if the return type has only one property we also unwrap that.
         // see SchemaInfo#createXMLStreamWriter

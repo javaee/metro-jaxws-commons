@@ -1,9 +1,9 @@
 package org.jvnet.jax_ws_commons.json;
 
-import com.sun.xml.ws.api.model.JavaMethod;
-import com.sun.xml.ws.api.model.SEIModel;
+import com.sun.xml.ws.model.wsdl.WSDLBoundOperationImpl;
 import com.sun.xml.ws.transport.http.HttpAdapter;
 import com.sun.xml.ws.transport.http.WSHTTPConnection;
+import org.jvnet.jax_ws_commons.json.schema.JsonOperation;
 
 import java.beans.Introspector;
 import java.io.IOException;
@@ -18,19 +18,19 @@ import java.util.Iterator;
  * @author Jitendra Kotamraju
  */
 final class ClientGenerator {
-    private final SEIModel model;
+    private final SchemaInfo model;
     private final WSHTTPConnection connection;
     private final HttpAdapter adapter;
     private String name;
 
-    public ClientGenerator(SEIModel model, WSHTTPConnection connection, HttpAdapter adapter) {
+    public ClientGenerator(SchemaInfo model, WSHTTPConnection connection, HttpAdapter adapter) {
         this.model = model;
         this.connection = connection;
         this.adapter = adapter;
-        this.name = Introspector.decapitalize(model.getServiceQName().getLocalPart());
-        if(name.endsWith("ServiceService"))
+        this.name = Introspector.decapitalize(model.endpoint.getPort().getName().getLocalPart());
+        if(name.endsWith("ServicePort"))
             // when doing java2wsdl and the class name ends with 'Service', you get this.
-            name = name.substring(0,name.length()-7);
+            name = name.substring(0,name.length()-4);
     }
 
     public void setVariableName(String name) {
@@ -62,18 +62,18 @@ final class ClientGenerator {
     }
 
     private void writeOperations(PrintWriter os) {
-        Iterator<? extends JavaMethod> it = model.getJavaMethods().iterator();
+        Iterator<JsonOperation> it = model.operations.iterator();
         while(it.hasNext()) {
             writeOperation(it.next(), it.hasNext(), os);
         }
     }
 
-    private void writeOperation(JavaMethod jm, boolean next, PrintWriter os) {
-        String reqName = jm.getRequestPayloadName().getLocalPart();
-        String methodName = Introspector.decapitalize(jm.getOperationName());
+    private void writeOperation(JsonOperation op, boolean next, PrintWriter os) {
+        String reqName = model.convention.x2j.get(
+            ((WSDLBoundOperationImpl)op.operation).getReqPayloadName());
 
         shift(os);
-        os.printf("%s : function(obj, callback) {\n",methodName);
+        os.printf("%s : function(obj, callback) {\n", op.methodName);
         shift2(os);
         os.printf("this.post({%s:obj},callback);\n", reqName);
         shift(os);

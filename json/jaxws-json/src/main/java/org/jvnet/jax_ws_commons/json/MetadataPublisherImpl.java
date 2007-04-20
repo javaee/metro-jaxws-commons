@@ -1,7 +1,6 @@
 package org.jvnet.jax_ws_commons.json;
 
 import com.sun.istack.NotNull;
-import com.sun.xml.ws.api.model.SEIModel;
 import com.sun.xml.ws.transport.http.HttpAdapter;
 import com.sun.xml.ws.transport.http.HttpMetadataPublisher;
 import com.sun.xml.ws.transport.http.WSHTTPConnection;
@@ -17,9 +16,9 @@ import java.net.HttpURLConnection;
  * @author Kohsuke Kawaguchi
  */
 final class MetadataPublisherImpl extends HttpMetadataPublisher {
-    private SEIModel model;
+    private SchemaInfo model;
 
-    public MetadataPublisherImpl(SEIModel model) {
+    public MetadataPublisherImpl(SchemaInfo model) {
         this.model = model;
     }
 
