@@ -78,7 +78,8 @@
 <code>
 $t.name = {
 #foreach( $p in $t.properties.keySet() )
-  $t.properties.get($p).link $p;
+  $p : ${t.properties.get($p).link}#if($velocityCount!=$t.properties.size()),#end
+
 #end
 };
 </code>
@@ -93,6 +94,13 @@ $t.name = {
 			<ul>
       #foreach($op in $model.operations)
         <li><a href="#$op.methodName">$op.methodName</a></li>
+      #end
+      </ul>
+
+      <h1>Types</h1>
+      <ul>
+      #foreach($t in $model.types)
+        <li><a href="#$t.name">$t.name</a></li>
       #end
       </ul>
 
