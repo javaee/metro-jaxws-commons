@@ -8,7 +8,10 @@ import com.sun.xml.ws.transport.http.WSHTTPConnection;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Responds to "http://foobar/service?js" and sends the JavaScript proxy.
@@ -25,20 +28,43 @@ final class MetadataPublisherImpl extends HttpMetadataPublisher {
     @Override
     public boolean handleMetadataRequest(@NotNull HttpAdapter adapter, @NotNull WSHTTPConnection con) throws IOException {
         QueryStringParser qsp = new QueryStringParser(con);
-        if(!qsp.containsKey("js"))
-            return false;
+        if(qsp.containsKey("js")) {
+            // JavaScript proxy code
+            con.setStatus(HttpURLConnection.HTTP_OK);
+            con.setContentTypeResponseHeader("application/javascript;charset=utf-8");
 
-        con.setStatus(HttpURLConnection.HTTP_OK);
-        con.setContentTypeResponseHeader("application/javascript;charset=utf-8");
+            ClientGenerator gen = new ClientGenerator(model, con, adapter);
+            String varName = qsp.get("var");
+            if(varName!=null)
+                gen.setVariableName(varName);
 
-        ClientGenerator gen = new ClientGenerator(model, con, adapter);
-        String varName = qsp.get("var");
-        if(varName!=null)
-            gen.setVariableName(varName);
+            gen.generate(new PrintWriter(
+                new OutputStreamWriter(con.getOutput(),"UTF-8")));
+            return true;
+        }
 
-        gen.generate(new PrintWriter(
-            new OutputStreamWriter(con.getOutput(),"UTF-8")));
+        URL res = getClass().getResource("template/" + con.getQueryString());
+        if(res!=null) {
+            // static resource accesss
+            con.setStatus(HttpURLConnection.HTTP_OK);
+            if(res.getPath().endsWith(".gif"))
+                con.setContentTypeResponseHeader("image/gif");
+            if(res.getPath().endsWith(".html"))
+                con.setContentTypeResponseHeader("text/html");
+            if(res.getPath().endsWith(".css"))
+                con.setContentTypeResponseHeader("text/css");
 
-        return true;
+            InputStream is = res.openStream();
+            OutputStream os = con.getOutput();
+            byte[] buf = new byte[1024];
+            int len;
+            while((len=is.read(buf))>=0)
+                os.write(buf,0,len);
+            is.close();
+            os.close();
+            return true;
+        }
+
+        return false;
     }
 }
