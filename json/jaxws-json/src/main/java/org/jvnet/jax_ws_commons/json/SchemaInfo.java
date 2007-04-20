@@ -23,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.jvnet.jax_ws_commons.json.schema.CompositeJsonType;
 import org.jvnet.jax_ws_commons.json.schema.JsonOperation;
 import org.jvnet.jax_ws_commons.json.schema.JsonTypeBuilder;
 import org.w3c.dom.Document;
@@ -50,10 +51,10 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.beans.Introspector;
 
 /**
  * Captures the information parsed from XML Schema.
@@ -222,6 +223,15 @@ public final class SchemaInfo {
 
     public List<JsonOperation> getOperations() {
         return operations;
+    }
+
+    public Set<CompositeJsonType> getTypes() {
+        Set<CompositeJsonType> r = new LinkedHashSet<CompositeJsonType>();
+        for (JsonOperation op : operations) {
+            op.input.listCompositeTypes(r);
+            op.output.listCompositeTypes(r);
+        }
+        return r;
     }
     
     //private static final String WSDL_NSURI = "http://schemas.xmlsoap.org/wsdl/";

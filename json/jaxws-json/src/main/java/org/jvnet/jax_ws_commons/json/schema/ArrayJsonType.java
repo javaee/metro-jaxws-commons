@@ -9,4 +9,9 @@ public class ArrayJsonType extends JsonType {
     public ArrayJsonType(JsonType componentType) {
         this.componentType = componentType;
     }
+
+    @Override
+    public String getLink() {
+        return "array of "+componentType.getLink();
+    }
 }

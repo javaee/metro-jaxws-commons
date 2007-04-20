@@ -30,18 +30,18 @@ public class JsonOperation {
         operation = bo;
         methodName = Introspector.decapitalize(bo.getName().getLocalPart());
 
-        input = build(schemas, bo.getInParts(), builder, style);
+        input = build(operation.getOperation().getInput().getName(), schemas, bo.getInParts(), builder, style);
         // if the return type has only one property we also unwrap that.
         // see SchemaInfo#createXMLStreamWriter
-        output = build(schemas, bo.getOutParts(), builder, style).unwrap();
+        output = build(operation.getOperation().getOutput().getName(), schemas, bo.getOutParts(), builder, style).unwrap();
     }
 
     /**
      * Infer the JavaScript type from the given parts set.
      *
      */
-    private JsonType build(XSSchemaSet schemas, Map<String,WSDLPart> parts, JsonTypeBuilder builder, Style style) {
-        CompositeJsonType wrapper = new CompositeJsonType();
+    private JsonType build(String name, XSSchemaSet schemas, Map<String, WSDLPart> parts, JsonTypeBuilder builder, Style style) {
+        CompositeJsonType wrapper = new CompositeJsonType(name);
         for(Map.Entry<String,WSDLPart> in : parts.entrySet() ) {
             if(!in.getValue().getBinding().isBody())
                 continue;   // JSON binding has no header support for now.
@@ -68,5 +68,13 @@ public class JsonOperation {
 
     public String getMethodName() {
         return methodName;
+    }
+
+    public JsonType getInput() {
+        return input;
+    }
+
+    public JsonType getOutput() {
+        return output;
     }
 }

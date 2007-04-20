@@ -28,6 +28,8 @@ public class JsonTypeBuilder {
      */
     private final Map<XSType,JsonType> types = new HashMap<XSType,JsonType>();
 
+    private int id=1;
+
     public JsonTypeBuilder(SchemaConvention convention) {
         this.convention = convention;
     }
@@ -37,7 +39,7 @@ public class JsonTypeBuilder {
         if(jt!=null)    return jt;
 
         if(type.isComplexType()) {
-            final CompositeJsonType cjt = new CompositeJsonType();
+            final CompositeJsonType cjt = new CompositeJsonType(getTypeName(type));
             types.put(type,cjt);
 
             // fill in properties
@@ -80,5 +82,13 @@ public class JsonTypeBuilder {
             }
             return create(type.getBaseType());
         }
+    }
+
+    private String getTypeName(XSType type) {
+        if(type.isLocal())
+            return "anonymousType#"+(id++);
+
+        String n = type.getName();
+        return Character.toUpperCase(n.charAt(0))+n.substring(1);
     }
 }
