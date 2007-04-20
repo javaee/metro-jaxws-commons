@@ -70,7 +70,7 @@ final class ClientGenerator {
 
     private void writeOperation(JavaMethod jm, boolean next, PrintWriter os) {
         String reqName = jm.getRequestPayloadName().getLocalPart();
-        String methodName = jm.getMethod().getName();
+        String methodName = Introspector.decapitalize(jm.getOperationName());
 
         shift(os);
         os.printf("%s : function(obj, callback) {\n",methodName);
