@@ -20,7 +20,7 @@ a:hover {
 	color: #06F;
 }
 body {
-	background: #EEE url(bg.gif);
+	background: #EEE url("?bg.gif");
 	color: #444;
 	font: normal 62.5% "Lucida Sans Unicode",sans-serif;
 	margin: 0;
@@ -38,7 +38,7 @@ h1 {
 	margin-bottom: 4px;
 }
 code {
-	background: url(bgcode.gif);
+	background: url("?bgcode.gif");
 	border: 1px solid #F0F0F0;
 	border-left: 6px solid #39F;
 	color: #555;
@@ -49,7 +49,7 @@ code {
 	white-space: pre;
 }
 cite {
-	background: url(quote.gif) no-repeat;
+	background: url("?quote.gif") no-repeat;
 	color: #666;
 	display: block;
 	font: normal 1.3em "Lucida Sans Unicode",serif;
@@ -67,13 +67,13 @@ h1,h2,h3 {
 
 /* structure */
 .container {
-	background: url(bgcontainer.gif) repeat-y;
+	background: url("?bgcontainer.gif") repeat-y;
 	margin: 0 auto;
 	padding-bottom: 6px;
 	width: 767px;
 }
 .header {
-	background: url(header.gif) repeat-x;
+	background: url("?header.gif") repeat-x;
 }
 
 /* title */
@@ -130,7 +130,7 @@ h1,h2,h3 {
 }
 .sidenav ul {
 	border-top: 1px solid #FAFAFA;
-	background: #EEE url(bgul.gif) repeat-x;
+	background: #EEE url("?bgul.gif") repeat-x;
 	margin: 0;
 	padding: 0;
 }
@@ -167,7 +167,7 @@ h1,h2,h3 {
 	margin-bottom: 6px;
 }
 .content li {
-	list-style: url(li.gif);
+	list-style: url("?li.gif");
 	margin-left: 18px;
 }
 
@@ -180,7 +180,7 @@ form {
 	padding: 4px;
 }
 .button {
-	background: url(search.gif) no-repeat left bottom;
+	background: url("?search.gif") no-repeat left bottom;
 	border: none;
 	height: 27px;
 	width: 27px;
