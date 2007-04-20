@@ -19,12 +19,12 @@ import org.codehaus.jettison.AbstractXMLStreamReader;
 import org.codehaus.jettison.Node;
 import org.codehaus.jettison.mapped.MappedNamespaceConvention;
 import org.codehaus.jettison.util.FastStack;
-import org.json.JSONObject;
-import org.json.JSONException;
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import javax.xml.stream.XMLStreamException;
 import javax.xml.namespace.NamespaceContext;
+import javax.xml.stream.XMLStreamException;
 
 public class MappedXMLStreamReader extends AbstractXMLStreamReader {
     private FastStack nodes;

@@ -5,6 +5,8 @@ import com.sun.istack.XMLStreamException2;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
 import com.sun.xml.stream.buffer.MutableXMLStreamBuffer;
 import com.sun.xml.stream.buffer.stax.StreamWriterBufferCreator;
+import com.sun.xml.ws.api.model.wsdl.WSDLBoundOperation;
+import com.sun.xml.ws.api.model.wsdl.WSDLPort;
 import com.sun.xml.ws.api.server.DocumentAddressResolver;
 import com.sun.xml.ws.api.server.SDDocument;
 import com.sun.xml.ws.api.server.ServiceDefinition;
@@ -16,10 +18,11 @@ import com.sun.xml.xsom.parser.JAXPParser;
 import com.sun.xml.xsom.parser.XMLParser;
 import com.sun.xml.xsom.parser.XSOMParser;
 import com.sun.xml.xsom.visitor.XSVisitor;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import org.json.JSONArray;
+import org.jvnet.jax_ws_commons.json.schema.JsonOperation;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.ContentHandler;
@@ -41,8 +44,10 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.ws.WebServiceException;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -62,6 +67,8 @@ final class SchemaInfo {
      * Parent tag name to possible child tag names.
      */
     final Set<QName> tagNames = new HashSet<QName>();
+
+    final List<JsonOperation> operations = new ArrayList<JsonOperation>();
 
     final SchemaConvention convention;
 
@@ -114,7 +121,10 @@ final class SchemaInfo {
             }
 
             extractTagNames(p.getResult());
+            convention = new SchemaConvention(tagNames);
 
+            if(endpoint.getPort()!=null)
+                buildJsonSchema(p.getResult(),endpoint.getPort());
         } catch (XMLStreamException e) {
             throw new WebServiceException("Failed to parse WSDL",e);
         } catch (IOException e) {
@@ -124,8 +134,6 @@ final class SchemaInfo {
         } catch (TransformerConfigurationException e) {
             throw new AssertionError(e); // impossible
         }
-
-        convention = new SchemaConvention(tagNames);
     }
 
     public XMLStreamWriter createXMLStreamWriter(Writer writer) throws XMLStreamException {
@@ -192,6 +200,12 @@ final class SchemaInfo {
             return referenced.getURL().toExternalForm();
         }
     };
+
+    private void buildJsonSchema(XSSchemaSet schemas, WSDLPort port) {
+        for( WSDLBoundOperation bo : port.getBinding().getBindingOperations() ) {
+            operations.add(new JsonOperation(bo,schemas,convention));
+        }
+    }
 
     //private static final String WSDL_NSURI = "http://schemas.xmlsoap.org/wsdl/";
 }

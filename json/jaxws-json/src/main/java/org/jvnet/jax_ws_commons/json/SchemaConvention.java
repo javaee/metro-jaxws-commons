@@ -24,16 +24,16 @@ import java.util.Map;
  *  
  * @author Kohsuke Kawaguchi
  */
-class SchemaConvention extends MappedNamespaceConvention {
+public class SchemaConvention extends MappedNamespaceConvention {
     /**
      * Tag names -> JSON names conversion.
      */
-    private final Map<QName,String> x2j = new HashMap<QName,String>();
+    public final Map<QName,String> x2j = new HashMap<QName,String>();
 
     /**
      * JSON names -> tag names conversion.
      */
-    private final Map<String,QName> j2x = new HashMap<String,QName>();
+    public final Map<String,QName> j2x = new HashMap<String,QName>();
 
     public SchemaConvention(Collection<QName> tagNames) {
         // sort them in a consistent order so that mapping remains stable

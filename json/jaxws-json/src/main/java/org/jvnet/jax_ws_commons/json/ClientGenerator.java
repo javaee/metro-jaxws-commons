@@ -2,15 +2,15 @@ package org.jvnet.jax_ws_commons.json;
 
 import com.sun.xml.ws.api.model.JavaMethod;
 import com.sun.xml.ws.api.model.SEIModel;
-import com.sun.xml.ws.transport.http.WSHTTPConnection;
 import com.sun.xml.ws.transport.http.HttpAdapter;
+import com.sun.xml.ws.transport.http.WSHTTPConnection;
 
+import java.beans.Introspector;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.Iterator;
-import java.beans.Introspector;
 
 /**
  * Generates javascript stub code that is used to access the endpoint.

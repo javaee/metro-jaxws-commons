@@ -1,14 +1,14 @@
 package org.jvnet.jax_ws_commons.json;
 
 import com.sun.istack.NotNull;
+import com.sun.xml.ws.api.model.SEIModel;
+import com.sun.xml.ws.transport.http.HttpAdapter;
 import com.sun.xml.ws.transport.http.HttpMetadataPublisher;
 import com.sun.xml.ws.transport.http.WSHTTPConnection;
-import com.sun.xml.ws.transport.http.HttpAdapter;
-import com.sun.xml.ws.api.model.SEIModel;
 
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.IOException;
 import java.net.HttpURLConnection;
 
 /**

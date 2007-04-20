@@ -15,12 +15,6 @@
  */
 package org.jvnet.jax_ws_commons.json;
 
-import java.io.IOException;
-import java.io.Writer;
-
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.stream.XMLStreamException;
-
 import org.codehaus.jettison.AbstractXMLStreamWriter;
 import org.codehaus.jettison.mapped.MappedNamespaceConvention;
 import org.codehaus.jettison.mapped.NullNamespaceContext;
@@ -28,6 +22,11 @@ import org.codehaus.jettison.util.FastStack;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+import java.io.Writer;
 
 public class MappedXMLStreamWriter extends AbstractXMLStreamWriter {
     MappedNamespaceConvention convention;
