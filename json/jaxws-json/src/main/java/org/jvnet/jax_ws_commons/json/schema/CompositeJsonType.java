@@ -11,12 +11,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Map type.
+ * JavaScript object.
+ *
  * @author Kohsuke Kawaguchi
  */
 public class CompositeJsonType extends JsonType {
 
-    private final Map<String,JsonType> properties = new LinkedHashMap<String,JsonType>();
+    public final Map<String,JsonType> properties = new LinkedHashMap<String,JsonType>();
+
+    public CompositeJsonType() {}
 
     public CompositeJsonType(final SchemaConvention convention, XSComplexType ct) {
         ct.visit(new SchemaWalker() {

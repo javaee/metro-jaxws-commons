@@ -7,10 +7,12 @@ import com.sun.xml.stream.buffer.MutableXMLStreamBuffer;
 import com.sun.xml.stream.buffer.stax.StreamWriterBufferCreator;
 import com.sun.xml.ws.api.model.wsdl.WSDLBoundOperation;
 import com.sun.xml.ws.api.model.wsdl.WSDLPort;
+import com.sun.xml.ws.api.model.wsdl.WSDLBoundPortType;
 import com.sun.xml.ws.api.server.DocumentAddressResolver;
 import com.sun.xml.ws.api.server.SDDocument;
 import com.sun.xml.ws.api.server.ServiceDefinition;
 import com.sun.xml.ws.api.server.WSEndpoint;
+import com.sun.xml.ws.model.wsdl.WSDLBoundPortTypeImpl;
 import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSSchema;
 import com.sun.xml.xsom.XSSchemaSet;
@@ -42,6 +44,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.ws.WebServiceException;
+import javax.jws.soap.SOAPBinding.Style;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -202,8 +205,9 @@ final class SchemaInfo {
     };
 
     private void buildJsonSchema(XSSchemaSet schemas, WSDLPort port) {
+        Style style = ((WSDLBoundPortTypeImpl) port.getBinding()).getStyle();
         for( WSDLBoundOperation bo : port.getBinding().getBindingOperations() ) {
-            operations.add(new JsonOperation(bo,schemas,convention));
+            operations.add(new JsonOperation(bo,schemas,convention,style));
         }
     }
 

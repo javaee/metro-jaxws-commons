@@ -7,6 +7,7 @@ import com.sun.xml.xsom.XSElementDecl;
 import com.sun.xml.xsom.XSSchemaSet;
 import org.jvnet.jax_ws_commons.json.SchemaConvention;
 
+import javax.jws.soap.SOAPBinding.Style;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,15 +16,16 @@ import java.util.Map;
  */
 public class JsonOperation {
 
-    private Map<String,JsonType> inParams = new HashMap<String,JsonType>();
-    private Map<String,JsonType> outParams = new HashMap<String,JsonType>();
+    private JsonType input;
+    private JsonType output;
 
-    public JsonOperation(WSDLBoundOperation bo, XSSchemaSet schemas, SchemaConvention convention) {
-        build(schemas, bo.getInParts(), inParams, convention);
-        build(schemas, bo.getOutParts(), outParams, convention);
+    public JsonOperation(WSDLBoundOperation bo, XSSchemaSet schemas, SchemaConvention convention, Style style) {
+        input = build(schemas, bo.getInParts(), convention, style);
+        output = build(schemas, bo.getOutParts(), convention, style);
     }
 
-    private void build(XSSchemaSet schemas, Map<String, WSDLPart> parts, Map<String, JsonType> result, SchemaConvention convention) {
+    private JsonType build(XSSchemaSet schemas, Map<String, WSDLPart> parts, SchemaConvention convention, Style style) {
+        CompositeJsonType wrapper = new CompositeJsonType();
         for(Map.Entry<String,WSDLPart> in : parts.entrySet() ) {
             if(!in.getValue().getBinding().isBody())
                 continue;   // we only do body
@@ -32,13 +34,19 @@ public class JsonOperation {
             switch (d.type()) {
             case ELEMENT:
                 XSElementDecl decl = schemas.getElementDecl(d.name().getNamespaceURI(), d.name().getLocalPart());
-                result.put(in.getKey(),JsonType.create(convention,decl.getType()));
+                wrapper.properties.put(in.getKey(),JsonType.create(convention,decl.getType()));
                 break;
             case TYPE:
-                result.put(in.getKey(),JsonType.create(convention,
+                wrapper.properties.put(in.getKey(),JsonType.create(convention,
                     schemas.getType(d.name().getNamespaceURI(), d.name().getLocalPart())));
                 break;
             }
         }
+
+        if(style==Style.DOCUMENT)
+            // peel off the outermost part that doesn't actually have a representation on the wire.
+            return wrapper.properties.values().iterator().next();
+        else
+            return wrapper;
     }
 }
