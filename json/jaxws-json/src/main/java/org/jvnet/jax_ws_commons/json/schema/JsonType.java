@@ -47,4 +47,11 @@ public class JsonType {
     public final JsonType makeArray() {
         return new ArrayJsonType(this);
     }
+
+    /**
+     * If this object type is the composite type that only has one property, returns its type.
+     */
+    public JsonType unwrap() {
+        return this;
+    }
 }

@@ -8,27 +8,33 @@ import com.sun.xml.xsom.XSSchemaSet;
 import org.jvnet.jax_ws_commons.json.SchemaConvention;
 
 import javax.jws.soap.SOAPBinding.Style;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Represents the JSON type signature of an operation.
+ * 
  * @author Kohsuke Kawaguchi
  */
 public class JsonOperation {
 
-    private JsonType input;
-    private JsonType output;
+    public final JsonType input,output;
 
     public JsonOperation(WSDLBoundOperation bo, XSSchemaSet schemas, SchemaConvention convention, Style style) {
         input = build(schemas, bo.getInParts(), convention, style);
-        output = build(schemas, bo.getOutParts(), convention, style);
+        // if the return type has only one property we also unwrap that.
+        // see SchemaInfo#createXMLStreamWriter
+        output = build(schemas, bo.getOutParts(), convention, style).unwrap();
     }
 
-    private JsonType build(XSSchemaSet schemas, Map<String, WSDLPart> parts, SchemaConvention convention, Style style) {
+    /**
+     * Infer the JavaScript type from the given parts set.
+     *
+     */
+    private JsonType build(XSSchemaSet schemas, Map<String,WSDLPart> parts, SchemaConvention convention, Style style) {
         CompositeJsonType wrapper = new CompositeJsonType();
         for(Map.Entry<String,WSDLPart> in : parts.entrySet() ) {
             if(!in.getValue().getBinding().isBody())
-                continue;   // we only do body
+                continue;   // JSON binding has no header support for now.
             WSDLPartDescriptor d = in.getValue().getDescriptor();
 
             switch (d.type()) {
@@ -45,7 +51,7 @@ public class JsonOperation {
 
         if(style==Style.DOCUMENT)
             // peel off the outermost part that doesn't actually have a representation on the wire.
-            return wrapper.properties.values().iterator().next();
+            return wrapper.unwrap();
         else
             return wrapper;
     }

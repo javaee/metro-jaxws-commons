@@ -21,6 +21,9 @@ public class CompositeJsonType extends JsonType {
 
     public CompositeJsonType() {}
 
+    /**
+     * Infer the JSON object type from a complex type.
+     */
     public CompositeJsonType(final SchemaConvention convention, XSComplexType ct) {
         ct.visit(new SchemaWalker() {
             boolean repeated = false;
@@ -44,5 +47,13 @@ public class CompositeJsonType extends JsonType {
                 }
             }
         });
+    }
+
+    @Override
+    public JsonType unwrap() {
+        if(properties.size()!=1)
+            return this;
+        else
+            return properties.values().iterator().next();
     }
 }
