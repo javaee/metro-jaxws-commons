@@ -27,10 +27,7 @@ final class ClientGenerator {
         this.model = model;
         this.connection = connection;
         this.adapter = adapter;
-        this.name = Introspector.decapitalize(model.endpoint.getPort().getName().getLocalPart());
-        if(name.endsWith("ServicePort"))
-            // when doing java2wsdl and the class name ends with 'Service', you get this.
-            name = name.substring(0,name.length()-4);
+        this.name = Introspector.decapitalize(model.getServiceName());
     }
 
     public void setVariableName(String name) {

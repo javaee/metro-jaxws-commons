@@ -24,7 +24,15 @@ public class MyClient {
         OutputStream out = con.getOutputStream();
         out.write(json.getBytes());
         out.close();
+        dump(con);
 
+        // dump help HTML
+        System.out.println("\n---HTML---");
+        con = (HttpURLConnection) new URL(url+"?help").openConnection();
+        dump(con);
+    }
+
+    private static void dump(HttpURLConnection con) throws IOException {
         // Check if we got the correct HTTP response code
         int code = con.getResponseCode();
 

@@ -10,8 +10,12 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 
 /**
  * Responds to "http://foobar/service?js" and sends the JavaScript proxy.
@@ -43,14 +47,21 @@ final class MetadataPublisherImpl extends HttpMetadataPublisher {
             return true;
         }
 
+        if(con.getQueryString()==null || qsp.containsKey("help")) {
+            // index page
+            con.setStatus(HttpURLConnection.HTTP_OK);
+            con.setContentTypeResponseHeader("text/html;charset=UTF-8");
+
+            generateHelpHtml(con,new OutputStreamWriter(con.getOutput(), "UTF-8"));
+            return true;
+        }
+
         URL res = getClass().getResource("template/" + con.getQueryString());
         if(res!=null) {
             // static resource accesss
             con.setStatus(HttpURLConnection.HTTP_OK);
             if(res.getPath().endsWith(".gif"))
                 con.setContentTypeResponseHeader("image/gif");
-            if(res.getPath().endsWith(".html"))
-                con.setContentTypeResponseHeader("text/html");
             if(res.getPath().endsWith(".css"))
                 con.setContentTypeResponseHeader("text/css");
 
@@ -66,5 +77,16 @@ final class MetadataPublisherImpl extends HttpMetadataPublisher {
         }
 
         return false;
+    }
+
+    /*package for testing*/ void generateHelpHtml(WSHTTPConnection con, OutputStreamWriter writer) throws IOException {
+        VelocityContext context = new VelocityContext();
+        context.put("model",model);
+        context.put("requestURL",con.getBaseAddress());
+
+        new VelocityEngine().evaluate(context, writer, "velocity",
+            new InputStreamReader(getClass().getResourceAsStream("template/index.html"),"UTF-8")
+            );
+        writer.close();
     }
 }

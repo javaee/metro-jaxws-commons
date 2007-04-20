@@ -65,4 +65,8 @@ public class JsonOperation {
         else
             return wrapper;
     }
+
+    public String getMethodName() {
+        return methodName;
+    }
 }

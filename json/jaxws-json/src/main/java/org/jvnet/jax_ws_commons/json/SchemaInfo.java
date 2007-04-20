@@ -53,6 +53,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.beans.Introspector;
 
 /**
  * Captures the information parsed from XML Schema.
@@ -60,7 +61,7 @@ import java.util.Set;
  *
  * @author Kohsuke Kawaguchi
  */
-final class SchemaInfo {
+public final class SchemaInfo {
     /**
      * Endpoint for which this schema info applies.
      */
@@ -139,6 +140,14 @@ final class SchemaInfo {
         }
     }
 
+    public String getServiceName() {
+        String name = endpoint.getPort().getName().getLocalPart();
+        if(name.endsWith("ServicePort"))
+            // when doing java2wsdl and the class name ends with 'Service', you get this.
+            name = name.substring(0,name.length()-4);
+        return name;
+    }
+
     public XMLStreamWriter createXMLStreamWriter(Writer writer) throws XMLStreamException {
         return new MappedXMLStreamWriter(convention, writer) {
             public void writeEndDocument() throws XMLStreamException {
@@ -211,5 +220,9 @@ final class SchemaInfo {
             operations.add(new JsonOperation(bo,schemas,builder,style));
     }
 
+    public List<JsonOperation> getOperations() {
+        return operations;
+    }
+    
     //private static final String WSDL_NSURI = "http://schemas.xmlsoap.org/wsdl/";
 }
