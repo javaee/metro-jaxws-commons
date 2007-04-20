@@ -52,7 +52,7 @@ final class MetadataPublisherImpl extends HttpMetadataPublisher {
             con.setStatus(HttpURLConnection.HTTP_OK);
             con.setContentTypeResponseHeader("text/html;charset=UTF-8");
 
-            generateHelpHtml(con,new OutputStreamWriter(con.getOutput(), "UTF-8"));
+            generateHelpHtml(con,adapter,new OutputStreamWriter(con.getOutput(), "UTF-8"));
             return true;
         }
 
@@ -79,10 +79,10 @@ final class MetadataPublisherImpl extends HttpMetadataPublisher {
         return false;
     }
 
-    /*package for testing*/ void generateHelpHtml(WSHTTPConnection con, OutputStreamWriter writer) throws IOException {
+    /*package for testing*/ void generateHelpHtml(WSHTTPConnection con, HttpAdapter adapter, OutputStreamWriter writer) throws IOException {
         VelocityContext context = new VelocityContext();
         context.put("model",model);
-        context.put("requestURL",con.getBaseAddress());
+        context.put("requestURL",con.getBaseAddress()+adapter.urlPattern);
 
         new VelocityEngine().evaluate(context, writer, "velocity",
             new InputStreamReader(getClass().getResourceAsStream("template/index.html"),"UTF-8")
