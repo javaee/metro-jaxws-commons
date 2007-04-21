@@ -10,7 +10,6 @@ import java.util.Random;
 import org.jvnet.jax_ws_commons.transport.smtp.server.SMTP;
 
 @WebService
-@SMTP
 public class GreetingService {
     private String prefix = "Hello, ";
 
