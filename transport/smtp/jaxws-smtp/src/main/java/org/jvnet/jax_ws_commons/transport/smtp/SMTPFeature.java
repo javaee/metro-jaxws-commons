@@ -67,16 +67,22 @@ public class SMTPFeature extends WebServiceFeature {
     }
 
 
-    public IncomingServer getIncomingServer() {
-        return incomingServer;
+    public IncomingServer createIncomingServer(IncomingServerType serverType, String server, int port, String senderAddress){
+        switch(serverType){
+            case POP3:
+                this.incomingServer = new POP3(server, port, senderAddress);
+                break;
+            case IMAP:
+                this.incomingServer = new Imap(server, port, senderAddress);
+                break;
+            default:
+                break;
+        }
+        return this.incomingServer;
     }
 
-    public void setIncomingServer(IncomingServer incomingServer) {
-        this.incomingServer = incomingServer;
-    }
-
-    public final class POP3 extends IncomingServer {
-        public POP3(String server, int port, String emailAddress) {
+    private final class POP3 extends IncomingServer {
+        private POP3(String server, int port, String emailAddress) {
             super(server, port, emailAddress);
         }
 
@@ -85,8 +91,8 @@ public class SMTPFeature extends WebServiceFeature {
         }
     }
 
-    public final class Imap extends IncomingServer {
-        public Imap(String server, int port, String emailAddress) {
+    private final class Imap extends IncomingServer {
+        private Imap(String server, int port, String emailAddress) {
             super(server, port, emailAddress);
         }
 
