@@ -59,6 +59,10 @@ public class SMTPAdapter extends Adapter<SMTPAdapter.SMTPToolkit> {
         super(endpoint);
     }
 
+    public void start() {
+        email.start();
+    }
+
     public void setEmailEndpoint(EmailEndpoint email) {
         this.email = email;
     }
