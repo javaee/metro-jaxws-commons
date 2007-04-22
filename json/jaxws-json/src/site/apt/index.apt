@@ -56,3 +56,5 @@ myService.get(
 ---------------------------
 <script src="path/to/endpoint?js&var=svc"></script>
 ---------------------------
+
+  For client-side development, JSON endpoints serve HTML documentations on the fly, including all the available operations and "type descriptions" for all parameters and return values.

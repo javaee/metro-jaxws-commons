@@ -9,20 +9,17 @@
    The following definitions show how to run <<<GreetingService>>> and expose it both as a SOAP endpoint (at <<<http://yourhost/contextPath/soap>>>) and as a JSON endpoint (at <<<http://yourhost/contextPath/json>>>)
 
 ---------------------------
-  <wss:bindings id="jax-ws">
-    <wss:bindings>
-      <wss:binding url="/soap">
-        <wss:service>
-          <ws:service bean="#myService" />
-        </wss:service>
-      </wss:binding>
-      <wss:binding url="/json">
-        <wss:service>
-          <ws:service bean="#myService" bindingID="https://jax-ws-commons.dev.java.net/json/" />
-        </wss:service>
-      </wss:binding>
-    </wss:bindings>
-  </wss:bindings>
+  <wss:binding url="/soap">
+    <wss:service>
+      <ws:service bean="#myService" />
+    </wss:service>
+  </wss:binding>
+
+  <wss:binding url="/json">
+    <wss:service>
+      <ws:service bean="#myService" bindingID="https://jax-ws-commons.dev.java.net/json/" />
+    </wss:service>
+  </wss:binding>
 
   <bean id="myService" class="greeter.GreetingService" scope="prototype">
     ...
