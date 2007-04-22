@@ -8,19 +8,16 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://jax-ws.dev.java.net/spring/core http://jax-ws.dev.java.net/spring/core.xsd
 http://jax-ws.dev.java.net/spring/servlet http://jax-ws.dev.java.net/spring/servlet.xsd"
       >
-  <wss:bindings id="jax-ws.http">
-    <wss:bindings>
-      <wss:binding url="/stockQuote">
-        <wss:service><!-- nested bean is of course fine -->
-          <ws:service bean="#myService">
-            <ws:handlers>
-              <ref bean="myHandler" />
-            </ws:handlers>
-          </ws:service>
-        </wss:service>
-      </wss:binding>
-    </wss:bindings>
-  </wss:bindings>
+
+  <wss:binding url="/stockQuote">
+    <wss:service><!-- nested bean is of course fine -->
+      <ws:service bean="#myService">
+        <ws:handlers>
+          <ref bean="myHandler" />
+        </ws:handlers>
+      </ws:service>
+    </wss:service>
+  </wss:binding>
 
   <bean id="myService" class="foo.MyService">
     <property name="base">
