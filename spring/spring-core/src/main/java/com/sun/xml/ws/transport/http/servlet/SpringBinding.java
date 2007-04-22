@@ -7,7 +7,7 @@ import com.sun.xml.ws.api.server.WSEndpoint;
  * Represents the association between the service and URL.
  *
  * @author Kohsuke Kawaguchi
- * @org.apache.xbean.XBean element="binding"
+ * @org.apache.xbean.XBean element="binding" rootElement="true"
  */
 public class SpringBinding implements BeanNameAware {
     private String beanName;

@@ -2,13 +2,9 @@
     xmlns:ws= "http://jax-ws.dev.java.net/spring/core"
     xmlns:wss="http://jax-ws.dev.java.net/spring/servlet">
 
-  <wss:bindings id="jax-ws.http">
-    <wss:bindings>
-      <wss:binding url="/simple" service="#simplestService" />
-      <wss:binding url="/nestedHandler" service="#nestedHandlerService" />
-      <wss:binding url="/singleHandler" service="#singleHandlerService" />
-    </wss:bindings>
-  </wss:bindings>
+  <wss:binding url="/simple" service="#simplestService" />
+  <wss:binding url="/nestedHandler" service="#nestedHandlerService" />
+  <wss:binding url="/singleHandler" service="#singleHandlerService" />
 
   <!-- simplest definition only needs the class name -->
   <ws:service id="simplestService" impl="foo.MyService"/>

@@ -8,7 +8,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * {@link HttpServlet} that uses
@@ -27,16 +30,22 @@ public class WSSpringServlet extends HttpServlet {
         // get the configured adapters from Spring
         WebApplicationContext wac = WebApplicationContextUtils
             .getRequiredWebApplicationContext(getServletContext());
+
+        Set<SpringBinding> bindings = new LinkedHashSet<SpringBinding>();
+
+        // backward compatibility. recognize all bindings
         Map m = wac.getBeansOfType(SpringBindingList.class);
+        for (SpringBindingList sbl : (Collection<SpringBindingList>)m.values())
+            bindings.addAll(sbl.getBindings());
 
-        if(m.size()>1)
-            throw new ServletException("More than one servlet bindings configuration is available");
-        if(m.isEmpty())
-            throw new ServletException("No bindings configuration is available");
+        bindings.addAll( wac.getBeansOfType(SpringBinding.class).values() );
 
-        SpringBindingList list = (SpringBindingList)m.values().iterator().next();
+        // create adapters
+        ServletAdapterList l = new ServletAdapterList();
+        for (SpringBinding binding : bindings)
+            binding.create(l);
 
-        delegate = new WSServletDelegate(list.create(),getServletContext());
+        delegate = new WSServletDelegate(l,getServletContext());
     }
 
     protected void doPost( HttpServletRequest request, HttpServletResponse response) {

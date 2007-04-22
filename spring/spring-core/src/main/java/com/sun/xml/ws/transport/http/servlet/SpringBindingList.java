@@ -6,7 +6,9 @@ import java.util.List;
  * Set of {@link SpringBinding}.
  *
  * @author Kohsuke Kawaguchi
- * @org.apache.xbean.XBean element="bindings" rootElement="true"
+ * @deprecated
+ *      Left only for compatibility.
+ * @org.apache.xbean.XBean element="bindings"
  */
 public class SpringBindingList {
     private List<SpringBinding> bindings;
@@ -22,12 +24,5 @@ public class SpringBindingList {
      */
     public void setBindings(List<SpringBinding> bindings) {
         this.bindings = bindings;
-    }
-
-    public ServletAdapterList create() {
-        ServletAdapterList l = new ServletAdapterList();
-        for (SpringBinding binding : bindings)
-            binding.create(l);
-        return l;
     }
 }
