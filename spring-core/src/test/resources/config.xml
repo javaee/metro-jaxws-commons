@@ -1,0 +1,29 @@
+<beans
+    xmlns:ws= "http://jax-ws.dev.java.net/spring/core"
+    xmlns:wss="http://jax-ws.dev.java.net/spring/servlet">
+
+  <wss:binding url="/simple" service="#simplestService" />
+  <wss:binding url="/nestedHandler" service="#nestedHandlerService" />
+  <wss:binding url="/singleHandler" service="#singleHandlerService" />
+
+  <!-- simplest definition only needs the class name -->
+  <ws:service id="simplestService" impl="foo.MyService"/>
+
+  <!-- handlers can be specified as nested elements -->
+  <ws:service id="nestedHandlerService" impl="foo.MyService">
+    <ws:handlers>
+      <bean class="foo.MyHandler" />
+      <bean class="foo.MyHandler" />
+      <ref bean="aHandler" />
+    </ws:handlers>
+  </ws:service>
+
+  <!-- ... or just as an attribute -->
+  <ws:service id="singleHandlerService" impl="foo.MyService" handlers="#aHandler" />
+  <bean id="aHandler" class="foo.MyHandler" />
+  <!-- unfortunately this doesn't work
+    <ws:service id="twoHandlerService" impl="foo.MyService" handlers="#aHandler, #aHandler" />
+  -->
+
+</beans>
+
