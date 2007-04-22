@@ -8,20 +8,18 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://jax-ws.dev.java.net/spring/core http://jax-ws.dev.java.net/spring/core.xsd
 http://jax-ws.dev.java.net/spring/servlet http://jax-ws.dev.java.net/spring/servlet.xsd"
       >
-  <wss:bindings id="jax-ws">
-    <wss:bindings>
-      <wss:binding url="/soap">
-        <wss:service>
-          <ws:service bean="#myService" />
-        </wss:service>
-      </wss:binding>
-      <wss:binding url="/json">
-        <wss:service>
-          <ws:service bean="#myService" bindingID="https://jax-ws-commons.dev.java.net/json/" />
-        </wss:service>
-      </wss:binding>
-    </wss:bindings>
-  </wss:bindings>
+
+  <wss:binding url="/soap">
+    <wss:service>
+      <ws:service bean="#myService" />
+    </wss:service>
+  </wss:binding>
+  
+  <wss:binding url="/json">
+    <wss:service>
+      <ws:service bean="#myService" bindingID="https://jax-ws-commons.dev.java.net/json/" />
+    </wss:service>
+  </wss:binding>
 
   <bean id="myService" class="greeter.GreetingService">
     <property name="prefix" value="Bonjour, " />
