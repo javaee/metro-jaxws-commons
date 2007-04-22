@@ -68,16 +68,12 @@ gotten rid of this altogether!)
     http://jax-ws.dev.java.net/spring/servlet
     http://jax-ws.dev.java.net/spring/servlet.xsd">
 
-  <wss:bindings id="jax-ws.http">
-    <wss:bindings>
-      <wss:binding url="/add" service="#addService" />
-      <wss:binding url="/sub">
-        <wss:service><!-- nested bean is of course fine -->
-          <ws:service bean="#myService" />
-        </wss:service>
-      </wss:binding>
-    </wss:bindings>
-  </wss:bindings>
+  <wss:binding url="/add" service="#addService" />
+  <wss:binding url="/sub">
+    <wss:service><!-- nested bean is of course fine -->
+      <ws:service bean="#myService" />
+    </wss:service>
+  </wss:binding>
 
   <!-- this bean implements web service methods -->
   <bean id="myService" class="foo.MyService" />
@@ -90,8 +86,8 @@ gotten rid of this altogether!)
 </beans>
 ---------------------------
 
-  The bean with ID <<<jax-ws.http>>> will be read by the
-<<<WSSpringServlet>>>, so you need to keep this ID. In the above code,
+  The two <<<wss:binding>>> definitions define what services are
+exposed to which part of the URL space. In the above code,
 it deploys two services on two URLs, and one with a handler.
 
   If you know Spring, you should know the "rest", like how to
