@@ -20,6 +20,8 @@ import com.sun.istack.Nullable;
 import javax.xml.ws.WebServiceException;
 import javax.mail.internet.MimeMessage;
 import javax.mail.MessagingException;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -60,6 +62,7 @@ public class SMTPAdapter extends Adapter<SMTPAdapter.SMTPToolkit> {
     }
 
     public void start() {
+        email.setMailHandler(new SMTPHandler());
         email.start();
     }
 
@@ -85,12 +88,14 @@ public class SMTPAdapter extends Adapter<SMTPAdapter.SMTPToolkit> {
       *         UnsupportedMediaException to indicate to send 415 error code
       */
      private Packet decodePacket(@NotNull MimeMessage con, @NotNull Codec codec) throws MessagingException, IOException {
-         String ct = con.getContentType();
+         String ct = "text/xml";// TODO con.getContentType();
          InputStream in = con.getInputStream();
          Packet packet = new Packet();
-         packet.soapAction = con.getHeader("SOAPAction")[0];
+        String[] soapAction = con.getHeader("SOAPAction");
+         packet.soapAction = soapAction == null ? null : soapAction[0];
          packet.wasTransportSecure = false;
-         packet.acceptableMimeTypes = con.getHeader("Accept")[0];
+        String[] accept = con.getHeader("Accept");
+         packet.acceptableMimeTypes = accept == null ? null : accept[0];
          //packet.addSatellite(con);        TODO
          //packet.transportBackChannel = new Oneway(con);
          packet.webServiceContextDelegate = new WebServiceContextDelegate() {
@@ -155,7 +160,7 @@ public class SMTPAdapter extends Adapter<SMTPAdapter.SMTPToolkit> {
                          : HttpURLConnection.HTTP_OK);
              }*/
 
-             ContentType contentType = codec.getStaticContentType(packet);
+             final ContentType contentType = codec.getStaticContentType(packet);
              if (contentType != null) {
 /*                 con.setContentTypeResponseHeader(contentType.getContentType());
                  OutputStream os = con.getOutput();
@@ -169,10 +174,31 @@ public class SMTPAdapter extends Adapter<SMTPAdapter.SMTPToolkit> {
                  }
                  os.close();*/
 
-                 ByteArrayBuffer buf = new ByteArrayBuffer();
+                 final ByteArrayBuffer buf = new ByteArrayBuffer();
                  codec.encode(packet, buf);
+                 //buf.close();
+                 System.out.println(buf.toString());
                  MimeMessage msg = new MimeMessage(email.getSession());
-                 msg.setContent(new String(buf.toByteArray()), contentType.getContentType());
+                 msg.setDataHandler(new DataHandler(new DataSource() {
+
+                     public InputStream getInputStream() throws IOException {
+                         return buf.newInputStream();
+                     }
+
+                     public OutputStream getOutputStream() throws IOException {
+                         return null;
+                     }
+
+                     public String getContentType() {
+                         return contentType.getContentType();
+                     }
+
+                     public String getName() {
+                         return "";
+                     }
+                 }));
+                 //msg.setHeader("Content-Type", "text/xml");        // TODO contentType.getContentType()
+                 //msg.setContent(new String(buf.toByteArray()), "text/xml");// TODO contentType.getContentType()
                  email.send(msg);
              } else {
 /*                 ByteArrayBuffer buf = new ByteArrayBuffer();
@@ -258,15 +284,14 @@ public class SMTPAdapter extends Adapter<SMTPAdapter.SMTPToolkit> {
         }
     }
 
-    public class SmtpHandler implements MailHandler {
-        final Packet request;
+    public class SMTPHandler implements MailHandler {
 
-        SmtpHandler(Packet request) {
-            this.request = request;
+        SMTPHandler() {
         }
 
         public void onNewMail(MimeMessage message) {
             try {
+                LOGGER.log(Level.INFO, "Received a message ...");
                 invokeAsync(message);
             } catch(IOException ioe) {
                 LOGGER.log(Level.SEVERE, ioe.getMessage(), ioe);
