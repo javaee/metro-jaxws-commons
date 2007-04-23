@@ -272,7 +272,7 @@ public class EmailEndpoint {
 
     /**
      * Sends a message and return immediately.
-     * <p/>
+     * <p>
      * Use this method when no further reply is expected.
      */
     public UUID send(MimeMessage msg) {
@@ -282,6 +282,7 @@ public class EmailEndpoint {
                 msg.setReplyTo(new Address[]{address});
             if (msg.getFrom() == null || msg.getFrom().length == 0) {
                 msg.setFrom(address);
+                // msg.setFrom(new InternetAddress("kk@kohsuke.org"));
             }
             if (msg.getRecipients(Message.RecipientType.TO) == null || msg.getRecipients(Message.RecipientType.TO).length == 0) {
                 msg.setRecipient(Message.RecipientType.TO, address);

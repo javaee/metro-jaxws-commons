@@ -15,6 +15,27 @@
   <name>smtp transport extension</name>
   <description>SMTP transport extension for JAX-WS RI</description>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jvnet.jax-ws-commons.spring</groupId>
+        <artifactId>maven-xbean-plugin</artifactId>
+        <version>2.8-patched</version><!-- to work around https://issues.apache.org/jira/browse/XBEAN-71 and http://jira.codehaus.org/browse/QDOX-110 -->
+        <executions>
+          <execution>
+            <configuration>
+              <namespace>http://jax-ws.dev.java.net/spring/smtp</namespace>
+              <!--srcDir>src/main/java/org/jvnet/jax_ws_commons/transport/smtp</srcDir-->
+            </configuration>
+            <goals>
+              <goal>mapping</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>javax.mail</groupId>
