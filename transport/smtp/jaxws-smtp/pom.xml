@@ -33,6 +33,24 @@
           </execution>
         </executions>
       </plugin>
+      <!-- use our own spring.schemas -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <configuration>
+              <tasks>
+                <!-- delete the generated one so that we can use ours in src/main/resources -->
+                <delete file="target/xbean/META-INF/spring.schemas" />
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 

@@ -1,0 +1,2 @@
+# if we let maven-xbean-plugin do it, it just uses the namespace URI.
+http\://jax-ws.dev.java.net/spring/smtp.xsd=jaxws-smtp.xsd
