@@ -37,6 +37,9 @@ public class SMTPFeature extends WebServiceFeature {
         this.smtpPort = port;
     }
 
+    public SMTPFeature() {
+    }
+
     public String getID() {
         return ID;
     }

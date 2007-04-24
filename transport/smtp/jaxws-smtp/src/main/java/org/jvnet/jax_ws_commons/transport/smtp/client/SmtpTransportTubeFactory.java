@@ -5,6 +5,7 @@ import com.sun.xml.ws.api.EndpointAddress;
 import com.sun.xml.ws.api.pipe.ClientTubeAssemblerContext;
 import com.sun.xml.ws.api.pipe.TransportTubeFactory;
 import com.sun.xml.ws.api.pipe.Tube;
+import com.sun.xml.ws.transport.DeferredTransportPipe;
 
 import javax.xml.ws.WebServiceException;
 
@@ -17,7 +18,11 @@ public class SmtpTransportTubeFactory extends TransportTubeFactory {
     public Tube doCreate(@NotNull ClientTubeAssemblerContext context) {
         EndpointAddress address = context.getAddress();
         String scheme = address.getURI().getScheme();
+
+        // TODO Retuning Deferred so that smtp works with the wsdls that
+        // contain http addresses
         return (scheme == null || !scheme.equalsIgnoreCase("smtp"))
-                ? null : new SmtpTransportTube(context.getCodec(), address);
+                ? new DeferredTransportPipe(getClass().getClassLoader(), context)
+                : new SmtpTransportTube(context.getCodec(), address);
     }
 }
