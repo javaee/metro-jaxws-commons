@@ -15,7 +15,7 @@ http://jax-ws.dev.java.net/spring/smtp http://jax-ws.dev.java.net/spring/smtp.xs
   <wss:binding url="/soap" service="#greetingService" />
 
   <!-- expose on SMTP -->
-  <wsm:smtp address="smtp.transport@gmail.com" service="#greetingService"/>
+  <wsm:smtp service="#greetingService"/>
 
   <ws:service id="greetingService">
     <ws:bean>
