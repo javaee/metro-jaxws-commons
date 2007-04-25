@@ -15,12 +15,17 @@ public class SmtpTest extends TestCase {
     public void testHttp() {
         GreetingService proxy =
             new GreetingServiceService().getGreetingServicePort();
+        ((BindingProvider)proxy).getRequestContext().put(
+            BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+            "http://localhost:8080/soap"
+        );
         assertEquals("Bonjour, jitu", proxy.sayHelloTo("jitu"));
     }
 
     public void testSmtp() {
         Properties props = System.getProperties();
-        props.put("mail.smtp.host","localhost");
+        props.put("mail.smtp.host","kohsuke.sfbay.sun.com");
+        props.put("mail.smtp.port","10025");
         props.put(SmtpTransportTube.class.getName()+".dump","true");
 
         GreetingService proxy =

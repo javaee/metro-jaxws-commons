@@ -30,7 +30,7 @@
         </executions>
         <configuration>
           <wsdlUrls>
-            <wsdlUrl>http://localhost:8080/soap?wsdl</wsdlUrl>
+            <wsdlUrl>../target/GreetingServiceService.wsdl</wsdlUrl>
           </wsdlUrls>
           <keep>true</keep>
           <packageName>foo</packageName>

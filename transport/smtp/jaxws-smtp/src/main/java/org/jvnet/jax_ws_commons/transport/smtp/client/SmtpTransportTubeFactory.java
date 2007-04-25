@@ -19,10 +19,7 @@ public class SmtpTransportTubeFactory extends TransportTubeFactory {
         EndpointAddress address = context.getAddress();
         String scheme = address.getURI().getScheme();
 
-        // TODO Retuning Deferred so that smtp works with the wsdls that
-        // contain http addresses
-        return (scheme == null || !scheme.equalsIgnoreCase("smtp"))
-                ? new DeferredTransportPipe(getClass().getClassLoader(), context)
-                : new SmtpTransportTube(context.getCodec(), address);
+        return (scheme != null && scheme.equalsIgnoreCase("smtp"))
+                ? new SmtpTransportTube(context.getCodec(), address) : null;
     }
 }

@@ -30,6 +30,9 @@
         </executions>
         <configuration>
           <sei>greeter.GreetingService</sei>
+          <genWsdl>true</genWsdl>
+          <!-- TODO need to push to repository and use it from there -->
+          <resourceDestDir>../target</resourceDestDir>
         </configuration>
         <dependencies>
           <dependency>

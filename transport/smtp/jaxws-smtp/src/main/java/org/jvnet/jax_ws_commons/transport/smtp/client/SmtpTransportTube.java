@@ -5,19 +5,24 @@ import com.sun.xml.ws.api.EndpointAddress;
 import com.sun.xml.ws.api.message.Packet;
 import com.sun.xml.ws.api.pipe.*;
 import com.sun.xml.ws.api.pipe.helper.AbstractTubeImpl;
+import com.sun.xml.ws.util.ByteArrayBuffer;
 import org.jvnet.jax_ws_commons.transport.smtp.mail.EmailEndpoint;
 import org.jvnet.jax_ws_commons.transport.smtp.mail.MailHandler;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.xml.ws.WebServiceException;
-import java.io.ByteArrayOutputStream;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * SMTP transport tube.
  *
  * @author Vivek Pandey
+ * @author Jitendra Kotamraju
  */
 public class SmtpTransportTube extends AbstractTubeImpl {
     private final Codec codec;
@@ -42,11 +47,29 @@ public class SmtpTransportTube extends AbstractTubeImpl {
     public NextAction processRequest(@NotNull Packet request) {
         endpoint.setMailHandler(new SmtpHandler(request));
 
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
-            ContentType ct = codec.encode(request, os);
+            final ByteArrayBuffer buf = new ByteArrayBuffer();
+            final ContentType ct = codec.encode(request, buf);
             MimeMessage msg = new MimeMessage(endpoint.getSession());
-            msg.setContent(new String(os.toByteArray()), ct.getContentType());
+            msg.setDataHandler(new DataHandler(new DataSource() {
+
+                public InputStream getInputStream() throws IOException {
+                    return buf.newInputStream();
+                }
+
+                public OutputStream getOutputStream() throws IOException {
+                    return null;
+                }
+
+                public String getContentType() {
+                    return ct.getContentType();
+                }
+
+                public String getName() {
+                    return "";
+                }
+            }));
+
             endpoint.send(msg);
         } catch (IOException e) {
             throw new WebServiceException(e);

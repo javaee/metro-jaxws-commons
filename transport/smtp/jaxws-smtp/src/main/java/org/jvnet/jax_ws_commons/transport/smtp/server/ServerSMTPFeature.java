@@ -43,7 +43,8 @@ public class ServerSMTPFeature extends SMTPFeature implements FactoryBean, Initi
 
     public void afterPropertiesSet() throws Exception {
         Properties props = System.getProperties();
-        props.put("mail.smtp.host", "localhost");   // TODO
+        props.put("mail.smtp.host", "kohsuke.sfbay.sun.com");   // TODO
+        props.put("mail.smtp.port", "10025");
 
         String add = "smtp://smtp.transport.client@kohsuke.org?!pop3://smtp.transport.server:jaxws123@kohsuke.org/";
         adapter = new SMTPAdapter(endpoint);

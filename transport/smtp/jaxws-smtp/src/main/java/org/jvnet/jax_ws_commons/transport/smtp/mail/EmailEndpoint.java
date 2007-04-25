@@ -343,14 +343,15 @@ public class EmailEndpoint {
             System.out.println();
             System.out.println(getMainContent(msg));
         } catch (IOException e) {
-            System.out.println("Exception duuring message dump!");
+            System.out.println("Exception during message dump!");
         } catch (MessagingException e) {
-            System.out.println("Exception duuring message dump!");
+            System.out.println("Exception during message dump!");
         }
         System.out.println("--------------------");
     }
 
     private String getMainContent(MimeMessage msg) throws MessagingException, IOException {
+        /** TODO write it correctly
         Object data = msg.getContent();
         while(true) {
             if (data instanceof MimeMultipart) {
@@ -364,6 +365,8 @@ public class EmailEndpoint {
             // unknown format
             throw new MessagingException("Unable to convert "+data+" to string");
         }
+         **/
+        return "";
     }
 
 }

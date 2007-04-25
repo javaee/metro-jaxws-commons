@@ -92,13 +92,15 @@ public class POP3Listener extends Listener {
                     folder.open(Folder.READ_WRITE);
                     Message[] msgs = folder.getMessages();
                     for( Message msg : msgs ) {
-                        logger.fine("handling message: "+msg.getSubject());
+                        logger.info("handling message: "+msg.getSubject());
                         msg.setFlag(Flags.Flag.DELETED,true);
                         try {
                             handleMessage((MimeMessage)msg);
                         } catch (MessagingException e) {
                             logger.log(Level.WARNING,"failed to handle message: "+msg.getSubject(),e);
                             // but delete this message anyway
+                        } catch(Exception e) {
+                            logger.log(Level.SEVERE, "Unexpected error while hanndlingPOP3 message", e);
                         }
                     }
                     folder.close(true);
