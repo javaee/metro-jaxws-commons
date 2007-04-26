@@ -15,7 +15,9 @@ http://jax-ws.dev.java.net/spring/smtp http://jax-ws.dev.java.net/spring/smtp.xs
   <wss:binding url="/soap" service="#greetingService" />
 
   <!-- expose on SMTP -->
-  <wsm:smtp service="#greetingService"/>
+  <wsm:smtp service="#greetingService" incoming="#in" outgoing="#out" />
+  <wsm:pop3 id="in" scheme="pop3" host="kohsuke.org" uid="smtp.transport.server" password="jaxws123" />
+  <wsm:sender id="out" host="kohsuke.sfbay.sun.com" port="10025" from="smtp.transport.server@kohsuke.org"/>
 
   <ws:service id="greetingService">
     <ws:bean>

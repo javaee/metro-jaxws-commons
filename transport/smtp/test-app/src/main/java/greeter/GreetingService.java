@@ -7,8 +7,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Random;
 
-import org.jvnet.jax_ws_commons.transport.smtp.server.SMTP;
-
 @WebService
 public class GreetingService {
     private String prefix = "Hello, ";
