@@ -1,7 +1,6 @@
 package foo;
 
 import junit.framework.TestCase;
-import java.util.Properties;
 import javax.xml.ws.BindingProvider;
 import org.jvnet.jax_ws_commons.transport.smtp.client.SmtpTransportTube;
 import org.jvnet.jax_ws_commons.transport.smtp.SMTPFeature;
@@ -26,11 +25,6 @@ public class SmtpTest extends TestCase {
     }
 
     public void testSmtp() {
-        Properties props = System.getProperties();
-        props.put("mail.smtp.host","kohsuke.sfbay.sun.com");
-        props.put("mail.smtp.port","10025");
-        props.put(SmtpTransportTube.class.getName()+".dump","true");
-
         SMTPFeature feature = new SMTPFeature();
         feature.setIncoming(new POP3Info("kohsuke.org", "smtp.transport.client",
             "jaxws123"));
