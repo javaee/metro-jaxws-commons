@@ -1,8 +1,10 @@
 package pop3;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.jvnet.jax_ws_commons.transport.smtp.POP3Info;
+import org.jvnet.jax_ws_commons.transport.smtp.SMTPFeature;
+import org.jvnet.jax_ws_commons.transport.smtp.SenderInfo;
+import org.jvnet.jax_ws_commons.transport.smtp.client.SmtpTransportTube;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -13,29 +15,10 @@ import javax.xml.ws.Service;
 import javax.xml.ws.soap.SOAPBinding;
 import java.util.Properties;
 
-import com.sun.mail.smtp.SMTPTransport;
-import org.jvnet.jax_ws_commons.transport.smtp.client.SmtpTransportTube;
-
 /**
  * Unit test for simple App.
  */
-public class SmtpTest
-        extends TestCase {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public SmtpTest(String testName) {
-        super(testName);
-    }
-
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite() {
-        return new TestSuite(SmtpTest.class);
-    }
+public class SmtpTest extends TestCase {
 
     /**
      * Rigourous Test :-)
@@ -43,14 +26,18 @@ public class SmtpTest
     public void testApp() throws JAXBException, ClassNotFoundException {
         Properties props = System.getProperties();
         props.put(SmtpTransportTube.class.getName()+".dump","true");
+
+        SMTPFeature feature = new SMTPFeature();
+        feature.setIncoming(new POP3Info("sun.com", "server", "password"));
+        feature.setOutgoing(new SenderInfo("sun.com", null, "client@sun.com"));
+
         Service service = Service.create(new QName("FakeService"));
-        service.getClass().getClassLoader().getResource("META-INF/services/com.sun.xml.ws.api.pipe.TransportTubeFactory");
 
-        String add = "smtp://server@sun.com!pop3://server:password@sun.com/";
+        String add = "smtp://server@sun.com";
         service.addPort(new QName("FakePort"), SOAPBinding.SOAP11HTTP_BINDING, add);
-
         JAXBContext jaxbCtx = JAXBContext.newInstance(Book.class);
-        Dispatch dispatch = service.createDispatch(new QName("FakePort"), jaxbCtx, Service.Mode.PAYLOAD);
+        Dispatch dispatch = service.createDispatch(new QName("FakePort"), jaxbCtx, Service.Mode.PAYLOAD,
+                feature);
         dispatch.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, add);
         Book resp = (Book) dispatch.invoke(new Book("Midnight's Children", "Salman Rushdie", "Unknown"));
 
