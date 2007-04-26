@@ -1,10 +1,13 @@
 package org.jvnet.jax_ws_commons.transport.smtp.mail;
 
+import org.jvnet.jax_ws_commons.transport.smtp.SMTPFeature;
+import org.jvnet.jax_ws_commons.transport.smtp.POP3Info;
+import org.jvnet.jax_ws_commons.transport.smtp.SenderInfo;
+
 import javax.mail.*;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import javax.xml.ws.WebServiceException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -23,9 +26,9 @@ import java.util.logging.Logger;
 public class EmailEndpoint {
 
     /**
-     * The address that receives replies.
+     * The from that receives replies i.e. From
      */
-    private final InternetAddress address;
+    private final InternetAddress from;
 
     private final Listener listener;
 
@@ -103,7 +106,7 @@ public class EmailEndpoint {
                 user = smtp.getUserInfo();
             }
 
-            this.address = new InternetAddress(
+            this.from = new InternetAddress(
                     user + '@' + smtp.getHost(),
                     smtpQuery.getValue("personal"));
 
@@ -119,6 +122,31 @@ public class EmailEndpoint {
         } catch (ParseException e) {
             throw new WebServiceException(e);
         }
+    }
+
+    public EmailEndpoint(SMTPFeature feature) {
+        SenderInfo senderInfo = feature.getOutgoing();
+        Properties props = new Properties(System.getProperties());
+        if (props.getProperty("mail.smtp.host") == null) {
+            props.put("mail.smtp.host", senderInfo.getHost());
+        }
+        if (props.getProperty("mail.smtp.port") == null && senderInfo.getPort() != null) {
+            props.put("mail.smtp.port", senderInfo.getPort());
+        }
+        try {
+            this.from = new InternetAddress(senderInfo.getFrom(), null);
+        } catch (UnsupportedEncodingException e) {
+            throw new WebServiceException("Unsupported encoding: " + e.getMessage());
+        }
+        this.session = Session.getInstance(props);
+        this.sender = new SenderThread(session);
+
+        POP3Info pop3 = feature.getIncoming();
+        this.listener = new POP3Listener(pop3.getScheme(), pop3.getHost(),
+                pop3.getUid(), pop3.getPassword(), pop3.getInterval());
+        this.listener.setEndPoint(this);
+
+
     }
 
     private class SMTPAuthenticator extends javax.mail.Authenticator {
@@ -142,7 +170,7 @@ public class EmailEndpoint {
      * This uses {@code Session.getInstance(System.getProperties())} as the JavaMail session,
      * so effectively it configures JavaMail from the system properties.
      *
-     * @param address  The e-mail address of this endpoint.
+     * @param address  The e-mail from of this endpoint.
      * @param listener The object that fetches incoming e-mails.
      */
     public EmailEndpoint(InternetAddress address, Listener listener) {
@@ -153,10 +181,10 @@ public class EmailEndpoint {
      * Creates a new e-mail end point.
      * <p/>
      * <p/>
-     * This version takes the address as string so that it can be invoked from Spring.
+     * This version takes the from as string so that it can be invoked from Spring.
      * It's just a short-cut for:
      * <pre>
-     * this(name,new InternetAddress(address),listener,Session.getInstance(System.getProperties()))
+     * this(name,new InternetAddress(from),listener,Session.getInstance(System.getProperties()))
      * </pre>
      *
      * @see #EmailEndpoint(InternetAddress,Listener)
@@ -168,12 +196,12 @@ public class EmailEndpoint {
     /**
      * Creates a new e-mail end point.
      *
-     * @param address  The e-mail address of this endpoint.
+     * @param address  The e-mail from of this endpoint.
      * @param listener The object that fetches incoming e-mails.
      * @param session  The JavaMail configuration.
      */
     public EmailEndpoint(InternetAddress address, Listener listener, Session session) {
-        this.address = address;
+        this.from = address;
         this.listener = listener;
         this.session = session;
         this.sender = new SenderThread(session);
@@ -212,10 +240,10 @@ public class EmailEndpoint {
     }
 
     /**
-     * Gets the e-mail address that this endpoint is connected to.
+     * Gets the e-mail from that this endpoint is connected to.
      */
-    public InternetAddress getAddress() {
-        return address;
+    public InternetAddress getFrom() {
+        return from;
     }
 
     protected UUID getKey(MimeMessage msg) {
@@ -278,14 +306,15 @@ public class EmailEndpoint {
     public UUID send(MimeMessage msg) {
         try {
             String[] rt = msg.getHeader("Reply-To");
-            if (rt == null || rt.length == 0)
-                msg.setReplyTo(new Address[]{address});
+            if (rt == null || rt.length == 0) {
+                msg.setReplyTo(new Address[]{from});
+            }
             if (msg.getFrom() == null || msg.getFrom().length == 0) {
-                msg.setFrom(address);
+                msg.setFrom(from);
                 // msg.setFrom(new InternetAddress("kk@kohsuke.org"));
             }
             if (msg.getRecipients(Message.RecipientType.TO) == null || msg.getRecipients(Message.RecipientType.TO).length == 0) {
-                msg.setRecipient(Message.RecipientType.TO, address);
+                msg.setRecipient(Message.RecipientType.TO, from);
             }
 
             // this creates a cryptographically strong GUID,

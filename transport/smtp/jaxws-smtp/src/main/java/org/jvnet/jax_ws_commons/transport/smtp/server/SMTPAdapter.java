@@ -19,7 +19,9 @@ import com.sun.istack.Nullable;
 
 import javax.xml.ws.WebServiceException;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.InternetAddress;
 import javax.mail.MessagingException;
+import javax.mail.Address;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import java.io.IOException;
@@ -129,7 +131,7 @@ public class SMTPAdapter extends Adapter<SMTPAdapter.SMTPToolkit> {
          return packet;
      }
 
-     private void encodePacket(@NotNull Packet packet, @NotNull Codec codec) throws MessagingException, IOException {
+     private void encodePacket(@NotNull Packet packet, MimeMessage con, @NotNull Codec codec) throws MessagingException, IOException {
 /*
          if (con.isClosed()) {
              return;                 // Connection is already closed
@@ -179,6 +181,11 @@ public class SMTPAdapter extends Adapter<SMTPAdapter.SMTPToolkit> {
                  //buf.close();
                  System.out.println(buf.toString());
                  MimeMessage msg = new MimeMessage(email.getSession());
+                 String[] rt = con.getHeader("Reply-To");
+                 if (rt != null && rt.length != 0 && rt[0].length() > 0) {
+                     LOGGER.info("**** Sending to "+rt[0]);
+                     msg.setRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(rt[0]));
+                 }
                  msg.setDataHandler(new DataHandler(new DataSource() {
 
                      public InputStream getInputStream() throws IOException {
@@ -224,7 +231,7 @@ public class SMTPAdapter extends Adapter<SMTPAdapter.SMTPToolkit> {
              Packet response = new Packet();
              response.setMessage(e.getFaultMessage());
              try {
-                encodePacket(response, tk.codec);
+                encodePacket(response, con, tk.codec);
              } catch(MessagingException me) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
              }
@@ -248,7 +255,7 @@ public class SMTPAdapter extends Adapter<SMTPAdapter.SMTPToolkit> {
              public void onCompletion(@NotNull Packet response) {
                  try {
                      try {
-                         encodePacket(response, tk.codec);
+                         encodePacket(response, con, tk.codec);
                      } catch(IOException ioe) {
                          LOGGER.log(Level.SEVERE, ioe.getMessage(), ioe);
                      } catch(MessagingException me) {

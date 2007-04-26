@@ -5,9 +5,6 @@ import com.sun.xml.ws.api.EndpointAddress;
 import com.sun.xml.ws.api.pipe.ClientTubeAssemblerContext;
 import com.sun.xml.ws.api.pipe.TransportTubeFactory;
 import com.sun.xml.ws.api.pipe.Tube;
-import com.sun.xml.ws.transport.DeferredTransportPipe;
-
-import javax.xml.ws.WebServiceException;
 
 /**
  * SMTP Tranport Factory.
@@ -19,7 +16,9 @@ public class SmtpTransportTubeFactory extends TransportTubeFactory {
         EndpointAddress address = context.getAddress();
         String scheme = address.getURI().getScheme();
 
-        return (scheme != null && scheme.equalsIgnoreCase("smtp"))
-                ? new SmtpTransportTube(context.getCodec(), address) : null;
+        if (scheme != null && scheme.equalsIgnoreCase("smtp")) {
+            return new SmtpTransportTube(context.getCodec(), context.getBinding(), address);
+        }
+        return null;
     }
 }

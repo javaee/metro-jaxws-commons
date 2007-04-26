@@ -2,15 +2,20 @@ package org.jvnet.jax_ws_commons.transport.smtp.client;
 
 import com.sun.istack.NotNull;
 import com.sun.xml.ws.api.EndpointAddress;
+import com.sun.xml.ws.api.WSBinding;
 import com.sun.xml.ws.api.message.Packet;
 import com.sun.xml.ws.api.pipe.*;
 import com.sun.xml.ws.api.pipe.helper.AbstractTubeImpl;
 import com.sun.xml.ws.util.ByteArrayBuffer;
 import org.jvnet.jax_ws_commons.transport.smtp.mail.EmailEndpoint;
 import org.jvnet.jax_ws_commons.transport.smtp.mail.MailHandler;
+import org.jvnet.jax_ws_commons.transport.smtp.SMTPFeature;
 
 import javax.mail.MessagingException;
+import javax.mail.Message;
+import javax.mail.Address;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.InternetAddress;
 import javax.xml.ws.WebServiceException;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -28,10 +33,14 @@ public class SmtpTransportTube extends AbstractTubeImpl {
     private final Codec codec;
     private final EmailEndpoint endpoint;
 
-
-    public SmtpTransportTube(Codec codec, EndpointAddress endpointAddress) {
+    public SmtpTransportTube(Codec codec, WSBinding binding, EndpointAddress endpointAddress) {
         this.codec = codec;
-        this.endpoint = new EmailEndpoint(endpointAddress.toString());
+        SMTPFeature feature = binding.getFeature(SMTPFeature.class);
+        if (feature != null) {
+            this.endpoint = new EmailEndpoint(feature);
+        } else {
+            this.endpoint = new EmailEndpoint(endpointAddress.toString());
+        }
         if (dump)
             this.endpoint.enableLog();
         this.endpoint.start();
@@ -51,6 +60,8 @@ public class SmtpTransportTube extends AbstractTubeImpl {
             final ByteArrayBuffer buf = new ByteArrayBuffer();
             final ContentType ct = codec.encode(request, buf);
             MimeMessage msg = new MimeMessage(endpoint.getSession());
+            Address to = new InternetAddress(request.endpointAddress.getURI().getAuthority());
+            msg.setRecipient(Message.RecipientType.TO, to);
             msg.setDataHandler(new DataHandler(new DataSource() {
 
                 public InputStream getInputStream() throws IOException {

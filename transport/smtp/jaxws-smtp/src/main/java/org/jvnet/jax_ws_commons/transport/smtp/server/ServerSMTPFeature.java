@@ -7,8 +7,12 @@ import org.springframework.beans.factory.InitializingBean;
 import com.sun.xml.ws.api.server.WSEndpoint;
 
 import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
+ * Spring configures this bean with all the SMTP related configuration for sending and
+ * receiving emails.
+ *
  * @author Jitendra Kotamraju
  */
 
@@ -16,6 +20,8 @@ import java.util.Properties;
  * @org.apache.xbean.XBean element="smtp" root-element="true"
  */
 public class ServerSMTPFeature extends SMTPFeature implements FactoryBean, InitializingBean {
+    private static final Logger logger = Logger.getLogger(ServerSMTPFeature.class.getName());
+
     private SMTPAdapter adapter;
     private WSEndpoint<?> endpoint;
 
@@ -25,7 +31,6 @@ public class ServerSMTPFeature extends SMTPFeature implements FactoryBean, Initi
      * @org.xbean.Property required="true"
      */
     public void setService(WSEndpoint<?> endpoint) {
-        System.out.println("**** endpoint ***="+endpoint);
         this.endpoint = endpoint;
     }
 
@@ -42,14 +47,11 @@ public class ServerSMTPFeature extends SMTPFeature implements FactoryBean, Initi
     }
 
     public void afterPropertiesSet() throws Exception {
-        Properties props = System.getProperties();
-        props.put("mail.smtp.host", "kohsuke.sfbay.sun.com");   // TODO
-        props.put("mail.smtp.port", "10025");
-
-        String add = "smtp://smtp.transport.client@kohsuke.org?!pop3://smtp.transport.server:jaxws123@kohsuke.org/";
+        //String add = "smtp://smtp.transport.client@kohsuke.org?!pop3://smtp.transport.server:jaxws123@kohsuke.org/";
+        EmailEndpoint email = new EmailEndpoint(this);
         adapter = new SMTPAdapter(endpoint);
-        adapter.setEmailEndpoint(new EmailEndpoint(add));
+        adapter.setEmailEndpoint(email);
         adapter.start();
-        System.out.println("**** SMTPAdapter started ****");
+        logger.info("*** SMTPAdapter Started for "+endpoint.getImplementationClass()+" ***");
     }
 }
