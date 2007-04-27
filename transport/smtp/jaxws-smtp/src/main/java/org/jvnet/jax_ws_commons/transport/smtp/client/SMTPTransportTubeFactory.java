@@ -11,13 +11,13 @@ import com.sun.xml.ws.api.pipe.Tube;
  *
  * @author Vivek Pandey
  */
-public class SmtpTransportTubeFactory extends TransportTubeFactory {
+public class SMTPTransportTubeFactory extends TransportTubeFactory {
     public Tube doCreate(@NotNull ClientTubeAssemblerContext context) {
         EndpointAddress address = context.getAddress();
         String scheme = address.getURI().getScheme();
 
         if (scheme != null && scheme.equalsIgnoreCase("smtp")) {
-            return new SmtpTransportTube(context.getCodec(), context.getBinding(), address);
+            return new SMTPTransportTube(context.getCodec(), context.getBinding(), address);
         }
         return null;
     }

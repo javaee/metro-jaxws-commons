@@ -1,6 +1,10 @@
 package org.jvnet.jax_ws_commons.transport.smtp;
 
 /**
+ * Captures SMTP information to send mail messages
+ * 
+ * @author Jitendra Kotamraju
+ *
  * @org.apache.xbean.XBean element="sender" root-element="true"
  */
 public class SenderInfo {
@@ -9,6 +13,10 @@ public class SenderInfo {
     private String from;
 
     public SenderInfo() {
+    }
+
+    public SenderInfo(String host, String from) {
+        this(host, null, from);
     }
 
     public SenderInfo(String host, String port, String from) {

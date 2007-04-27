@@ -1,6 +1,9 @@
 package org.jvnet.jax_ws_commons.transport.smtp;
 
 /**
+ * Captures POP3Info that is required to receive mail messages using POP3 protocol.
+ * @author Jitendra Kotamraju
+ *
  * @org.apache.xbean.XBean element="pop3" root-element="true"
  */
 public class POP3Info {

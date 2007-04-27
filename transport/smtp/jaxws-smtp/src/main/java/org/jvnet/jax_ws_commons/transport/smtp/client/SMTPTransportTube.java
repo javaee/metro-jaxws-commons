@@ -29,11 +29,11 @@ import java.io.OutputStream;
  * @author Vivek Pandey
  * @author Jitendra Kotamraju
  */
-public class SmtpTransportTube extends AbstractTubeImpl {
+public class SMTPTransportTube extends AbstractTubeImpl {
     private final Codec codec;
     private final EmailEndpoint endpoint;
 
-    public SmtpTransportTube(Codec codec, WSBinding binding, EndpointAddress endpointAddress) {
+    public SMTPTransportTube(Codec codec, WSBinding binding, EndpointAddress endpointAddress) {
         this.codec = codec;
         SMTPFeature feature = binding.getFeature(SMTPFeature.class);
         if (feature != null) {
@@ -46,7 +46,7 @@ public class SmtpTransportTube extends AbstractTubeImpl {
         this.endpoint.start();
     }
 
-    public SmtpTransportTube(SmtpTransportTube that, TubeCloner cloner) {
+    public SMTPTransportTube(SMTPTransportTube that, TubeCloner cloner) {
         this.codec = that.codec.copy();
         this.endpoint = that.endpoint;
         cloner.add(this, that);
@@ -88,7 +88,6 @@ public class SmtpTransportTube extends AbstractTubeImpl {
             throw new WebServiceException(e);
         }
         return doSuspend();
-
     }
 
     @NotNull
@@ -105,8 +104,8 @@ public class SmtpTransportTube extends AbstractTubeImpl {
         //Nothing to do?
     }
 
-    public SmtpTransportTube copy(TubeCloner cloner) {
-        return new SmtpTransportTube(this, cloner);
+    public SMTPTransportTube copy(TubeCloner cloner) {
+        return new SMTPTransportTube(this, cloner);
     }
 
     public class SmtpHandler implements MailHandler {
@@ -133,17 +132,16 @@ public class SmtpTransportTube extends AbstractTubeImpl {
     /**
      * Dumps what goes across SMTP transport.
      */
-    private static final boolean dump;
+    public static boolean dump;
 
     static {
         boolean b;
         try {
-            b = Boolean.getBoolean(SmtpTransportTube.class.getName() + ".dump");
+            b = Boolean.getBoolean(SMTPTransportTube.class.getName() + ".dump");
         } catch (Throwable t) {
             b = false;
         }
         dump = b;
     }
-
 
 }

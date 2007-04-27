@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 import org.jvnet.jax_ws_commons.transport.smtp.POP3Info;
 import org.jvnet.jax_ws_commons.transport.smtp.SMTPFeature;
 import org.jvnet.jax_ws_commons.transport.smtp.SenderInfo;
-import org.jvnet.jax_ws_commons.transport.smtp.client.SmtpTransportTube;
+import org.jvnet.jax_ws_commons.transport.smtp.client.SMTPTransportTube;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -25,7 +25,7 @@ public class SmtpTest extends TestCase {
      */
     public void testApp() throws JAXBException, ClassNotFoundException {
         Properties props = System.getProperties();
-        props.put(SmtpTransportTube.class.getName()+".dump","true");
+        props.put(SMTPTransportTube.class.getName()+".dump","true");
 
         SMTPFeature feature = new SMTPFeature();
         feature.setIncoming(new POP3Info("sun.com", "server", "password"));
