@@ -2,7 +2,6 @@ package foo;
 
 import junit.framework.TestCase;
 import javax.xml.ws.BindingProvider;
-import org.jvnet.jax_ws_commons.transport.smtp.client.SmtpTransportTube;
 import org.jvnet.jax_ws_commons.transport.smtp.SMTPFeature;
 import org.jvnet.jax_ws_commons.transport.smtp.POP3Info;
 import org.jvnet.jax_ws_commons.transport.smtp.SenderInfo;
@@ -30,7 +29,7 @@ public class SmtpTest extends TestCase {
      * invokes using SMTP
      */
     public void testSmtp() {
-        SMTPransportTube.dump = true;		// Enable logging
+        SMTPTransportTube.dump = true;		// Enable logging
 
         SMTPFeature feature = new SMTPFeature("kohsuke.sfbay.sun.com", "10025",
             "smtp.transport.client@kohsuke.org");
