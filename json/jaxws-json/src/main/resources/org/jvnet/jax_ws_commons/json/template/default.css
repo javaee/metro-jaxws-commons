@@ -59,7 +59,10 @@ h1,h2,h3 {
 	color: #367EA6;
 	padding-top: 6px;
 }
-
+td {
+  padding-left: 2em;
+  padding-right: 2em;
+}
 /* misc */
 .clearer {
 	clear: both;
