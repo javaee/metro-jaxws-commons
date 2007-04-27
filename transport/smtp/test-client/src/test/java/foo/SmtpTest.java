@@ -6,13 +6,14 @@ import org.jvnet.jax_ws_commons.transport.smtp.client.SmtpTransportTube;
 import org.jvnet.jax_ws_commons.transport.smtp.SMTPFeature;
 import org.jvnet.jax_ws_commons.transport.smtp.POP3Info;
 import org.jvnet.jax_ws_commons.transport.smtp.SenderInfo;
+import com.sun.xml.ws.developer.WSBindingProvider;
 
 /**
  * @author Jitendra Kotamraju
  */
 public class SmtpTest extends TestCase {
     /**
-     * 
+     * invokes using HTTP
      */
     public void testHttp() {
         GreetingService proxy =
@@ -24,19 +25,16 @@ public class SmtpTest extends TestCase {
         assertEquals("Bonjour, jitu", proxy.sayHelloTo("jitu"));
     }
 
+    /**
+     * invokes using SMTP
+     */
     public void testSmtp() {
-        SMTPFeature feature = new SMTPFeature();
-        feature.setIncoming(new POP3Info("kohsuke.org", "smtp.transport.client",
-            "jaxws123"));
-        feature.setOutgoing(new SenderInfo("kohsuke.sfbay.sun.com", "10025",
-            "smtp.transport.client@kohsuke.org"));
+        SMTPFeature feature = new SMTPFeature("kohsuke.sfbay.sun.com", "10025",
+            "smtp.transport.client@kohsuke.org");
+        feature.setPOP3("kohsuke.org", "smtp.transport.client", "jaxws123");
         GreetingService proxy =
             new GreetingServiceService().getGreetingServicePort(feature);
-
-        ((BindingProvider)proxy).getRequestContext().put(
-            BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-            "smtp://smtp.transport.server@kohsuke.org"
-        );
+        ((WSBindingProvider)proxy).setAddress("smtp://smtp.transport.server@kohsuke.org");
         assertEquals("Bonjour, jitu", proxy.sayHelloTo("jitu"));
     }
 }
