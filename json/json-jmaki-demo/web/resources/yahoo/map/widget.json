@@ -1,0 +1,32 @@
+{'name': 'Map',
+ 'type': 'Yahoo',
+ 'version': '.9',
+ 'jmakiVersion': '.9',
+ 'image' : 'images/yahoo-map.jpg',
+ 'description': 'A configurable map.',
+ 'args': [
+         {'topic':{'type':'STRING', 'defaultValue': '/yahoo/map', 'description': 'The topic published to'}},
+         {'zoom':{'type':'NUMBER', 'defaultValue': '7', 'description': 'The map zoom.'}},
+         {'location' : {'type':'STRING', 'defaultValue': 'Santa Clara, CA', 'description': 'The default location to center. Location takes precedence over setting centerLat and centerLong properties.'}},
+         {'centerLat':{'type':'NUMBER', 'defaultValue': 37.4041960114344, 'description': 'The center latititude.'}},
+         {'centerLon':{'type':'NUMBER', 'defaultValue': -122.008194923401, 'description': 'The center longitude.'}},
+         {'mapType':{'type':'STRING', 'defaultValue': 'SATALITE',
+          'values': [
+               {'name' : 'Hybrid', 'value' : 'HYBRID', 'description' : 'Hybrid view.'},
+               {'name' : 'Satalite', 'value' : 'SATALITE', 'description' : 'Satalite view.'}
+              ], 'description': 'The map type.'}},
+         {'height':{'type':'NUMBER', 'defaultValue': 320, 'description': 'A static height.'}},
+         {'width':{'type':'NUMBER', 'defaultValue': 500, 'description': 'A static width.'}}
+    ],
+ 'config' : {
+     'type' : {
+         'id' :  'yahoo.map',
+         'dynamicallyLoadable' : false,
+         'libs': ['http://api.maps.yahoo.com/ajaxymap?v=3.0&appid='],
+         'apikey' : 'yahoo'
+        },
+  'apikeys' : [
+     {'id': 'yahoo', 'keys': [{'url' : '*', 'key' : 'jmaki-key'}]}
+    ]
+  }
+ }

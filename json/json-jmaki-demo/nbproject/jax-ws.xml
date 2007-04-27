@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jax-ws xmlns="http://www.netbeans.org/ns/jax-ws/1">
+  <services>
+    <service name="GreetingService">
+      <implementation-class>greeting.GreetingService</implementation-class>
+    </service>
+    <service name="BookService">
+      <implementation-class>books.BookService</implementation-class>
+    </service>
+  </services>
+  <clients>
+    <client name="GreetingService">
+      <wsdl-url>http://localhost:8084/WebApplication1/GreetingService?wsdl</wsdl-url>
+      <local-wsdl-file>localhost_8084/WebApplication1/GreetingService.wsdl</local-wsdl-file>
+      <package-name forceReplace="true">client</package-name>
+      <catalog-file>catalog.xml</catalog-file>
+    </client>
+  </clients>
+  <jsr109>false</jsr109>
+</jax-ws>

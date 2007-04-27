@@ -1,0 +1,48 @@
+body  {
+  background : #FFFFFF;
+}
+
+.outerBorder {
+}
+
+.header {
+  padding 5px;
+  color : #000000;
+  background : #C7F1B3;
+  border : 0;
+}
+
+.subheader, .subheader div a {
+  color : #000000;
+  border : 0;
+}
+
+.subheader div {
+}
+
+.main {
+
+}
+
+.content {
+  background : white;
+}
+
+.leftSidebar {
+  background : white;
+}
+.leftColumn {
+  background : #FFFFFF;
+}
+
+.rightColumn {
+  background : #FFFFFF;
+}
+.banner {
+  padding-left : 10px;
+}
+
+.footer {
+  color : #000000;
+  background : #C7F1B3;
+}

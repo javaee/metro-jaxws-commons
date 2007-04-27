@@ -1,0 +1,6 @@
+<div id="${uuid}">
+    <form onsubmit="jmaki.attributes.get('${uuid}').getCoordinates();return false;">
+        <b>Location:</b>  <input type="text" id="${uuid}_location">
+        <input type="button" value="Get Coordinates" onclick="jmaki.attributes.get('${uuid}').getCoordinates();">
+    </form>
+</div>

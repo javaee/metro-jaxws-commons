@@ -1,0 +1,45 @@
+.outerBorder {
+  margin: 20px 50px 0px 50px;
+  padding: 0px 10px 10px 10px;
+}
+
+.header {
+  height:90px;
+  margin : 0px 0px 10px 0px;
+  border: 1px solid #000000;
+}
+
+.subheader {
+  clear:both;
+  padding-right : 10px;  
+  margin: 25px 0px 0px 0px;
+  height:20px;
+}
+
+.subheader div {
+  font-size:15px;
+  float:right;
+}
+
+.main {
+  width: 100%;
+  margin-top: 5px;
+}
+
+.content {
+  margin: 0 0 0 0px;
+  border: 1px solid #000000;
+}
+
+.banner {
+  margin: 0px 40px 0px 0px;
+  display:table-cell;
+  vertical-align:middle;
+  font-size:35px;
+ }
+
+.footer {
+  clear: both;
+  text-align:center;
+  border: 1px solid #000000;
+}

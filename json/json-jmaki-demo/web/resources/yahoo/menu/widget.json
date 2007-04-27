@@ -1,0 +1,50 @@
+{
+    'name': 'Menu',
+    'type': 'yahoo',
+    'version': '.9', 
+    'jmakiVersion' : '.9',
+    'image': 'images/yahoo-menu.jpg',
+    'description': 'A generic menu widget.',
+    'args': [
+    {'topic':{'type':'STRING', 'defaultValue': '/yahoo/menu', 'description': 'The topic published to'}},
+    {'position': {
+         'type':'STRING', 
+         'defaultValue': 'static', 
+         'description': 'Menu position',
+         'values': [
+         {'value': 'static', 'description': 'fixed position menu'},
+         {'value': 'dynamic','description': 'dynamic floating menu'}
+         ]
+     }},
+     {'hidedelay':{'type':'NUMBER', 'defaultValue': 750, 'description': 'hide delay'}},
+     {'fixedcenter':{'type':'BOOLEAN', 'defaultValue': true, 'description': 'centered?'}},
+     {'clicktohide':{'type':'BOOLEAN', 'defaultValue': true, 'description': 'Click outside to menu to hide?'}},
+     {'visible':{'type':'BOOLEAN', 'defaultValue': true, 'description': 'visible at startup?'}},
+     {'constraintoviewport':{'type':'BOOLEAN', 'defaultValue': true, 'description': 'constrained to current viewport?'}},
+     {'x':{'type':'NUMBER', 'defaultValue': 50, 'description': 'menu x (left)'}},
+     {'y':{'type':'NUMBER', 'defaultValue': 50, 'description': 'menu y (top)'}}
+     ],
+     
+     'value': {
+         'required':'true',
+         'type': 'OBJECT',
+         'defaultValue':{ }
+     },
+     'config' : {
+         'type': {
+             'id' : 'yahoo.menu',
+             'libs': [ 
+             '../resources/libs/yahoo/v2.2.1/yahoo/yahoo-min.js',
+             '../resources/libs/yahoo/v2.2.1/dom/dom-min.js',                
+             '../resources/libs/yahoo/v2.2.1/event/event-min.js',
+             '../resources/libs/yahoo/v2.2.1/container/container_core-min.js',
+             '../resources/libs/yahoo/v2.2.1/menu/menu-min.js'],
+             'styles': [
+             '../resources/libs/yahoo/v2.2.1/fonts/fonts-min.css',
+             '../resources/libs/yahoo/v2.2.1/menu/assets/menu.css'],
+             'resources': [
+             '../resources/libs/yahoo/v2.2.1/menu/assets']        
+         }
+     }
+     
+}

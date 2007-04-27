@@ -1,0 +1,62 @@
+.border {
+  margin: 0px 10px 20px 10px;
+  padding: 0 10px 10px 10px;
+}
+
+.header {
+  height:20%;
+}
+
+.subheader {
+  clear:both;
+  border-top: 1px solid #000000;
+  border-bottom: 1px solid #000000;
+  height:20px;
+  width:100%;
+}
+
+.subheader div {
+  float:right;  
+}
+
+.main {
+  top:0;
+  left:  0;
+  height: 400px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.center {
+  margin: 0 205px 0 205px;
+  border: 1px solid #000000;
+}
+
+.rightSidebar {
+  float:right;
+  margin-left: 5px;
+  width: 200px;
+  height: 400px;
+  border: 1px solid #000000;
+}
+
+.leftSidebar {
+  float:left;
+  width: 200px;
+  height: 400px;
+  border: 1px solid #000000;
+}
+
+.banner {
+  margin: 0px 40px 0px 0px;
+  display:table-cell;
+  vertical-align:middle;
+  font-size:35px;
+ }
+
+.footer {
+  clear: both;
+  text-align:center;
+  margin-top:10px;
+  border: 1px solid #000000;
+}

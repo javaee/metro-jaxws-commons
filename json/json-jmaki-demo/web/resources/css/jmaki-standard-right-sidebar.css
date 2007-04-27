@@ -1,0 +1,53 @@
+.outerBorder {
+  margin: 0px 0px 0px 0px;
+  padding: 0 0px 0px 0px;
+}
+
+.header {
+  height:70px;
+}
+
+.subheader {
+  clear:both;
+  border-top: 1px solid #000000;
+  border-bottom: 1px solid #000000;
+  height:20px;
+  width:100%;
+}
+
+.subheader div {
+  font-size:15px;
+  float:right;
+}
+
+.main {
+  width: 100%;
+  margin-top: 5px;
+}
+
+.content {
+  margin: 0 155px 0 255px;
+  border: 1px solid #000000;
+}
+
+.leftSidebar {
+  float:left;
+  margin-right: 5px;
+  width: 250px;
+  border: 1px solid #000000;
+}
+
+.rightSidebar {
+  float:right;
+  margin-left: 5px;
+  width: 150px;
+  height: 90%;
+  border: 1px solid #000000;
+}
+
+.banner {
+  margin: 0px 40px 0px 0px;
+  display:table-cell;
+  vertical-align:middle;
+  font-size:35px;
+ }
