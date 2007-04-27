@@ -67,14 +67,15 @@ jmaki.widgets.yahoo.dataTable.Widget = function(wargs) {
         var nd = [];
         for (var i=0; i < _d.length; i++) {
             var row = {};
-            for (var ii=0; ii < _d[i].length; ii++) {
-                // this code allows for matching to the columin id with row data
-                if (_d[i][ii].id) {
-                    row[schema[_d[i][ii].id]] = _d[i][ii].value;
-                } else {
-                  row[schema[ii]] = _d[i][ii];
+            // this code allows for matching to the columin id with row data              
+            if (_d[i][schema[0]]) {
+                row = _d[i];
+            } else {
+                for (var ii=0; ii < _d[i].length; ii++) {
+ 
+                    row[schema[ii]] = _d[i][ii];
                 }
-            }
+            }            
             nd.push(row);
         }
        rs.addRecords(nd);
@@ -137,17 +138,17 @@ jmaki.widgets.yahoo.dataTable.Widget = function(wargs) {
         // normalize data for yahoo which wants key value pairs for every row item
         for (var i=0; i < data.length; i++) {
             var row = {};
-            for (var ii=0; ii < data[i].length; ii++) {
-                // this code allows for matching to the columin id with row data
-                if (data[i][ii].id) {
-                    row[schema[data[i][ii].id]] = data[i][ii].value;
-                } else {
-                  row[schema[ii]] = data[i][ii];
+            if (data[i][schema[0]]) {
+                row = data[i];
+            } else {
+                for (var ii=0; ii < data[i].length; ii++) {
+                    // this code allows for matching to the columin id with row data   
+                    row[schema[ii]] = data[i][ii];
                 }
             }
             nData.push(row);
         }
-        
+    
         var columns = new YAHOO.widget.ColumnSet(cols);
         
         var ds = new YAHOO.util.DataSource(nData);
