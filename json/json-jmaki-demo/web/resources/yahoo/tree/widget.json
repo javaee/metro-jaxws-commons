@@ -1,0 +1,39 @@
+{
+    'name': 'Tree',
+    'type': 'yahoo',
+    'version': '.9',
+    'jmakiVersion': '.9',
+    'image': 'images/yahoo-tree.jpg',
+    'description': 'This widget is a dynamic tree that can easily be configured.',
+    'args': [
+    {'topic':{'type':'STRING', 'defaultValue': '/yahoo/tree', 'description': 'The topic published to'}}
+    ],
+    'value': {'required':'true',
+    'type': 'OBJECT',
+    'defaultValue':{ 
+        'root':{'title': 'Default Yahoo Tree Root Node',
+        'expanded': true,
+        'children': [
+        {'title':'Yahoo Node 1.1', 'onclick': {'url':'foo'}},
+        {'title':'Yahoo Node 1.2', 'children': [{'title':'Node 3.1'}]}
+        ] 
+        }
+    }
+    },
+    'config' : {
+        'type' :
+        { 'id' : 'yahoo.tree', 
+          'libs' : [
+          '../resources/libs/yahoo/v2.2.1/yahoo/yahoo-min.js',
+          '../resources/libs/yahoo/v2.2.1/event/event-min.js',
+          '../resources/libs/yahoo/v2.2.1/treeview/treeview-min.js'
+          ],
+          'styles' : [
+          '../resources/libs/yahoo/v2.2.1/treeview/assets/tree.css'
+          ],
+          'resources' : [
+          '../resources/libs/yahoo/v2.2.1/treeview/assets'
+          ]
+        }
+    }
+}

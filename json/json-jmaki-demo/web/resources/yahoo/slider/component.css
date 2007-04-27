@@ -1,0 +1,10 @@
+/* CSS for vertical slider */
+.vertWrapper {position:relative; margin-left:60px;width:218px;height:175px;float:left; display:none}
+.vertHandleDiv { cursor:default; width:20px; height:18px; position:absolute;background:url(img/vertSlider.png) no-repeat; }
+.vertBGDiv {position:relative;top:0px; float:left; width:26px; left:10px;background:url(img/vertBg.png) no-repeat;height:218px; }
+.vertValueDiv { position:relative; top: 100px; left:40px; }
+/* CSS for horizontal slider */
+.horizWrapper {position:relative; margin-left:60px;width:218px;height:175px;float:left; display:none}
+.horizHandleDiv {position:absolute; cursor:default; top: 8px; width:18px; height:20px; background:url(img/horizSlider.png) no-repeat; }
+.horizBGDiv {position:relative;top:0px; float:left; height:26px; width:218px; left:10px;background:url(img/horizBg.png) no-repeat; zindex:5 }
+.horizValueDiv {position:relative; top: 28px; left:60px; }

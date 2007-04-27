@@ -1,0 +1,94 @@
+<!-- RGB Slider: hidden -->
+<div id="${uuid}_rgbslider" class="dragPanel">
+    <h4 id="${uuid}_pickerHandle">&nbsp;</h4>
+    <div id="${uuid}_rBG" class="bg" tabindex="1" hidefocus="true" 
+         style="-moz-outline: none; outline:0px none;top:20px">
+        <div id="${uuid}_rthumb" class="thumb"></div> 
+    </div> 
+    <div id="${uuid}_gBG" class="bg" tabindex="2" hidefocus="true" 
+         style="-moz-outline: none; outline:0px none;top:40px">
+        <div id="${uuid}_gthumb" class="thumb"></div> 
+    </div>  
+    <div id="${uuid}_bBG" class="bg" tabindex="3" hidefocus="true" 
+         style="-moz-outline: none; outline:0px none;top:60px">
+        <div id="${uuid}_bthumb" class="thumb"></div> 
+    </div> 
+    <div id="${uuid}_valdiv" style="position:absolute; top: 85px; left:10px;">
+        <form name="${uuid}_rgbform">
+            <table border="0">
+                <tr>
+                    <td>
+                        RGB
+                    </td>
+                    <td>
+                        <input autocomplete="off" tabindex="3" name="${uuid}_rval" id="${uuid}_rval" type="text" value="0" size="4" maxlength="4" />
+                        <input autocomplete="off" tabindex="4" name="${uuid}_gval" id="${uuid}_gval" type="text" value="0" size="4" maxlength="4" />
+                        <input autocomplete="off" tabindex="5" name="${uuid}_bval" id="${uuid}_bval" type="text" value="0" size="4" maxlength="4" />
+                    </td>
+                    
+                    <td>
+                        <input tabindex="6" id="${uuid}_rgbSubmitsrc" type="button" value="Update"  />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Hex: #
+                    </td>
+                    <td>
+                        <input autocomplete="off" tabindex="7" name="${uuid}_hexval" id="${uuid}_hexval" type="text" value="" size="6" maxlength="6" />
+                    </td>
+                    <td>
+                        <input tabindex="8" id="${uuid}_hexSubmitsrc" type="button" value="Update" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input tabindex="9" id="${uuid}_resetButtonsrc" type="button" value="Reset" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div id="${uuid}_rgbswatch" 
+         style="position:absolute; left:290px; top:24px; height:50px; width:50px; border:1px solid #aaaaaa;">
+        &nbsp;
+    </div>
+</div>
+
+<!-- HSV Slider: hidden -->
+<div id="${uuid}_hsvslider" class="ddPickerStyle">
+    
+    <div id="${uuid}_pickerHandle" class="pickerHandleStyle">&nbsp;</div>
+    <div id="${uuid}_pickerDiv" class="pickerDivStyle" tabindex="-1" hidefocus="true">
+        <img id="${uuid}_pickerbg" class="pickerbgStyle" src="${widgetDir}/img/pickerbg.png" alt=""/>
+        <div id="${uuid}_selector" class="selectorStyle"></div> 
+    </div>
+    
+    <div id="${uuid}_hueBg" class="hueBgStyle" tabindex="-1" hidefocus="true">
+        <div id="${uuid}_hueThumb" class="hueThumbStyle"></div> 
+    </div> 
+    
+    <div id="${uuid}_valdiv" class="valdivStyle">
+        <form name="${uuid}_hsvform" class="ddPickerInput">
+            <br />
+            R <input readonly="true" autocomplete="off" name="${uuid}_hsv_rval" id="${uuid}_hsv_rval" type="text" value="0" size="3" maxlength="3" />
+            
+            H <input readonly="true" autocomplete="off" name="${uuid}_hsv_hval" id="${uuid}_hsv_hval" type="text" value="0" size="3" maxlength="3" />
+            <br />
+            G <input readonly="true" autocomplete="off" name="${uuid}_hsv_gval" id="${uuid}_hsv_gval" type="text" value="0" size="3" maxlength="3" />
+            S <input readonly="true" autocomplete="off" name="${uuid}_hsv_gsal" id="${uuid}_hsv_sval" type="text" value="0" size="3" maxlength="3" />
+            <br />
+            B <input readonly="true" autocomplete="off" name="${uuid}_hsv_bval" id="${uuid}_hsv_bval" type="text" value="0" size="3" maxlength="3" />
+            V <input readonly="true" autocomplete="off" name="${uuid}_hsv_vval" id="${uuid}_hsv_vval" type="text" value="0" size="3" maxlength="3" />
+            
+            <br />
+            <br />
+            # <input readonly="true" autocomplete="off" name="${uuid}_hexval" id="${uuid}_hsv_hexval" type="text" value="0" size="6" maxlength="6" />
+            <br />
+            
+        </form>
+    </div>
+    
+    <div id="${uuid}_hsvswatch" class="swatchStyle">&nbsp;</div>
+    
+</div>

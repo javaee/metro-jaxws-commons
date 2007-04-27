@@ -1,0 +1,43 @@
+{
+    'name': 'Slider',
+    'type': 'yahoo',
+    'version': '.9',
+    'jmakiVersion' : '.9',
+    'image': 'images/yahoo-slider.jpg',
+    'description': 'A slider widget that enables the user to adjust values in a finite range over horizontal or vertical axis.',
+    'args': [
+            {'topic':{'type':'STRING', 'defaultValue': '/yahoo/slider', 'description': 'The topic published to'}},
+            {'sliderType':{'type':'STRING', 'defaultValue': 'H', 'values': [
+              {'name' : 'Horizontal', 'value' : 'H', 'description' : 'Horizontal slider.'},
+              {'name' : 'Vertical', 'value' : 'V', 'description' : 'Vertical slider.'}
+             ],
+            'description': 'The orientation of the slider.'}},
+	    {'animate':{'type':'BOOLEAN', 'defaultValue': 'true', 'description': 'Animation flag'}},
+	    {'scaleFactor':{'type':'NUMBER', 'defaultValue': 0.5, 'description': 'Custom scale factor for converting pixel offset into a real value'}},
+	    {'tickSize':{'type':'NUMBER', 'defaultValue': 25, 'description': 'Tick size'}},
+	    {'sliderLeft':{'type':'NUMBER', 'defaultValue': 0, 'description': 'The number of pixels the element can move left'}},
+	    {'sliderRight':{'type':'NUMBER', 'defaultValue': 100, 'description': 'The number of pixels the element can move right'}},
+	    {'initialValue':{'type':'NUMBER', 'defaultValue': 50, 'description': 'The number of pixels from the start point'}}
+    ],
+    'config' : {
+    	'type': {
+		'id' : 'yahoo.slider',
+	        'libs': [
+			'../resources/libs/yahoo/v2.2.1/yahoo/yahoo-min.js',
+			'../resources/libs/yahoo/v2.2.1/dom/dom-min.js',                
+			'../resources/libs/yahoo/v2.2.1/event/event-min.js',
+			'../resources/libs/yahoo/v2.2.1/animation/animation-min.js',
+			'../resources/libs/yahoo/v2.2.1/dragdrop/dragdrop-min.js',
+			'../resources/libs/yahoo/v2.2.1/slider/slider-min.js',
+                        '../resources/libs/yahoo/v2.2.1/element/element-beta-min.js',
+                        '../resources/libs/yahoo/v2.2.1/container/container_core-min.js',
+                        '../resources/libs/yahoo/v2.2.1/button/button-beta-min.js'
+			 ],
+                 'styles': [
+                     '../resources/libs/yahoo/v2.2.1/fonts/fonts-min.css',
+                     '../resources/libs/yahoo/v2.2.1/button/assets/button.css'],
+                'resources': [
+                    '../resources/libs/yahoo/v2.2.1/button/assets']        
+	 }
+     }
+}
