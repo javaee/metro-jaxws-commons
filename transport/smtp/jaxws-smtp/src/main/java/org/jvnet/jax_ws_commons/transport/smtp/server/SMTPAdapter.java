@@ -187,7 +187,7 @@ public class SMTPAdapter extends Adapter<SMTPAdapter.SMTPToolkit> {
                      msg.setRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(rt[0]));
                  }
                  String[] msgId = con.getHeader("Message-id");
-                 LOGGER.info("Received MessageId"+msgId);
+                 LOGGER.info("Received MessageId"+msgId[0]);
                  if (msgId != null && msgId.length != 0 && msgId[0].length() > 0) {
                      LOGGER.info("In-reply-to ="+msgId[0]);
                      msg.setHeader("In-reply-to", msgId[0]);

@@ -246,7 +246,7 @@ public class EmailEndpoint {
         return from;
     }
 
-    protected UUID getKey(MimeMessage msg) {
+    public static UUID getKey(MimeMessage msg) {
         try {
             UUID id = getIdHeader(msg, "References");
             if (id != null) return id;

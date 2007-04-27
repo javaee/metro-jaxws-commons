@@ -22,6 +22,10 @@ import javax.activation.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Collections;
+import java.util.UUID;
 
 /**
  * SMTP transport tube.
@@ -32,6 +36,7 @@ import java.io.OutputStream;
 public class SMTPTransportTube extends AbstractTubeImpl {
     private final Codec codec;
     private final EmailEndpoint endpoint;
+    private final SmtpHandler incomingHandler;
 
     public SMTPTransportTube(Codec codec, WSBinding binding, EndpointAddress endpointAddress) {
         this.codec = codec;
@@ -43,19 +48,21 @@ public class SMTPTransportTube extends AbstractTubeImpl {
         }
         if (dump)
             this.endpoint.enableLog();
+        incomingHandler = new SmtpHandler();
+        endpoint.setMailHandler(new SmtpHandler());
         this.endpoint.start();
     }
 
     public SMTPTransportTube(SMTPTransportTube that, TubeCloner cloner) {
         this.codec = that.codec.copy();
         this.endpoint = that.endpoint;
+        this.incomingHandler = that.incomingHandler;
         cloner.add(this, that);
     }
 
     @NotNull
     public NextAction processRequest(@NotNull Packet request) {
-        endpoint.setMailHandler(new SmtpHandler(request));
-
+        
         try {
             final ByteArrayBuffer buf = new ByteArrayBuffer();
             final ContentType ct = codec.encode(request, buf);
@@ -81,7 +88,8 @@ public class SMTPTransportTube extends AbstractTubeImpl {
                 }
             }));
 
-            endpoint.send(msg);
+            UUID msgId = endpoint.send(msg);
+            incomingHandler.addHandler(msgId, new MessageHandler(request));  // TODO
         } catch (IOException e) {
             throw new WebServiceException(e);
         } catch (MessagingException e) {
@@ -108,11 +116,11 @@ public class SMTPTransportTube extends AbstractTubeImpl {
         return new SMTPTransportTube(this, cloner);
     }
 
-    public class SmtpHandler implements MailHandler {
+    public class MessageHandler implements MailHandler {
         final Fiber fiber;
         final Packet request;
 
-        SmtpHandler(Packet request) {
+        MessageHandler(Packet request) {
             this.request = request;
             fiber = Fiber.current();
         }
@@ -126,6 +134,29 @@ public class SMTPTransportTube extends AbstractTubeImpl {
             }
 
             fiber.resume(reply);
+        }
+    }
+
+    public class SmtpHandler implements MailHandler {
+        Map<UUID, MailHandler> waiting = Collections.synchronizedMap(new HashMap<UUID, MailHandler>());
+
+        public void addHandler(UUID msgId, MailHandler handler ) {
+            waiting.put(msgId, handler);
+            System.out.println("Waiting="+waiting);
+        }
+
+        public void onNewMail(MimeMessage message) {
+            UUID key = EmailEndpoint.getKey(message);
+            if (key != null) {
+                MailHandler cbak = waiting.get(key);
+                if (cbak == null) {
+                    System.out.println("Received unexpected message");
+                } else {
+                    cbak.onNewMail(message);
+                }
+            } else {
+                System.out.println("Received unexpected message - cannot have any relate info");
+            }
         }
     }
 
