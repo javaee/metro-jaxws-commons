@@ -8,15 +8,15 @@
   </parent>
   
   <artifactId>json</artifactId>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.1</version>
   <packaging>pom</packaging>
   
   <name>JSON support extension</name>
   
   <scm>
-    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/trunk/json</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/trunk/json</developerConnection>
-    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/json</url>
+    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/tags/json-1.1</connection>
+    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/tags/json-1.1</developerConnection>
+    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/tags/json-1.1</url>
   </scm>
   
   <modules>
