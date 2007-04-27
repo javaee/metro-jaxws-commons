@@ -14,6 +14,7 @@ import org.jvnet.jax_ws_commons.transport.smtp.SMTPFeature;
 import javax.mail.MessagingException;
 import javax.mail.Message;
 import javax.mail.Address;
+import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.InternetAddress;
 import javax.xml.ws.WebServiceException;
@@ -49,7 +50,7 @@ public class SMTPTransportTube extends AbstractTubeImpl {
         if (dump)
             this.endpoint.enableLog();
         incomingHandler = new SmtpHandler();
-        endpoint.setMailHandler(new SmtpHandler());
+        endpoint.setMailHandler(incomingHandler);
         this.endpoint.start();
     }
 
@@ -66,7 +67,7 @@ public class SMTPTransportTube extends AbstractTubeImpl {
         try {
             final ByteArrayBuffer buf = new ByteArrayBuffer();
             final ContentType ct = codec.encode(request, buf);
-            MimeMessage msg = new MimeMessage(endpoint.getSession());
+            MimeMessage msg = new MyMessage(endpoint.getSession());
             Address to = new InternetAddress(request.endpointAddress.getURI().getAuthority());
             msg.setRecipient(Message.RecipientType.TO, to);
             msg.setDataHandler(new DataHandler(new DataSource() {
@@ -89,7 +90,8 @@ public class SMTPTransportTube extends AbstractTubeImpl {
             }));
 
             UUID msgId = endpoint.send(msg);
-            incomingHandler.addHandler(msgId, new MessageHandler(request));  // TODO
+            // TODO what happens when the message arrives before addHandler is called
+            incomingHandler.addHandler(msgId, new MessageHandler(request));
         } catch (IOException e) {
             throw new WebServiceException(e);
         } catch (MessagingException e) {
@@ -148,7 +150,8 @@ public class SMTPTransportTube extends AbstractTubeImpl {
         public void onNewMail(MimeMessage message) {
             UUID key = EmailEndpoint.getKey(message);
             if (key != null) {
-                MailHandler cbak = waiting.get(key);
+                MailHandler cbak = waiting.remove(key);
+                System.out.println("key="+key+" cback="+cbak);
                 if (cbak == null) {
                     System.out.println("Received unexpected message");
                 } else {
@@ -157,6 +160,17 @@ public class SMTPTransportTube extends AbstractTubeImpl {
             } else {
                 System.out.println("Received unexpected message - cannot have any relate info");
             }
+        }
+    }
+
+    private static class MyMessage extends MimeMessage  {
+
+        public MyMessage(Session session) {
+            super(session);
+        }
+
+        @Override
+        protected void updateMessageID() throws MessagingException {
         }
     }
 
