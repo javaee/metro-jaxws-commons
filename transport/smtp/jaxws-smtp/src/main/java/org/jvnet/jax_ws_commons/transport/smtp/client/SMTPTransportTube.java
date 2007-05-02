@@ -116,7 +116,7 @@ public class SMTPTransportTube extends AbstractTubeImpl {
     }
 
     public void preDestroy() {
-        //Nothing to do?
+        this.endpoint.stop();
     }
 
     public SMTPTransportTube copy(TubeCloner cloner) {

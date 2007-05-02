@@ -29,6 +29,7 @@ public class POP3Listener extends Listener {
     private final int interval;
     private final String scheme;
     private final Thread thread;
+    private volatile boolean stopped;
 
     private static final Logger logger = Logger.getLogger(POP3Listener.class.getName());
 
@@ -65,7 +66,8 @@ public class POP3Listener extends Listener {
     }
 
     protected void stop() {
-        thread.interrupt();
+        stopped = true;
+        //thread.interrupt();
         try {
             thread.join();
         } catch (InterruptedException e) {
@@ -77,6 +79,8 @@ public class POP3Listener extends Listener {
     private class Runner implements Runnable {
         public void run() {
             while(true) {
+                if (stopped)
+                    return;
                 try {
                     Thread.sleep(interval);
                 } catch (InterruptedException e) {
