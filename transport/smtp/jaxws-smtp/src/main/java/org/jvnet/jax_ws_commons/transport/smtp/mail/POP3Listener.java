@@ -96,7 +96,6 @@ public class POP3Listener extends Listener {
                     folder.open(Folder.READ_WRITE);
                     Message[] msgs = folder.getMessages();
                     for( Message msg : msgs ) {
-                        logger.info("handling message: "+msg.getSubject());
                         msg.setFlag(Flags.Flag.DELETED,true);
                         try {
                             handleMessage((MimeMessage)msg);
