@@ -364,38 +364,13 @@ public class EmailEndpoint {
     private void dump(MimeMessage msg, String caption) {
         System.out.println("---[" + caption + "]---");
         try {
-            Enumeration headers = msg.getAllHeaders();
-            while(headers.hasMoreElements()){
-                Header h = (Header) headers.nextElement();
-                System.out.println(h.getName() + ":"+h.getValue());
-            }
-            System.out.println();
-            System.out.println(getMainContent(msg));
+            msg.writeTo(System.out);
         } catch (IOException e) {
-            System.out.println("Exception during message dump!");
+            logger.log(Level.SEVERE, "Exception during message dump" , e);
         } catch (MessagingException e) {
-            System.out.println("Exception during message dump!");
+            logger.log(Level.SEVERE, "Exception during message dump" , e);
         }
         System.out.println("--------------------");
-    }
-
-    private String getMainContent(MimeMessage msg) throws MessagingException, IOException {
-        /** TODO write it correctly
-        Object data = msg.getContent();
-        while(true) {
-            if (data instanceof MimeMultipart) {
-                MimeMultipart mul = (MimeMultipart) data;
-                BodyPart bodyPart = mul.getBodyPart(0);
-                data = bodyPart.getContent();
-                continue;
-            }
-            if (data instanceof String)
-                return (String)data;
-            // unknown format
-            throw new MessagingException("Unable to convert "+data+" to string");
-        }
-         **/
-        return "";
     }
 
 }

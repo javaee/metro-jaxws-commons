@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 /**
  * SMTP transport tube.
@@ -35,6 +36,9 @@ import java.util.UUID;
  * @author Jitendra Kotamraju
  */
 public class SMTPTransportTube extends AbstractTubeImpl {
+
+    private static final Logger LOGGER = Logger.getLogger(SMTPTransportTube.class.getName());
+
     private final Codec codec;
     private final EmailEndpoint endpoint;
     private final SmtpHandler incomingHandler;
@@ -47,8 +51,6 @@ public class SMTPTransportTube extends AbstractTubeImpl {
         } else {
             this.endpoint = new EmailEndpoint(endpointAddress.toString());
         }
-        if (dump)
-            this.endpoint.enableLog();
         incomingHandler = new SmtpHandler();
         endpoint.setMailHandler(incomingHandler);
         this.endpoint.start();
@@ -63,7 +65,10 @@ public class SMTPTransportTube extends AbstractTubeImpl {
 
     @NotNull
     public NextAction processRequest(@NotNull Packet request) {
-        
+
+        if (dump) {
+            this.endpoint.enableLog();
+        } 
         try {
             final ByteArrayBuffer buf = new ByteArrayBuffer();
             final ContentType ct = codec.encode(request, buf);
@@ -144,25 +149,26 @@ public class SMTPTransportTube extends AbstractTubeImpl {
 
         public void addHandler(UUID msgId, MailHandler handler ) {
             waiting.put(msgId, handler);
-            System.out.println("Waiting="+waiting);
         }
 
         public void onNewMail(MimeMessage message) {
             UUID key = EmailEndpoint.getKey(message);
             if (key != null) {
                 MailHandler cbak = waiting.remove(key);
-                System.out.println("key="+key+" cback="+cbak);
                 if (cbak == null) {
-                    System.out.println("Received unexpected message");
+                    LOGGER.warning("Received unexpected message with key = "+key);
                 } else {
                     cbak.onNewMail(message);
                 }
             } else {
-                System.out.println("Received unexpected message - cannot have any relate info");
+                LOGGER.warning("Received unexpected message - cannot find key");
             }
         }
     }
 
+    /*
+     * So that javamail doesn't override our Message-ID
+     */
     private static class MyMessage extends MimeMessage  {
 
         public MyMessage(Session session) {
@@ -172,6 +178,7 @@ public class SMTPTransportTube extends AbstractTubeImpl {
         @Override
         protected void updateMessageID() throws MessagingException {
         }
+
     }
 
     /**

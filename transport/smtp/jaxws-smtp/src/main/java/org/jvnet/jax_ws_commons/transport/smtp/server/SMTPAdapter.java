@@ -90,8 +90,8 @@ public class SMTPAdapter extends Adapter<SMTPAdapter.SMTPToolkit> {
       *         UnsupportedMediaException to indicate to send 415 error code
       */
      private Packet decodePacket(@NotNull MimeMessage con, @NotNull Codec codec) throws MessagingException, IOException {
-         String ct = "text/xml";// TODO con.getContentType();
-         InputStream in = con.getInputStream();
+
+
          Packet packet = new Packet();
         String[] soapAction = con.getHeader("SOAPAction");
          packet.soapAction = soapAction == null ? null : soapAction[0];
@@ -122,11 +122,10 @@ public class SMTPAdapter extends Adapter<SMTPAdapter.SMTPToolkit> {
          };
 
          if (dump) {
-             ByteArrayBuffer buf = new ByteArrayBuffer();
-             buf.write(in);
-             dump(buf, "SMTP request", con.getAllHeaders());
-             in = buf.newInputStream();
+             con.writeTo(System.out);
          }
+        InputStream in = con.getInputStream();
+        String ct = con.getContentType();
          codec.decode(in, ct, packet);
          return packet;
      }
@@ -178,20 +177,13 @@ public class SMTPAdapter extends Adapter<SMTPAdapter.SMTPToolkit> {
 
                  final ByteArrayBuffer buf = new ByteArrayBuffer();
                  codec.encode(packet, buf);
-                 //buf.close();
-                 System.out.println(buf.toString());
                  MimeMessage msg = new MimeMessage(email.getSession());
                  String[] rt = con.getHeader("Reply-To");
                  if (rt != null && rt.length != 0 && rt[0].length() > 0) {
-                     LOGGER.info("**** Sending to "+rt[0]);
                      msg.setRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(rt[0]));
                  }
                  String[] msgId = con.getHeader("Message-id");
-                 for(String id : msgId) {
-                    LOGGER.info("Received MessageId="+id);
-                 }
                  if (msgId != null && msgId.length != 0 && msgId[0].length() > 0) {
-                     LOGGER.info("In-reply-to ="+msgId[0]);
                      msg.setHeader("In-reply-to", msgId[0]);
                  }
                  msg.setDataHandler(new DataHandler(new DataSource() {
@@ -212,8 +204,6 @@ public class SMTPAdapter extends Adapter<SMTPAdapter.SMTPToolkit> {
                          return "";
                      }
                  }));
-                 //msg.setHeader("Content-Type", "text/xml");        // TODO contentType.getContentType()
-                 //msg.setContent(new String(buf.toByteArray()), "text/xml");// TODO contentType.getContentType()
                  email.send(msg);
              } else {
 /*                 ByteArrayBuffer buf = new ByteArrayBuffer();
