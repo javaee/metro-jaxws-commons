@@ -28,7 +28,7 @@ public class SmtpTest extends TestCase {
     /**
      * invokes using SMTP
      */
-    public void testSmtp() {
+    public void testSmtp() throws Exception {
         SMTPTransportTube.dump = true;		// Enable logging
 
         SMTPFeature feature = new SMTPFeature("kohsuke.sfbay.sun.com", "10025",
@@ -40,5 +40,6 @@ public class SmtpTest extends TestCase {
         ((WSBindingProvider)proxy).setAddress("smtp://smtp.transport.server@kohsuke.org");
 
         assertEquals("Bonjour, jitu", proxy.sayHelloTo("jitu"));
+        ((WSBindingProvider)proxy).close();
     }
 }
