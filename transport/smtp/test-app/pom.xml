@@ -57,11 +57,6 @@
   
   <dependencies>
     <dependency>
-      <groupId>com.sun.xml.ws</groupId>
-      <artifactId>jaxws-rt</artifactId>
-      <version>2.1.2-SNAPSHOT</version>
-    </dependency>
-    <dependency>
       <groupId>org.jvnet.jax-ws-commons.spring</groupId>
       <artifactId>jaxws-spring</artifactId>
       <version>1.4</version>
@@ -69,14 +64,12 @@
     <dependency>
       <groupId>org.jvnet.jax-ws-commons</groupId>
       <artifactId>jaxws-smtp</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>${version}</version>
     </dependency>
-
-      <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-          <version>3.8.1</version>
-      </dependency>
-    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+    </dependency>
   </dependencies>
 </project>
