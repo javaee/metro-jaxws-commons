@@ -12,7 +12,7 @@ What is this?
 
 Client-side Programming
 
-  Once the server exposes a JSON service, you'll write client-side JavaScript to access this service. First, you'll include the proxy script. You just need <<<jaxws-smtp.jar>>> in your classpath for this to work.
+  You just need <<<jaxws-smtp.jar>>> in your classpath for this to work. Typical client code would like this:
 
 ---------------------------
 public void testSmtp() throws Exception {
