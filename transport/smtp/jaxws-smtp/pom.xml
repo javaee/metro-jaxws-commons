@@ -60,6 +60,12 @@
               <tasks>
                 <!-- delete the generated one so that we can use ours in src/main/resources -->
                 <delete file="target/xbean/META-INF/spring.schemas" />
+                
+                <!-- copy the HTML files to site -->
+                <mkdir dir="target/site/references" />
+                <copy todir="target/site/references">
+                  <fileset dir="target/xbean" includes="*.html" />
+                </copy>
               </tasks>
             </configuration>
             <goals>
