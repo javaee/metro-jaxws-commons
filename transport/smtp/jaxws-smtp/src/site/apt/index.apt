@@ -40,9 +40,13 @@ Server-side Configuration
   See {{{https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/transport/smtp/test-app/}the sample application}} for the complete example of how to put this all together by using Maven.
 
 ---------------------------
-  <beans xmlns:wsm="http://jax-ws.dev.java.net/spring/smtp"  xsi:schemaLocation="http://jax-ws.dev.java.net/spring/smtp http://jax-ws.dev.java.net/spring/smtp.xsd" >
-
-  <wss:binding url="/soap" service="#myservice" />
+<beans
+ xmlns:ws ="http://jax-ws.dev.java.net/spring/core"
+ xmlns:wsm="http://jax-ws.dev.java.net/spring/smtp"
+ xsi:schemaLocation="http://jax-ws.dev.java.net/spring/smtp
+                     http://jax-ws.dev.java.net/spring/smtp.xsd
+                     http://jax-ws.dev.java.net/spring/core
+                     http://jax-ws.dev.java.net/spring/core.xsd">
 
   <wsm:smtp service="#myservice" incoming="#in" outgoing="#out" />
   <wsm:pop3 id="in" host="pop3.Host" uid="uid" password="password" />
@@ -53,7 +57,7 @@ Server-side Configuration
       <bean class="greeter.GreetingService" />
     </ws:bean>
   </ws:service>
-  </beans>
+</beans>
 ---------------------------
 
   Alternatively, you can also configure the srever side programatically without Spring like {{{https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/transport/smtp/jaxws-smtp/src/test/java/pop3/SmtpTest.java?view=markup}this}}.
