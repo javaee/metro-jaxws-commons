@@ -1,0 +1,63 @@
+                                    ------
+                                    SMTP transport for JAX-WS
+                                    ------
+                                    ------
+                                    ------
+
+What is this?
+
+  JAX-WS works with various transports and it also provides plugin extensions to write any custom transport. This extension takes advantage of the extensions and allows JAX-WS services to be used with SMTP transport.
+
+  SMTP transport is implemented as a custom transport using {{{http://fisheye5.cenqua.com/browse/jax-ws-sources/jaxws-ri/rt/src/com/sun/xml/ws/api/server/Adapter.java?r=1.2}Adapter}} extension on the server side and {{{http://fisheye5.cenqua.com/browse/jax-ws-sources/jaxws-ri/rt/src/com/sun/xml/ws/api/pipe/TransportTubeFactory.java?r=1.2}TransportTubeFactory.java}} on the client side. 
+
+Client-side Programming
+
+  You need <<<jaxws-smtp.jar>>> and JavaMail in your classpath for this to work. Typical client code would like this:
+
+---------------------------
+public void testSmtp() throws Exception {
+    SMTPTransportTube.dump = true;          // Enable logging
+
+    SMTPFeature feature = new SMTPFeature("smtp.host", "me@sun.com");
+    feature.setPOP3("pop.host", "uid", "password");
+
+    GreetingService proxy =
+        new GreetingServiceService().getGreetingServicePort(feature);
+    WSBindingProvider bp = (WSBindingProvider)bp;
+    bp.setAddress("smtp://you@sun.com");
+
+    ... = proxy.sayHelloTo("...");
+
+    bp.close();
+}
+---------------------------
+
+  This configures SMTPFeature with SMTP(sending) and POP3(receiving) configuration. This feature is used to create proxy. Once the endpoint address is set, then proxy can be used to invoke web service.
+
+Server-side Configuration
+
+  JAX-WS SMTP extension can be used with {{{https://jax-ws-commons.dev.java.net/spring/}JAX-WS Spring extension}} for more flexible configuration --- in particular to expose the same endpoint as both HTTP and SMTP.
+  See {{{https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/transport/smtp/test-app/}the sample application}} for the complete example of how to put this all together by using Maven.
+
+---------------------------
+<beans
+ xmlns:ws ="http://jax-ws.dev.java.net/spring/core"
+ xmlns:wsm="http://jax-ws.dev.java.net/spring/smtp"
+ xsi:schemaLocation="http://jax-ws.dev.java.net/spring/smtp
+                     http://jax-ws.dev.java.net/spring/smtp.xsd
+                     http://jax-ws.dev.java.net/spring/core
+                     http://jax-ws.dev.java.net/spring/core.xsd">
+
+  <wsm:smtp service="#myservice" incoming="#in" outgoing="#out" />
+  <wsm:pop3 id="in" host="pop3.Host" uid="uid" password="password" />
+  <wsm:sender id="out" host="smtp.host" from="server.from@com"/>
+
+  <ws:service id="myservice">
+    <ws:bean>
+      <bean class="greeter.GreetingService" />
+    </ws:bean>
+  </ws:service>
+</beans>
+---------------------------
+
+  Alternatively, you can also configure the srever side programatically without Spring like {{{https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/transport/smtp/jaxws-smtp/src/test/java/pop3/SmtpTest.java?view=markup}this}}.
