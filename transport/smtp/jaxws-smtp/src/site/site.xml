@@ -21,7 +21,6 @@
 
     <menu>
       <item name="Introduction" href="index.html"/>
-      <item name="Configuration with Spring " href="spring.html"/>
       <item name="Download" href="https://maven2-repository.dev.java.net/source/browse/maven2-repository/trunk/www/repository/org/jvnet/jax-ws-commons/trnsports/smtp"/>
     </menu>
 

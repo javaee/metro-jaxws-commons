@@ -12,19 +12,19 @@ What is this?
 
 Client-side Programming
 
-  You just need <<<jaxws-smtp.jar>>> in your classpath for this to work. Typical client code would like this:
+  You need <<<jaxws-smtp.jar>>> and JavaMail in your classpath for this to work. Typical client code would like this:
 
 ---------------------------
 public void testSmtp() throws Exception {
     SMTPTransportTube.dump = true;          // Enable logging
 
-    SMTPFeature feature = new SMTPFeature("smtp.host", "client.from@com");
+    SMTPFeature feature = new SMTPFeature("smtp.host", "me@sun.com");
     feature.setPOP3("pop.host", "uid", "password");
 
     GreetingService proxy =
         new GreetingServiceService().getGreetingServicePort(feature);
     WSBindingProvider bp = (WSBindingProvider)bp;
-    bp.setAddress("smtp://to@com");
+    bp.setAddress("smtp://you@sun.com");
 
     ... = proxy.sayHelloTo("...");
 
@@ -37,7 +37,7 @@ public void testSmtp() throws Exception {
 Server-side Configuration
 
   JAX-WS SMTP extension can be used with {{{https://jax-ws-commons.dev.java.net/spring/}JAX-WS Spring extension}} for more flexible configuration --- in particular to expose the same endpoint as both HTTP and SMTP.
-  See {{{https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/transports/smtp/test-app/}the sample application}} for the complete example of how to put this all together by using Maven.
+  See {{{https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/transport/smtp/test-app/}the sample application}} for the complete example of how to put this all together by using Maven.
 
 ---------------------------
   <beans xmlns:wsm="http://jax-ws.dev.java.net/spring/smtp"  xsi:schemaLocation="http://jax-ws.dev.java.net/spring/smtp http://jax-ws.dev.java.net/spring/smtp.xsd" >
@@ -50,10 +50,10 @@ Server-side Configuration
 
   <ws:service id="myservice">
     <ws:bean>
-      <bean class="greeter.GreetingService">
-      </bean>
+      <bean class="greeter.GreetingService" />
     </ws:bean>
   </ws:service>
   </beans>
 ---------------------------
 
+  Alternatively, you can also configure the srever side programatically without Spring like {{{https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/transport/smtp/jaxws-smtp/src/test/java/pop3/SmtpTest.java?view=markup}this}}.
