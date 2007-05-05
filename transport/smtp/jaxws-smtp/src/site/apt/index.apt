@@ -10,24 +10,6 @@ What is this?
 
   SMTP transport is implemented as a custom transport using {{{http://fisheye5.cenqua.com/browse/jax-ws-sources/jaxws-ri/rt/src/com/sun/xml/ws/api/server/Adapter.java?r=1.2}Adapter}} extension on the server side and {{{http://fisheye5.cenqua.com/browse/jax-ws-sources/jaxws-ri/rt/src/com/sun/xml/ws/api/pipe/TransportTubeFactory.java?r=1.2}TransportTubeFactory.java}} on the client side. 
 
----------------------------
-@BindingType(JSONBindingID.JSON_BINDING)
-public class MyService {
-
-    public Book get(@WebParam(name="id") int id) {
-        Book b = new Book();
-        b.id = id;
-        return b;
-    }
-
-    public static final class Book {
-        public int id = 1;
-        public String title = "Java";
-    }
-
-}
----------------------------
-
 Client-side Programming
 
   Once the server exposes a JSON service, you'll write client-side JavaScript to access this service. First, you'll include the proxy script. You just need <<<jaxws-smtp.jar>>> in your classpath for this to work.
@@ -50,7 +32,9 @@ public void testSmtp() throws Exception {
 }
 ---------------------------
 
-  This creates a variable 'myService' with which you can make service invocations. All the parameters are passed as a single JavaScript object, where the property name is the parameter name. The call happens asynchronously, and when it's done your callback will be invoked with the return value as a parameter:
+  This configures SMTPFeature with SMTP(sending) and POP3(receiving) configuration. This feature is used to create proxy. Once the endpoint address is set, then proxy can be used to invoke web service.
+
+Server-side Configuration
 
   JAX-WS SMTP extension can be used with {{{https://jax-ws-commons.dev.java.net/spring/}JAX-WS Spring extension}} for more flexible configuration --- in particular to expose the same endpoint as both HTTP and SMTP.
   See {{{https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/transports/smtp/test-app/}the sample application}} for the complete example of how to put this all together by using Maven.
