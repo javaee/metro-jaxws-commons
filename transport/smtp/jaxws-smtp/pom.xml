@@ -28,7 +28,7 @@
 
   <distributionManagement>
     <site>
-      <url>file:../../../www/spring/</url>
+      <url>file:../../../www/smtp/</url>
     </site>
   </distributionManagement>
 
