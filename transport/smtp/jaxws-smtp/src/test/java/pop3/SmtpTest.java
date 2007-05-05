@@ -1,19 +1,19 @@
 package pop3;
 
 import junit.framework.TestCase;
+import org.jvnet.jax_ws_commons.spring.SpringService;
 import org.jvnet.jax_ws_commons.transport.smtp.POP3Info;
 import org.jvnet.jax_ws_commons.transport.smtp.SMTPFeature;
 import org.jvnet.jax_ws_commons.transport.smtp.SenderInfo;
 import org.jvnet.jax_ws_commons.transport.smtp.client.SMTPTransportTube;
+import org.jvnet.jax_ws_commons.transport.smtp.server.ServerSMTPFeature;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 import javax.xml.ws.soap.SOAPBinding;
-import java.util.Properties;
 
 /**
  * Unit test for simple App.
@@ -23,13 +23,13 @@ public class SmtpTest extends TestCase {
     /**
      * Rigourous Test :-)
      */
-    public void testApp() throws JAXBException, ClassNotFoundException {
-        Properties props = System.getProperties();
-        props.put(SMTPTransportTube.class.getName()+".dump","true");
+    public void testApp() throws Exception {
+        SMTPTransportTube.dump = true;
 
-        SMTPFeature feature = new SMTPFeature();
-        feature.setIncoming(new POP3Info("sun.com", "server", "password"));
-        feature.setOutgoing(new SenderInfo("sun.com", null, "client@sun.com"));
+        startServer();
+
+        SMTPFeature feature = new SMTPFeature("sun.com","client@sun.com");
+        feature.setPOP3("sun.com", "client", "password");
 
         Service service = Service.create(new QName("FakeService"));
 
@@ -45,5 +45,17 @@ public class SmtpTest extends TestCase {
         assertTrue(resp.getTitle().equals("Midnight's Children") &&
             resp.getPublisher().equals("Unknown") &&
             resp.getAuthor().equals("Salman Rushdie"));
+    }
+
+    private void startServer() throws Exception {
+        // start a server
+        ServerSMTPFeature server = new ServerSMTPFeature();
+        server.setIncoming(new POP3Info("sun.com","server","password"));
+        server.setOutgoing(new SenderInfo("sun.com","server@sun.com"));
+        SpringService ss = new SpringService();
+        ss.setBean(new EchoServer());
+        ss.afterPropertiesSet();
+        server.setService(ss.getObject());
+        server.afterPropertiesSet();
     }
 }
