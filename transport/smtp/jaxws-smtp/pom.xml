@@ -26,6 +26,12 @@
     </pluginRepository>
   </pluginRepositories>
 
+  <distributionManagement>
+    <site>
+      <url>file:../../../www/spring/</url>
+    </site>
+  </distributionManagement>
+
   <build>
     <plugins>
       <plugin>
