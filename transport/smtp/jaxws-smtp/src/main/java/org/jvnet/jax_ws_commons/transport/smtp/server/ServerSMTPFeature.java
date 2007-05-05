@@ -13,11 +13,8 @@ import java.util.logging.Logger;
  * Spring configures this bean with all the SMTP related configuration for sending and
  * receiving emails.
  *
- * @author Jitendra Kotamraju
- */
-
-/**
  * @org.apache.xbean.XBean element="smtp" root-element="true"
+ * @author Jitendra Kotamraju
  */
 public class ServerSMTPFeature extends SMTPFeature implements FactoryBean, InitializingBean {
     private static final Logger logger = Logger.getLogger(ServerSMTPFeature.class.getName());
