@@ -9,14 +9,14 @@
   
   <artifactId>smtp</artifactId>
   <packaging>pom</packaging>
-   <version>1.1-SNAPSHOT</version>
+   <version>1.1</version>
 
   <name>SMTP support extension</name>
   
   <scm>
-    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/trunk/smtp</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/trunk/smtp</developerConnection>
-    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/smtp</url>
+    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/tags/smtp-1.1</connection>
+    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/tags/smtp-1.1</developerConnection>
+    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/tags/smtp-1.1</url>
   </scm>
   
   <modules>
