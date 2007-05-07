@@ -23,6 +23,11 @@ public class POP3Info {
         setPassword(password);
     }
 
+    public POP3Info(String host, int port, String uid, String password) {
+        this(host,uid,password);
+        setPort(port);
+    }
+
     public int getInterval() {
         return interval;
     }
