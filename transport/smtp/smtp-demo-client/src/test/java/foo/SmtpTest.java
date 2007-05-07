@@ -13,19 +13,21 @@ public class SmtpTest{
     public void testSmtp() {
         SMTPTransportTube.dump = true;		// Enable logging
 
-        /**
-         * Setup SMTP server
-         */
+        // Setup SMTP server
         SMTPFeature feature = new SMTPFeature("kohsuke.sfbay.sun.com", "10025",
             "smtp.transport.client@kohsuke.org");
+        //SMTPFeature feature = new SMTPFeature("localhost", "25",
+        //    "smtp.transport.clien@griffon.kohsuke.org");
 
         //Setup POP3
         feature.setPOP3("kohsuke.org", "smtp.transport.client", "jaxws123");
+        //feature.setIncoming(new POP3Info("localhost", 8110, "smtp.transport.clien", "jaxws123"));
 
         //Set the endpoint address
         BookService proxy =
             new BookServiceService().getBookServicePort(feature);
         ((WSBindingProvider)proxy).setAddress("smtp://smtp.transport.server@kohsuke.org");
+        //((WSBindingProvider)proxy).setAddress("smtp://smtp.transport.serve@griffon.kohsuke.org");
 
         for(Book book : proxy.getRecommendedBooks()){
             System.out.println("--------------------------------");
