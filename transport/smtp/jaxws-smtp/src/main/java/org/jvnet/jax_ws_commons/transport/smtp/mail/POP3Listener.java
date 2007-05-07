@@ -41,9 +41,9 @@ public class POP3Listener extends Listener {
      *      Name of the POP3 server, such as "mail.acme.org"
      *      must not be null.
      * @param uid
- *      The user name used to log in to the POP3 server.
+     *      The user name used to log in to the POP3 server.
      * @param password
-*      The password used to log in to the POP3 server.
+     *      The password used to log in to the POP3 server.
      * @param interval
      */
     public POP3Listener(String scheme, String host, String uid, String password, int interval) {
