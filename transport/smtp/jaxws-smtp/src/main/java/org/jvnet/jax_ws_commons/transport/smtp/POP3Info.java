@@ -12,6 +12,7 @@ public class POP3Info {
     private String uid;
     private String password;
     private int interval = 5000;
+    private int port = 110;
 
     public POP3Info() {
     }
@@ -75,5 +76,16 @@ public class POP3Info {
      */
     public void setHost(String host) {
         this.host = host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    /**
+     * @org.xbean.Property
+     */
+    public void setPort(int port) {
+        this.port = port;
     }
 }

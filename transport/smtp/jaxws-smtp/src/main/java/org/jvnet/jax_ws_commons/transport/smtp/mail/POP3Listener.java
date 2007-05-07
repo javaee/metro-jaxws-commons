@@ -24,6 +24,7 @@ import java.util.logging.Logger;
  */
 public class POP3Listener extends Listener {
     private final String host;
+    private final int port;
     private final String uid;
     private final String password;
     private final int interval;
@@ -46,9 +47,10 @@ public class POP3Listener extends Listener {
      *      The password used to log in to the POP3 server.
      * @param interval
      */
-    public POP3Listener(String scheme, String host, String uid, String password, int interval) {
+    public POP3Listener(String scheme, String host, int port, String uid, String password, int interval) {
         this.scheme = scheme;
         this.host = host;
+        this.port = port;
         this.uid = uid;
         this.password = password;
         this.interval = interval;
@@ -89,7 +91,7 @@ public class POP3Listener extends Listener {
                 try {
                     logger.fine("connecting");
                     Store store = getEndPoint().getSession().getStore(scheme);
-                    store.connect(host,uid,password);
+                    store.connect(host,port,uid,password);
                     logger.fine("connected");
 
                     Folder folder = store.getFolder("INBOX");

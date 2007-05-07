@@ -142,7 +142,7 @@ public class EmailEndpoint {
         this.sender = new SenderThread(session);
 
         POP3Info pop3 = feature.getIncoming();
-        this.listener = new POP3Listener(pop3.getScheme(), pop3.getHost(),
+        this.listener = new POP3Listener(pop3.getScheme(), pop3.getHost(), pop3.getPort(),
                 pop3.getUid(), pop3.getPassword(), pop3.getInterval());
         this.listener.setEndPoint(this);
 
@@ -352,6 +352,7 @@ public class EmailEndpoint {
             return new POP3Listener(
                     uri.getScheme(),
                     uri.getHost(),
+                    uri.getPort()==-1 ? 110 : uri.getPort(),
                     userInfo.substring(0, idx),
                     userInfo.substring(idx + 1),
                     query.getValue("interval", 3000)
