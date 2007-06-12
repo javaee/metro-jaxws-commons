@@ -3,21 +3,21 @@
   <parent>
     <groupId>org.jvnet.jax-ws-commons</groupId>
     <artifactId>json</artifactId>
-    <version>1.2</version>
+    <version>1.3-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
   <artifactId>jaxws-json</artifactId>
-  <version>1.2</version>
+  <version>1.3-SNAPSHOT</version>
   <packaging>jar</packaging>
   
   <name>json extension for jax-ws</name>
   <description>Simplifies the development of services that are tied to Thread scope.</description>
   
   <scm>
-    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/tags/json-1.2</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/tags/json-1.2</developerConnection>
-    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/tags/json-1.2</url>
+    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/trunk/json</connection>
+    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/trunk/json</developerConnection>
+    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/json</url>
   </scm>
   
   <distributionManagement>
