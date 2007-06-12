@@ -19,5 +19,9 @@
       }
     </script>
     <input type="button" value="Run" onclick="go()"/>
+    <br>
+    <a href="json?js">proxy code</a>
+    <br>
+    <a href="json">documentation</a>
   </body>
 </html>
