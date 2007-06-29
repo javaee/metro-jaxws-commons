@@ -32,6 +32,7 @@
     <menu name="How-to configure...">
       <item name="Handler" href="handler.html" />
       <item name="Local Transport" href="local-transport.html" />
+      <item name="AOP" href="aop.html" />
     </menu>
 
 
