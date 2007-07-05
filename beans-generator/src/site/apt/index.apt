@@ -1,0 +1,18 @@
+                    ----
+                    Introduction
+                    ----
+                    Fedor Malyshkin
+                    ----
+                    07-03-2007
+                    ----
+
+Introduction
+
+    Introduction is comming soon... 	
+
+* It was intended for... 
+
+    * Runtime generation JAX-WS artifacts
+    
+    * Getting chance for developer to control invokation of his/her web-service class-implementators 
+    (with help of IImplmentatorInvoker interface)
