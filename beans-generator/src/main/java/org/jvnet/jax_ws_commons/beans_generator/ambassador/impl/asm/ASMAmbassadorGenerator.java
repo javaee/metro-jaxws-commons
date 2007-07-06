@@ -328,7 +328,7 @@ public class ASMAmbassadorGenerator implements IAmbassadorGenerator {
     }
 
     public void generateAndLoadClasses(String wrappedClassName,
-	    String invokableClassName, WSImplemetatorAnnotationInfo implInfo,
+	    String invocableClassName, WSImplemetatorAnnotationInfo implInfo,
 	    Class<? extends IImplementationInvoker> implementationInvokerClass,
 	    Class confReaderClass, IEndpointData endpointData)
 	    throws AmbassadorGenerationException {
@@ -338,9 +338,9 @@ public class ASMAmbassadorGenerator implements IAmbassadorGenerator {
 
 	    try {
 		byte[] res = createWSWrapperClass(classes, wrappedClassName,
-			invokableClassName, implInfo,
+			invocableClassName, implInfo,
 			implementationInvokerClass, confReaderClass);
-		classes.put(invokableClassName, res);
+		classes.put(invocableClassName, res);
 	    } catch (Exception e) {
 		throw new AmbassadorGenerationException(
 			"Exception while generating 'ambassador' class.", e);
@@ -348,7 +348,7 @@ public class ASMAmbassadorGenerator implements IAmbassadorGenerator {
 
 	} else {
 	    try {
-		analyseWSImplementationClass(invokableClassName, implInfo);
+		analyseWSImplementationClass(invocableClassName, implInfo);
 	    } catch (Exception e) {
 		throw new AmbassadorGenerationException(
 			"Exception while analysing original class.", e);
@@ -380,13 +380,13 @@ public class ASMAmbassadorGenerator implements IAmbassadorGenerator {
     }
 
     /**
-         * @param invokableClassName
+         * @param invocableClassName
          * @param implInfo
          * @throws IOException
          */
-    private void analyseWSImplementationClass(String invokableClassName,
+    private void analyseWSImplementationClass(String invocableClassName,
 	    WSImplemetatorAnnotationInfo implInfo) throws IOException {
-	ClassReader reader = ASMUtil.createClassReader(invokableClassName);
+	ClassReader reader = ASMUtil.createClassReader(invocableClassName);
 	ClassVisitor cv = new ASMAmbassadorInvokableClassAnalyst(implInfo);
 	reader.accept(cv, ClassReader.SKIP_CODE & ClassReader.SKIP_DEBUG
 		& ClassReader.SKIP_FRAMES);

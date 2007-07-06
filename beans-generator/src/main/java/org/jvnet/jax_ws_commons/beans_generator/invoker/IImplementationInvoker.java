@@ -37,7 +37,7 @@ public interface IImplementationInvoker {
      * @param returnClass return class
      * @param argumentClasses argument classes
      * @param thrownTypes thrown types
-     * @param returnValue return value (putted by mistake)
+     * @param returnValue return value (putted by mistake - contains null all time and didn't processed at all)
      * @param argumentValues argument values
      * @return return value
      */

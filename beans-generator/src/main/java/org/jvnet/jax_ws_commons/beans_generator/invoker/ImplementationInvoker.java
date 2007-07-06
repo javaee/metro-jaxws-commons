@@ -22,8 +22,8 @@ import org.jvnet.jax_ws_commons.beans_generator.conf.IDeploymentConfigurationRea
 
 
 /**
- * Class, directly invokable from ambassador.
- * Servers as dispather for all invokations of ws implementator. Simplest realization 
+ * Class, directly invocable from ambassador.
+ * Servers as dispather for all invocations of ws implementator. Simplest realization 
  * could simple invoke implementation, more sophisticated - make a lot of things.
  * 
  * Created: 04.06.2007

@@ -25,7 +25,7 @@ import org.jvnet.jax_ws_commons.beans_generator.invoker.IImplementationInvoker;
  */
 public interface IAmbassadorGenerator {
     void generateAndLoadClasses(String wrappedClassName,
-	    String invokableClassName, WSImplemetatorAnnotationInfo implInfo,
+	    String invocableClassName, WSImplemetatorAnnotationInfo implInfo,
 	    Class<? extends IImplementationInvoker> implementationInvokerClass,
 	    Class confReaderClass, IEndpointData endpointData)
 	    throws AmbassadorGenerationException;

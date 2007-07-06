@@ -106,7 +106,7 @@ public class ContextBuilder {
 
     /**
          * Create uninitialized class instance to prevent static initilizer
-         * invokation.
+         * invocation.
          * 
          * @param className
          * @return
@@ -125,7 +125,7 @@ public class ContextBuilder {
     }
 
     /**
-         * Construct information abbout existing annotations of invokable class
+         * Construct information abbout existing annotations of invocable class
          * (in case of its existence)
          * 
          * 

@@ -30,7 +30,7 @@ public interface IEndpointData {
      * @version $Revision$
      */
     public static class EndpointConfiguration {
-	private String wrappedClassName, invokableClassName, invokerClassName;
+	private String wrappedClassName, invocableClassName, invokerClassName;
 
 	/**
 	 * FLagg to indicate: is there any need to wrap something or not?
@@ -54,7 +54,7 @@ public interface IEndpointData {
 		boolean needToWrap) {
 	    super();
 	    this.wrappedClassName = wrappedClassName;
-	    this.invokableClassName = invokableClassName;
+	    this.invocableClassName = invokableClassName;
 	    this.invokerClassName = invokerClassName;
 	    this.needToWrap = needToWrap;
 	}
@@ -63,7 +63,7 @@ public interface IEndpointData {
 	 * @return the invokableClassName
 	 */
 	public String getInvokableClassName() {
-	    return this.invokableClassName;
+	    return this.invocableClassName;
 	}
 
 	/**

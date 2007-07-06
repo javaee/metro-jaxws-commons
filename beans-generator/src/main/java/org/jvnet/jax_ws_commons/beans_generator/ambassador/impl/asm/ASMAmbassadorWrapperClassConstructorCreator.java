@@ -36,7 +36,7 @@ class ASMAmbassadorWrapperClassConstructorCreator implements MethodVisitor,
 
     private MethodVisitor mv = null;
 
-    private String invokableClassName = null;
+    private String invocableClassName = null;
 
     private String wrappedClassName = null;
 
@@ -54,10 +54,10 @@ class ASMAmbassadorWrapperClassConstructorCreator implements MethodVisitor,
      */
     public ASMAmbassadorWrapperClassConstructorCreator(MethodVisitor mv,
 	    Class implmentatationInvokerClass, Class confReaderClass,
-	    String invokableClassName, String wrappedClassName) {
+	    String invocableClassName, String wrappedClassName) {
 	this(mv);
 	this.confReaderClass = confReaderClass;
-	this.invokableClassName = invokableClassName;
+	this.invocableClassName = invocableClassName;
 	this.wrappedClassName = wrappedClassName;
 	this.implmentationInvokerClass = implmentatationInvokerClass;
     }
@@ -75,10 +75,10 @@ class ASMAmbassadorWrapperClassConstructorCreator implements MethodVisitor,
     }
 
     public void visitCode() {
-	String invokableClassInternalName =
-		invokableClassName.replace(".", "/");
-	String invokableClassDescription =
-		"L" + invokableClassName.replace(".", "/") + ";";
+	String invocableClassInternalName =
+		invocableClassName.replace(".", "/");
+	String invocableClassDescription =
+		"L" + invocableClassName.replace(".", "/") + ";";
 
 	mv.visitCode();
 	Label l0 = new Label();
@@ -89,30 +89,30 @@ class ASMAmbassadorWrapperClassConstructorCreator implements MethodVisitor,
 	mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
 	mv.visitVarInsn(ALOAD, 0);
 	mv.visitInsn(ACONST_NULL);
-	mv.visitFieldInsn(PUTFIELD, invokableClassInternalName, "configReader", Type.getDescriptor(IDeploymentConfigurationReader.class));
+	mv.visitFieldInsn(PUTFIELD, invocableClassInternalName, "configReader", Type.getDescriptor(IDeploymentConfigurationReader.class));
 	mv.visitVarInsn(ALOAD, 0);
 	mv.visitInsn(ACONST_NULL);
-	mv.visitFieldInsn(PUTFIELD, invokableClassInternalName, "invoker", Type.getDescriptor(IImplementationInvoker.class));
+	mv.visitFieldInsn(PUTFIELD, invocableClassInternalName, "invoker", Type.getDescriptor(IImplementationInvoker.class));
 
 	// configReader = new ServletConfigurationReader(); ------------------------------
 	mv.visitVarInsn(ALOAD, 0);
 	mv.visitTypeInsn(NEW, Type.getInternalName(confReaderClass));
 	mv.visitInsn(DUP);
 	mv.visitMethodInsn(INVOKESPECIAL, Type.getInternalName(confReaderClass), "<init>", "()V");
-	mv.visitFieldInsn(PUTFIELD, invokableClassInternalName, "configReader", Type.getDescriptor(IDeploymentConfigurationReader.class));
+	mv.visitFieldInsn(PUTFIELD, invocableClassInternalName, "configReader", Type.getDescriptor(IDeploymentConfigurationReader.class));
 
 	// invoker = new ImplementationInvoker();------
 	mv.visitVarInsn(ALOAD, 0);
 	mv.visitTypeInsn(NEW, Type.getInternalName(implmentationInvokerClass));
 	mv.visitInsn(DUP);
 	mv.visitMethodInsn(INVOKESPECIAL, Type.getInternalName(implmentationInvokerClass), "<init>", "()V");
-	mv.visitFieldInsn(PUTFIELD, invokableClassInternalName, "invoker", Type.getDescriptor(IImplementationInvoker.class));
+	mv.visitFieldInsn(PUTFIELD, invocableClassInternalName, "invoker", Type.getDescriptor(IImplementationInvoker.class));
 
 	// invoker.initialize(configReader, String.class);
 	mv.visitVarInsn(ALOAD, 0);
-	mv.visitFieldInsn(GETFIELD, invokableClassInternalName, "invoker", Type.getDescriptor(IImplementationInvoker.class));
+	mv.visitFieldInsn(GETFIELD, invocableClassInternalName, "invoker", Type.getDescriptor(IImplementationInvoker.class));
 	mv.visitVarInsn(ALOAD, 0);
-	mv.visitFieldInsn(GETFIELD, invokableClassInternalName, "configReader", Type.getDescriptor(IDeploymentConfigurationReader.class));
+	mv.visitFieldInsn(GETFIELD, invocableClassInternalName, "configReader", Type.getDescriptor(IDeploymentConfigurationReader.class));
 	mv.visitLdcInsn(wrappedClassName);
 	mv.visitMethodInsn(INVOKEINTERFACE, Type.getInternalName(IImplementationInvoker.class), "initialize", "("
 		+ Type.getDescriptor(IDeploymentConfigurationReader.class)
@@ -122,7 +122,7 @@ class ASMAmbassadorWrapperClassConstructorCreator implements MethodVisitor,
 	Label l6 = new Label();
 	mv.visitLabel(l6);
 
-	mv.visitLocalVariable("this", invokableClassDescription, null, l0, l6, 0);
+	mv.visitLocalVariable("this", invocableClassDescription, null, l0, l6, 0);
 	mv.visitMaxs(4, 2);
 	mv.visitEnd();
     }

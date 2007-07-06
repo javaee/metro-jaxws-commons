@@ -51,7 +51,7 @@ public class ASMAmbassadorInvokableClassAnalyst implements ClassVisitor,
          *                ASM class writer
          * @param wrappedClassName
          *                fully quallified original class name
-         * @param invokableClassName
+         * @param invocableClassName
          *                fully quallified generated class name
          * 
          * @see IDeploymentConfigurationReader

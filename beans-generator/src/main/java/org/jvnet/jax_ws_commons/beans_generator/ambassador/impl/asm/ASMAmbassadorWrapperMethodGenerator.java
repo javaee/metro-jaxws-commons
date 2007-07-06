@@ -39,16 +39,16 @@ public class ASMAmbassadorWrapperMethodGenerator implements Opcodes {
 
     private ClassVisitor codeWriter = null;
 
-    private String invokableClassName = null;
+    private String invocableClassName = null;
 
     /**
      * @param codeWriter
      */
     public ASMAmbassadorWrapperMethodGenerator(ClassVisitor codeWriter,
-	    String invokableClassName) {
+	    String invocableClassName) {
 	super();
 	this.codeWriter = codeWriter;
-	this.invokableClassName = invokableClassName;
+	this.invocableClassName = invocableClassName;
     }
 
     /**
@@ -56,11 +56,12 @@ public class ASMAmbassadorWrapperMethodGenerator implements Opcodes {
      */
     public void generateMethod(MethodInfo methodData) {
 	// ------------------------------------------------------------------
-	// change method arguments to accept additional one - String with context name 
 	List<Type> originalTypes =
 		Arrays.asList(Type.getArgumentTypes(methodData.getDesc()));
 	List<Type> newArgTypes = new ArrayList<Type>(originalTypes);
-	newArgTypes.add(Type.getType(String.class));
+    // i don't want add this functionality  into productive version
+	// change method arguments to accept additional one - String with context name 
+	// newArgTypes.add(Type.getType(String.class));
 	Type returnType = Type.getReturnType(methodData.getDesc());
 	
 
@@ -179,7 +180,7 @@ public class ASMAmbassadorWrapperMethodGenerator implements Opcodes {
      * @param methodData
      */
     private void createInvokation(MethodVisitor mv, MethodInfo methodData) {
-	String genInternalClassName = invokableClassName.replace(".", "/");
+	String genInternalClassName = invocableClassName.replace(".", "/");
 	int localVarsSize =
 		ASMUtil.calculateLocalVarSize(methodData.getArgTypes());
 	mv.visitVarInsn(ALOAD, 0);

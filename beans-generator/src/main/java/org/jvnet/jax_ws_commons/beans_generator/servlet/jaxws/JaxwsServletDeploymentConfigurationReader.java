@@ -102,14 +102,14 @@ public class JaxwsServletDeploymentConfigurationReader implements
 	for (int i = 0; i < nl.getLength(); i++) {
 	    Node epTag = nl.item(i);
 	    NamedNodeMap nnm = epTag.getAttributes();
-	    String invokableClassName = getAttributeValue(nnm, "implementation");
+	    String invocableClassName = getAttributeValue(nnm, "implementation");
 	    String wrappedClassName = getAttributeValue(nnm, "wrappedClass");
 	    String invoker = getAttributeValue(nnm, "implementationInvoker");
 
 	    boolean ntw = false;
 	    if (wrappedClassName != null && invoker != null)
 		ntw = true;
-	    IEndpointData.EndpointConfiguration ep = new IEndpointData.EndpointConfiguration(wrappedClassName, invokableClassName, invoker, ntw);
+	    IEndpointData.EndpointConfiguration ep = new IEndpointData.EndpointConfiguration(wrappedClassName, invocableClassName, invoker, ntw);
 	    result.add(ep);
 	}
 	return result;

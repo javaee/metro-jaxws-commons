@@ -49,7 +49,7 @@ class ASMAmbassadorWrapperClassCreator extends ClassAdapter implements Opcodes {
 
     private Class implmentatationInvokerClass = null;
 
-    private String invokableClassName = null;
+    private String invocableClassName = null;
 
     private Class confReaderClass = null;
 
@@ -57,7 +57,7 @@ class ASMAmbassadorWrapperClassCreator extends ClassAdapter implements Opcodes {
 
     public void visit(int version, int access, String name, String signature,
 	    String superName, String[] interfaces) {
-	cv.visit(49, access, invokableClassName.replace(".", "/"), signature, superName, interfaces);
+	cv.visit(49, access, invocableClassName.replace(".", "/"), signature, superName, interfaces);
 	processAnnotations(cv);
 
     }
@@ -98,17 +98,17 @@ class ASMAmbassadorWrapperClassCreator extends ClassAdapter implements Opcodes {
      * @param implInfo instance WSImplemetatorAnnotationInfo for original class
      * @param cv ASM class writer 
      * @param wrappedClassName fully quallified original class name
-     * @param invokableClassName fully quallified generated class name
+     * @param invocableClassName fully quallified generated class name
      * 
      * @see IDeploymentConfigurationReader
      */
     public ASMAmbassadorWrapperClassCreator(
 	    Class<? extends IImplementationInvoker> implmentatationInvokerClass,
 	    Class confReaderClass, WSImplemetatorAnnotationInfo implInfo,
-	    ClassVisitor cv, String wrappedClassName, String invokableClassName) {
+	    ClassVisitor cv, String wrappedClassName, String invocableClassName) {
 	this(cv);
 	this.wrappedClassName = wrappedClassName;
-	this.invokableClassName = invokableClassName;
+	this.invocableClassName = invocableClassName;
 	this.implmentatationInvokerClass = implmentatationInvokerClass;
 	this.confReaderClass = confReaderClass;
 	this.implInfo = implInfo;
@@ -125,7 +125,7 @@ class ASMAmbassadorWrapperClassCreator extends ClassAdapter implements Opcodes {
 	    // create delegator
 	    MethodVisitor mv =
 		    cv.visitMethod(access, name, desc, signature, exceptions);
-	    return new ASMAmbassadorWrapperClassConstructorCreator(mv, implmentatationInvokerClass, confReaderClass, invokableClassName, wrappedClassName);
+	    return new ASMAmbassadorWrapperClassConstructorCreator(mv, implmentatationInvokerClass, confReaderClass, invocableClassName, wrappedClassName);
 	}
 
 	// fill method with necessary data for generation
@@ -176,7 +176,7 @@ class ASMAmbassadorWrapperClassCreator extends ClassAdapter implements Opcodes {
 
 	// create method wrappers
 	ASMAmbassadorWrapperMethodGenerator methodGenerator =
-		new ASMAmbassadorWrapperMethodGenerator(cv, invokableClassName);
+		new ASMAmbassadorWrapperMethodGenerator(cv, invocableClassName);
 	for (MethodInfo methodData : methodDatas)
 	    methodGenerator.generateMethod(methodData);
 
