@@ -25,8 +25,8 @@
     <menu>
       <item name="Introduction" href="index.html"/>
       <item name="Configuration" href="configuration.html"/>
-      <item name="Architecture" href="architecture.html"/>
-      <item name="Download" href="https://maven2-repository.dev.java.net/source/browse/maven2-repository/trunk/www/repository/org/jvnet/jax-ws-commons/beans-generator/"/>
+<!--      <item name="Architecture" href="architecture.html"/>-->
+      <item name="Download" href="beans-generator-1.0-SNAPSHOT.jar"/>
     </menu>
 
     <menu name="Samples">

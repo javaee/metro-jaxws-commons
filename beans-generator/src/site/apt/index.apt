@@ -8,11 +8,18 @@
 
 Introduction
 
-    Introduction is comming soon... 	
+    This tool intended to make other programmers' lives easier while they create web-services with JAX-WS. 
 
-* It was intended for... 
+    When you create JAX-WS you write your 'implementator' (class which serves as business-logic engine) and
+after that you generate artifacts like request, response and fault beans (in case document/literal wrapped mapping style). So
+you have to customize your IDE settings to invoke additional intermediate steps to create these artifacts, you must add these 
+artifacts in ignore list to your favorite version control system and have to wait when generation process completes.
 
-    * Runtime generation JAX-WS artifacts
+	I often experienced the same problems too, so I decided to solve this problem for myself and my group. 
+
+* This thing was intended to:
+
+    * Generate JAX-WS artifacts at runtime
     
-    * Getting chance for developer to control invokation of his/her web-service class-implementators 
+    * Getting chance for developer to control invocation of his/her web-service class-implementators 
     (with help of IImplmentatorInvoker interface)
