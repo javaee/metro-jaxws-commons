@@ -8,6 +8,8 @@
 
 Introduction
 
+* Long uncler introduction 
+
     This tool intended to make other programmers' lives easier while they create web-services with JAX-WS. 
 
     When you create JAX-WS you write your 'implementator' (class which serves as business-logic engine) and
@@ -17,7 +19,11 @@ artifacts in ignore list to your favorite version control system and have to wai
 
 	I often experienced the same problems too, so I decided to solve this problem for myself and my group. 
 
-* This thing was intended to:
+* Short introduction 
+
+	In brief this tool was made to get rid of wsgen steps while creating of your product. (thanks to kohsuke :))
+
+** This thing was intended to:
 
     * Generate JAX-WS artifacts at runtime
     
