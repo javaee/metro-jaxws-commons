@@ -136,6 +136,7 @@ public class SpringService implements FactoryBean, ServletContextAware, Initiali
      * Sets the bean that implements the web service methods.
      */
     public void setBean(Object sei) {
+        this.invoker = InstanceResolver.createSingleton(sei).createInvoker();
         if(this.implType==null)
             // sei could be a AOP proxy, so getClass() is not always reliable.
             // so if set explicitly via setImpl, don't override that.
