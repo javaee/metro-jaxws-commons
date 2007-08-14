@@ -19,8 +19,7 @@ their extensions. For example, when you write a custom transport,
 custom codec, or custom pipeline assembler, you can use Spring to
 allow users to configure your extensions.
 
-  This is easier to do, compared to other "closed" deployment
-mechanism like JSR-109.
+  This deployment mechanism supercedes <<<sun-jaxws.xml>>> and JSR-109 deployment.
 
 
 
