@@ -170,9 +170,9 @@
       <version>1.0</version>
     </dependency>
     <dependency>
-      <groupId>com.sun.xml.parsers</groupId>
-      <artifactId>jaxp-ri</artifactId>
-      <version>1.4.2</version>
+      <groupId>com.sun.org.apache.xml.internal</groupId>
+      <artifactId>resolver</artifactId>
+      <version>20050927</version>
     </dependency>
     <dependency>
       <groupId>org.jvnet.staxex</groupId>
