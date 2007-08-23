@@ -15,6 +15,7 @@ import com.sun.xml.ws.api.server.BoundEndpoint;
 import com.sun.xml.ws.binding.BindingImpl;
 import com.sun.xml.ws.server.EndpointFactory;
 import com.sun.xml.ws.server.ServerRtException;
+import com.sun.xml.ws.util.xml.XmlUtil;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.context.ServletContextAware;
@@ -271,6 +272,11 @@ public class SpringService implements FactoryBean, ServletContextAware, Initiali
     /**
      * Sets the {@link EntityResolver} to be used for resolving schemas/WSDLs
      * that are referenced. Optional.
+     *
+     * <p>
+     * If omitted, the default catalog resolver is created by looking at
+     * <tt>/WEB-INF/jax-ws-catalog.xml</tt> (if we run as a servlet) or
+     * <tt>/META-INF/jax-ws-catalog.xml</tt> (otherwise.)
      */
     public void setResolver(EntityResolver resolver) {
         this.resolver = resolver;
@@ -312,6 +318,16 @@ public class SpringService implements FactoryBean, ServletContextAware, Initiali
                 String wsdlLocation = EndpointFactory.getWsdlLocation(implType);
                 if (wsdlLocation != null)
                     primaryWsdl = convertStringToSource(wsdlLocation);
+            }
+
+            // resolver defaulting.
+            EntityResolver resolver = this.resolver;
+            if(resolver==null) {
+                if(servletContext!=null) {
+                    resolver = XmlUtil.createEntityResolver(servletContext.getResource("/WEB-INF/jax-ws-catalog.xml"));
+                } else {
+                    resolver = XmlUtil.createEntityResolver(getClass().getClassLoader().getResource("/META-INF/jax-ws-catalog.xml"));
+                }
             }
 
             endpoint = WSEndpoint.create(implType,false,invoker,serviceName,
