@@ -6,10 +6,11 @@
     <href>https://jax-ws.dev.java.net/</href>
   </bannerLeft>
   <skin>
-    <groupId>org.jvnet.maven-javanet-skin</groupId>
-    <artifactId>maven-javanet-skin</artifactId>
+    <groupId>com.sun.enterprise.glassfish</groupId>
+    <artifactId>maven-skin</artifactId>
     <version>1.0</version>
   </skin>
+
   <!--bannerRight>
     <src>https://jax-ws.dev.java.net/images/glassfish_logo.gif</src>
   </bannerRight-->
