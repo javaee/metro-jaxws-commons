@@ -13,6 +13,10 @@ JAX-WS. For example, that would allow your service implementations to
 receive resource injection via Spring, AOP stuff, logging, etc, etc.
  This RI extension provides this functionality.
 
+  This Spring extension also allows you to configure various aspects 
+of your web service through Spring, such as the use of MTOM, handlers,
+custom transports, encoding, etc., etc.
+
   Another purpose of this extension is to provide a general purpose
 mechanism that JAX-WS extension authors can use, to let users use
 their extensions. For example, when you write a custom transport,
