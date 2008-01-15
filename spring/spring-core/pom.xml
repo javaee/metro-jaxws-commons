@@ -16,7 +16,8 @@
   
   <distributionManagement>
     <site>
-      <url>file:../../www/spring/</url>
+      <id>jax-ws-commons-www</id>
+      <url>java-net:/jax-ws-commons/trunk/www/spring/</url>
     </site>
   </distributionManagement>
   
