@@ -48,7 +48,7 @@ public class WSSpringServlet extends HttpServlet {
         delegate = new WSServletDelegate(l,getServletContext());
     }
 
-    protected void doPost( HttpServletRequest request, HttpServletResponse response) {
+    protected void doPost( HttpServletRequest request, HttpServletResponse response) throws ServletException {
         delegate.doPost(request,response,getServletContext());
     }
 
