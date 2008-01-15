@@ -8,16 +8,16 @@
   </parent>
   
   <artifactId>spring</artifactId>
-  <version>1.8</version>
+  <version>1.9-SNAPSHOT</version>
   <packaging>pom</packaging>
   
   <name>Spring support extension</name>
   <description>Configure JAX-WS with Spring</description>
   
   <scm>
-    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/tags/spring-1.8</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/tags/spring-1.8</developerConnection>
-    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/tags/spring-1.8</url>
+    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/trunk/spring</connection>
+    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/trunk/spring</developerConnection>
+    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/spring</url>
   </scm>
   
   <repositories>
