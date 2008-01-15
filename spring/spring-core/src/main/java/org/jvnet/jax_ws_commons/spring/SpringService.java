@@ -475,6 +475,9 @@ public class SpringService implements FactoryBean, ServletContextAware, Initiali
                     });
                 }
             }
+            if(spiType==ServletContext.class) {
+                return spiType.cast(servletContext);
+            }
             if(container!=null) {
                 // delegate to the specified container
                 T t = container.getSPI(spiType);
