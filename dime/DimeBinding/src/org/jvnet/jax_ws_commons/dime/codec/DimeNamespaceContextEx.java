@@ -54,7 +54,7 @@ class DimeNamespaceContextEx implements NamespaceContextEx {
      * Not implemented.
      * 
      * @throws UnsupportedOperationException
-     * @see {@link NamespaceContextEx#iterator()}
+     * @see NamespaceContextEx#iterator()
      */
     public Iterator<Binding> iterator() {
         throw new UnsupportedOperationException();
