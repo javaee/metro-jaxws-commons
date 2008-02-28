@@ -1,42 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="generate">
-	<property name="workspace.loc" value="${basedir}/.." />
-	<property name="jaxws.home" value="path.to.jaxws-ri" />
+<project basedir="." default="war">
+	<property name="jaxws.home" value="/opt/jaxws-2.1.2-ri" />
 
 	<property name="sourcedir" value="${basedir}/src" />
+	<property name="etcdir" value="${basedir}/etc" />
 	<property name="builddir" value="${basedir}/build" />
-	<property name="resourcedir" value="${builddir}/wsdl" />
 	<property name="gensourcedir" value="${builddir}/gen-src" />
 	<property name="classesdir" value="${builddir}/classes" />
 
-	<path id="jaxws.classpath">
-		<fileset dir="${workspace.loc}/build/classes">
-            <include name="*.jar" />
-		</fileset>
-		<fileset dir="${jaxws.home}/lib/runtime">
-			<include name="*.jar" />
-		</fileset>
-		<pathelement path="${workspace.loc}/DimeBinding/build/classes"/>
-	</path>
-
-	<path id="jaxws.tools.classpath">
-		<path refid="jaxws.classpath" />
-		<fileset dir="${jaxws.home}/lib/tooltime">
-			<include name="*.jar" />
-		</fileset>
-	</path>
-
 	<path id="classpath">
 		<pathelement path="${classesdir}" />
-		<path refid="jaxws.classpath" />
+		<fileset dir="${jaxws.home}/lib">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement location="${basedir}/../../build/dimebinding.jar" />
 	</path>
 
 	<taskdef name="wsgen" classname="com.sun.tools.ws.ant.WsGen">
-		<classpath refid="jaxws.tools.classpath" />
+		<classpath refid="classpath" />
 	</taskdef>
 
 	<taskdef name="wsimport" classname="com.sun.tools.ws.ant.WsImport">
-		<classpath refid="jaxws.tools.classpath" />
+		<classpath refid="classpath" />
 	</taskdef>
 
 	<target name="clean">
@@ -45,15 +30,23 @@
 
 	<target name="compile">
 		<mkdir dir="${classesdir}" />
-		<javac classpathref="jaxws.classpath" destdir="${classesdir}" srcdir="${sourcedir}" />
+		<javac classpathref="classpath" destdir="${classesdir}" srcdir="${sourcedir}" />
 	</target>
 
 	<target name="generate" depends="compile">
 		<mkdir dir="${gensourcedir}" />
-		<mkdir dir="${resourcedir}" />
-		<wsgen destdir="${classesdir}" resourcedestdir="${resourcedir}" sourcedestdir="${gensourcedir}" keep="true" genwsdl="true" sei="org.sample.ws.dime.Dime" xendorsed="true">
+		<wsgen destdir="${classesdir}" sourcedestdir="${gensourcedir}" keep="true" sei="org.sample.ws.dime.Dime">
 			<classpath refid="classpath" />
 		</wsgen>
 	</target>
-	
+
+	<target name="war" depends="generate">
+		<war destfile="${builddir}/SampleDimeServer.war" webxml="${etcdir}/web.xml">
+			<webinf dir="${etcdir}" includes="sun-jaxws.xml" />
+			<classes dir="${classesdir}" />
+			<classes dir="${sourcedir}" includes="**/*.gif" />
+			<lib dir="${jaxws.home}/lib" includes="*.jar" />
+			<lib dir="${basedir}/../../build" includes="*.jar" />
+		</war>
+	</target>
 </project>
