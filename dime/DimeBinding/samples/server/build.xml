@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="generate">
+	<property name="workspace.loc" value="${basedir}/.." />
+	<property name="jaxws.home" value="path.to.jaxws-ri" />
+
+	<property name="sourcedir" value="${basedir}/src" />
+	<property name="builddir" value="${basedir}/build" />
+	<property name="resourcedir" value="${builddir}/wsdl" />
+	<property name="gensourcedir" value="${builddir}/gen-src" />
+	<property name="classesdir" value="${builddir}/classes" />
+
+	<path id="jaxws.classpath">
+		<fileset dir="${workspace.loc}/build/classes">
+            <include name="*.jar" />
+		</fileset>
+		<fileset dir="${jaxws.home}/lib/runtime">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement path="${workspace.loc}/DimeBinding/build/classes"/>
+	</path>
+
+	<path id="jaxws.tools.classpath">
+		<path refid="jaxws.classpath" />
+		<fileset dir="${jaxws.home}/lib/tooltime">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<path id="classpath">
+		<pathelement path="${classesdir}" />
+		<path refid="jaxws.classpath" />
+	</path>
+
+	<taskdef name="wsgen" classname="com.sun.tools.ws.ant.WsGen">
+		<classpath refid="jaxws.tools.classpath" />
+	</taskdef>
+
+	<taskdef name="wsimport" classname="com.sun.tools.ws.ant.WsImport">
+		<classpath refid="jaxws.tools.classpath" />
+	</taskdef>
+
+	<target name="clean">
+		<delete dir="${builddir}" />
+	</target>
+
+	<target name="compile">
+		<mkdir dir="${classesdir}" />
+		<javac classpathref="jaxws.classpath" destdir="${classesdir}" srcdir="${sourcedir}" />
+	</target>
+
+	<target name="generate" depends="compile">
+		<mkdir dir="${gensourcedir}" />
+		<mkdir dir="${resourcedir}" />
+		<wsgen destdir="${classesdir}" resourcedestdir="${resourcedir}" sourcedestdir="${gensourcedir}" keep="true" genwsdl="true" sei="org.sample.ws.dime.Dime" xendorsed="true">
+			<classpath refid="classpath" />
+		</wsgen>
+	</target>
+	
+</project>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/activation"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jaxb-api"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jaxb-ri"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jaxws-api"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jaxws-ri"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/jsr173"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/saaj"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/stax"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>
