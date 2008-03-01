@@ -15,7 +15,7 @@
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>DIME binding extension</name>
+	<name>DIME encoding extension</name>
 	<description>
 		Enables JAX-WS to send and receive binary attachments in DIME message format (e.g. from/to Office 2003)
 	</description>
@@ -60,6 +60,7 @@
 				<configuration>
 					<descriptorRefs>
 						<descriptorRef>src</descriptorRef>
+                        <descriptorRef>bin</descriptorRef>
 					</descriptorRefs>
 				</configuration>
 				<executions>
