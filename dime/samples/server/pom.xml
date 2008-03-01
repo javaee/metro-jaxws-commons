@@ -3,15 +3,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.jvnet.jax-ws-commons</groupId>
-        <artifactId>pom</artifactId>
-        <version>1.0</version>
-        <relativePath>../../../pom/pom.xml</relativePath>
-    </parent>
+	<parent>
+		<groupId>org.jvnet.jax-ws-commons</groupId>
+		<artifactId>pom</artifactId>
+		<version>1.0</version>
+		<relativePath>../../../pom/pom.xml</relativePath>
+	</parent>
 
 	<artifactId>dime-sample-server</artifactId>
-	<version>1.0</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<name>Sample DIME web service provider</name>
@@ -26,4 +26,26 @@
 			<version>1.0</version>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxws-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>wsgen</goal>
+						</goals>
+						<phase>generate-sources</phase>
+						<configuration>
+							<sei>org.sample.ws.dime.Dime</sei>
+							<genWsdl>true</genWsdl><!-- for demo purpose only, the wepapp does not need those the generated wsdl files-->
+							<keep>true</keep>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

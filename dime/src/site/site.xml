@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<project name="JAX-WS commons">
+	<bannerLeft>
+		<name>JAX-WS</name>
+		<src>https://jaxbm.dev.java.net/javaxml-duke.gif</src>
+		<href>https://jax-ws.dev.java.net/</href>
+	</bannerLeft>
+	<!--skin>
+		<groupId>com.sun.enterprise.glassfish</groupId>
+		<artifactId>maven-skin</artifactId>
+		<version>1.0</version>
+	</skin-->
+	<body>
+		<menu>
+			<item name="Introduction" href="index.html" />
+
+			<item name="Downloads">
+	            <item name="Project code" href="https://maven2-repository.dev.java.net/source/browse/maven2-repository/trunk/www/repository/org/jvnet/jax-ws-commons/dime/" />
+	            <item name="Sample VBA Client" href="dime-client.doc" />
+	            <item name="Sample Server" href="dime-server.war" />
+	        </item>
+		</menu>	
+
+		${reports}
+    </body>
+</project>

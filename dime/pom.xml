@@ -10,14 +10,34 @@
 		<relativePath>../pom/pom.xml</relativePath>
 	</parent>
 
+	<groupId>org.jvnet.jax-ws-commons</groupId>
 	<artifactId>dime</artifactId>
-	<version>1.0</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>DIME binding extension</name>
 	<description>
-		Enables JAX-WS to send and receive binary attachments in DIME message format (e.g. from Office 2003)
+		Enables JAX-WS to send and receive binary attachments in DIME message format (e.g. from/to Office 2003)
 	</description>
+	<url>https://jax-ws-commons.dev.java.net/dime/</url>
+
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>sg26565</id>
+			<name>Oliver Treichel</name>
+			<email>oliver.treichel@gmx.de</email>
+			<timezone>1</timezone>
+		</developer>
+	</developers>
 
 	<scm>
 		<connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/trunk/dime</connection>
@@ -33,4 +53,49 @@
 		</dependency>
 	</dependencies>
 
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>src</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<executions>
+					<execution>
+						<!-- run after 'package' but before 'install' -->
+						<phase>verify</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>summary</report>
+							<report>license</report>
+							<report>dependencies</report>
+							<report>project-team</report>
+							<report>scm</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
