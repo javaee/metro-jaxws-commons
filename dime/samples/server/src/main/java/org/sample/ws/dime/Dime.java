@@ -24,7 +24,7 @@ public class Dime {
     @WebMethod
     @DimeOutput
     public DataHandler getFile() {
-        final URL url = getClass().getResource("javaxml-duke.gif");
+        final URL url = getClass().getResource("/images/javaxml-duke.gif");
         final DataHandler data = new DataHandler(url);
         return data;
     }
