@@ -86,5 +86,6 @@
     <module>../spring</module>
     <module>../json</module>
     <module>../transport/smtp</module>
+    <module>../dime</module>
   </modules>
 </project>
