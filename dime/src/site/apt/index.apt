@@ -160,15 +160,3 @@ setFileTrap:
     DimeServiceErrorHandler "setFile"
 End Sub
 ---------------------------
-
-Downloads
-
-	* Binary package: {{dimebinding.jar}}
-
-	* Sample service provider: {{server.war}}
-
-	* Sample client as a VBA macro: {{client.doc}}
-
-	* Source code: {{dimebinding.zip}}
-
-	* SVN repository: {{https://jax-ws-commons.dev.java.net/svn/jax-ws-commons/trunk/dime/DimeBinding}}

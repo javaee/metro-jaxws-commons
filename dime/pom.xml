@@ -98,4 +98,16 @@
 			</plugin>
 		</plugins>
 	</reporting>
+
+	<distributionManagement>
+		<repository>
+			<id>java.net-m2-repository</id>
+			<url>java-net:/maven2-repository/trunk/www/repository/</url>
+		</repository>
+		<site>
+			<id>jax-ws-commons-www</id>
+			<url>java-net:/jax-ws-commons/trunk/www/dime/</url>
+		</site>
+	</distributionManagement>
+
 </project>

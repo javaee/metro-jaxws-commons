@@ -37,7 +37,6 @@
 						<goals>
 							<goal>wsgen</goal>
 						</goals>
-						<phase>generate-sources</phase>
 						<configuration>
 							<sei>org.sample.ws.dime.Dime</sei>
 							<genWsdl>true</genWsdl><!-- for demo purpose only, the wepapp does not need those the generated wsdl files-->
