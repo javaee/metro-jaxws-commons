@@ -4,6 +4,8 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import com.sun.xml.ws.api.server.WSEndpoint;
 import com.sun.xml.ws.transport.http.HttpAdapter;
+import com.sun.enterprise.web.connector.grizzly.SelectorThread;
+import com.sun.enterprise.web.connector.grizzly.async.DefaultAsyncHandler;
 
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -53,6 +55,15 @@ public class GrizzlyTransport implements FactoryBean, InitializingBean {
 
     public void afterPropertiesSet() throws Exception {
         adapter = HttpAdapter.createAlone(endpoint);
+        SelectorThread st = new SelectorThread();
+        st.setPort(port);
+        DefaultAsyncHandler ah = new DefaultAsyncHandler();
+        st.setAsyncHandler(ah);
+        st.setEnableAsyncExecution(true);
+        ah.addAsyncFilter(new GrizzlyAsyncFilter());
+
+        st.initEndpoint();
+        st.startEndpoint();
         //adapter.start();
         logger.info("*** HttpAdapter Started for "+endpoint.getImplementationClass()+" ***");
     }
