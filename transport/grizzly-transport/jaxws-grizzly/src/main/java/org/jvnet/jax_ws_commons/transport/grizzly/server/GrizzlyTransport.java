@@ -58,7 +58,7 @@ public class GrizzlyTransport implements FactoryBean, InitializingBean {
         adapter = HttpAdapter.createAlone(endpoint);
         SelectorThread st = new SelectorThread();
         st.setPort(port);
-        st.setAdapter(new GrizzlyAdapter());
+        st.setAdapter(new GrizzlyAdapter(endpoint, adapter));
         DefaultAsyncHandler ah = new DefaultAsyncHandler();
         st.setAsyncHandler(ah);
         st.setEnableAsyncExecution(true);
