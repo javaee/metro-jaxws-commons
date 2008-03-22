@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2008, Kohsuke Kawaguchi. All Rights Reserved.
+ */
+
 package org.jvnet.jax_ws_commons.transport.grizzly.server;
 
 import org.springframework.beans.factory.FactoryBean;
@@ -61,7 +65,6 @@ public class JaxwsGrizzlyTransport implements FactoryBean, InitializingBean {
         st.setAsyncHandler(ah);
         st.setEnableAsyncExecution(true);
 
-        st.initEndpoint();
         st.start();     // st is a thread, start() calls st.startEndpoint();
 
         logger.info("*** HttpAdapter Started for "+endpoint.getImplementationClass()+" ***");
