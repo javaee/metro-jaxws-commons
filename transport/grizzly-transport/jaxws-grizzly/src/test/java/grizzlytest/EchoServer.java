@@ -7,6 +7,10 @@ import javax.xml.transform.Source;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceProvider;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * @author Jitendra Kotamraju
@@ -14,11 +18,18 @@ import javax.xml.ws.WebServiceProvider;
 @WebServiceProvider
 public class EchoServer implements AsyncProvider<Source> {
 
-    public void invoke(Source request, AsyncProviderCallback<Source> callback,
+    private final Set<RequestHandler> pendingRequests = new HashSet<RequestHandler>();
+
+    public synchronized void invoke(Source request, AsyncProviderCallback<Source> callback,
                        WebServiceContext ctxt) {
 
         System.out.println("Service is invoked " + request);
-        new Thread(new RequestHandler(callback, request)).start();
+        pendingRequests.add(new RequestHandler(callback, request));
+    }
+
+    public synchronized void respondToAll() {
+        for (RequestHandler request : pendingRequests)
+            request.run();
     }
 
     private static class RequestHandler implements Runnable {
@@ -31,18 +42,7 @@ public class EchoServer implements AsyncProvider<Source> {
         }
 
         public void run() {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException ie) {
-                cbak.sendError(new WebServiceException("Interrupted..."));
-                return;
-            }
-            try {
-                cbak.send(req);
-            } catch (Exception e) {
-                cbak.sendError(new WebServiceException(e));
-            }
+            cbak.send(req);
         }
     }
-
 }

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2008, Kohsuke Kawaguchi. All Rights Reserved.
+ */
+
 package org.jvnet.jax_ws_commons.transport.grizzly.server;
 
 

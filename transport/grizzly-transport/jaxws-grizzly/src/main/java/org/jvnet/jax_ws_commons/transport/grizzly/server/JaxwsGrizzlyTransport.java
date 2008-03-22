@@ -64,7 +64,7 @@ public class JaxwsGrizzlyTransport implements FactoryBean, InitializingBean {
         DefaultAsyncHandler ah = new DefaultAsyncHandler();
         st.setAsyncHandler(ah);
         st.setEnableAsyncExecution(true);
-
+        st.initEndpoint();
         st.start();     // st is a thread, start() calls st.startEndpoint();
 
         logger.info("*** HttpAdapter Started for "+endpoint.getImplementationClass()+" ***");
