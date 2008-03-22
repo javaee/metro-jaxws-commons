@@ -1,26 +1,22 @@
 package org.jvnet.jax_ws_commons.transport.grizzly.server;
 
 
-import com.sun.enterprise.web.connector.grizzly.AsyncExecutor;
-import com.sun.enterprise.web.connector.grizzly.AsyncFilter;
-import com.sun.enterprise.web.connector.grizzly.AsyncHandler;
-import com.sun.enterprise.web.connector.grizzly.AsyncTask;
-import com.sun.enterprise.web.connector.grizzly.DefaultProcessorTask;
+import com.sun.grizzly.http.*;
+import com.sun.grizzly.tcp.Request;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.util.Map;
 import java.util.Queue;
 
-import org.apache.coyote.Request;
 
 /**
  * @author Jitendra Kotamraju
  */
 
-public class GrizzlyAsyncFilter implements AsyncFilter {
+public class JaxwsGrizzlyAsyncFilter implements AsyncFilter {
 
-    private static final Logger LOGGER = Logger.getLogger(GrizzlyAsyncFilter.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JaxwsGrizzlyAsyncFilter.class.getName());
 
     /**
      * Mapping from the request to the processing task, used by the adapter

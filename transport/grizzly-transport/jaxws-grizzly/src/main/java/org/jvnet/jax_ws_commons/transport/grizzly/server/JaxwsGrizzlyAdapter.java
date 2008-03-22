@@ -1,31 +1,23 @@
 package org.jvnet.jax_ws_commons.transport.grizzly.server;
 
-import org.apache.coyote.Request;
-import org.apache.coyote.Response;
 
 import java.util.logging.Logger;
 
 
-
-import com.sun.enterprise.web.connector.grizzly.AsyncTask;
-import com.sun.enterprise.web.connector.grizzly.ByteBufferStream;
 import com.sun.xml.ws.api.server.WSEndpoint;
 import com.sun.xml.ws.transport.http.HttpAdapter;
 import com.sun.xml.ws.transport.http.WSHTTPConnection;
-
-import org.apache.coyote.Adapter;
-import org.apache.coyote.Request;
-import org.apache.coyote.Response;
-import org.apache.coyote.http11.InternalInputBuffer;
-import org.apache.coyote.http11.InternalOutputBuffer;
+import com.sun.grizzly.tcp.Adapter;
+import com.sun.grizzly.tcp.Request;
+import com.sun.grizzly.tcp.Response;
+import com.sun.grizzly.tcp.http11.InternalOutputBuffer;
+import com.sun.grizzly.tcp.http11.InternalInputBuffer;
+import com.sun.grizzly.http.AsyncTask;
 
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.Map;
-
-import javax.security.auth.Subject;
 
 /**
  * Implementation of a coyote adapter to process HTTP requests asynchronously
@@ -36,9 +28,9 @@ import javax.security.auth.Subject;
  * request processor looks as follows:
  *
  * -> Grizzly subsystem with ARP (asynchronous request processing) enabled
- *     -> ** GrizzlyAsyncFilter doFilter
+ *     -> ** JaxwsGrizzlyAsyncFilter doFilter
  *         -> Grizzly ProcessorTask invokeAdapter
- *             -> ** GrizzlyAdapter service (this is our Adapter implementation for Grizzly)
+ *             -> ** JaxwsGrizzlyAdapter service (this is our Adapter implementation for Grizzly)
  *                 -> JAX-WS HttpAdapter invokeAsync (invokes the JAX-WS WSEndpoint asynchronously)
  *                     -> JAX-WS tube / pipeline plug-ins
  *
@@ -48,9 +40,9 @@ import javax.security.auth.Subject;
  * @author Jitendra Kotamraju
  */
 
-public class GrizzlyAdapter implements Adapter {
+public class JaxwsGrizzlyAdapter implements Adapter {
 
-    private static final Logger LOGGER = Logger.getLogger(GrizzlyAdapter.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JaxwsGrizzlyAdapter.class.getName());
 
     /**
      * Index into the requests and response notes
@@ -66,7 +58,7 @@ public class GrizzlyAdapter implements Adapter {
 
     private final HttpAdapter httpAdapter;
 
-    public GrizzlyAdapter(WSEndpoint endpoint, HttpAdapter httpAdapter) {
+    public JaxwsGrizzlyAdapter(WSEndpoint endpoint, HttpAdapter httpAdapter) {
         this.endpoint = endpoint;
         this.httpAdapter = httpAdapter;
     }
@@ -80,7 +72,7 @@ public class GrizzlyAdapter implements Adapter {
     public void service(Request req, Response res) {
 
         // Get the task associated with this request. This could be solved as a request note instead.
-        AsyncTask asyncTask = GrizzlyAsyncFilter.removeTaskMapping(req);
+        AsyncTask asyncTask = JaxwsGrizzlyAsyncFilter.removeTaskMapping(req);
 
         LOGGER.log(Level.FINEST, "Got task mapping for request " + req.toString() + ", asyncProcessorTask " + asyncTask);
 
@@ -117,7 +109,7 @@ public class GrizzlyAdapter implements Adapter {
      * @return JBI message exchange ID
      */
     public void processAsynchRequest(Context reqContext) {
-        WSHTTPConnection con = new GrizzlyConnection(reqContext.req, reqContext.res, reqContext.asyncTask, false);
+        WSHTTPConnection con = new JaxwsGrizzlyConnection(reqContext.req, reqContext.res, reqContext.asyncTask, false);
         try {
             httpAdapter.invokeAsync(con);
         } catch (IOException ex) {

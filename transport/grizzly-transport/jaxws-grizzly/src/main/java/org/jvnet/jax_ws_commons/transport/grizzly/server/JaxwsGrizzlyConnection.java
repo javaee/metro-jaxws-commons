@@ -2,11 +2,15 @@ package org.jvnet.jax_ws_commons.transport.grizzly.server;
 
 import com.sun.xml.ws.api.server.WebServiceContextDelegate;
 
-import com.sun.enterprise.web.connector.grizzly.AsyncTask;
+
 import com.sun.istack.NotNull;
 import com.sun.xml.ws.api.message.Packet;
 import com.sun.xml.ws.api.server.WSEndpoint;
 import com.sun.xml.ws.transport.http.WSHTTPConnection;
+import com.sun.grizzly.tcp.Response;
+import com.sun.grizzly.tcp.Request;
+import com.sun.grizzly.http.AsyncTask;
+import com.sun.grizzly.util.http.MimeHeaders;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,10 +25,6 @@ import java.util.Map;
 
 import javax.xml.ws.handler.MessageContext;
 
-import org.apache.coyote.Request;
-import org.apache.coyote.Response;
-import org.apache.tomcat.util.http.MimeHeaders;
-
 
 /**
  * JAX-WS WSHTTPConnection implementation for grizzly transport
@@ -32,7 +32,7 @@ import org.apache.tomcat.util.http.MimeHeaders;
  * @author Jitendra Kotamraju
  */
 
-public final class GrizzlyConnection extends WSHTTPConnection implements WebServiceContextDelegate {
+public final class JaxwsGrizzlyConnection extends WSHTTPConnection implements WebServiceContextDelegate {
 
 
     private final Request req;
@@ -45,7 +45,7 @@ public final class GrizzlyConnection extends WSHTTPConnection implements WebServ
 
     private AsyncTask grizzlyAsyncTask;
 
-    public GrizzlyConnection(@NotNull Request request, @NotNull Response response, AsyncTask grizzlyAsyncTask, boolean isSecure) {
+    public JaxwsGrizzlyConnection(@NotNull Request request, @NotNull Response response, AsyncTask grizzlyAsyncTask, boolean isSecure) {
         this.req = request;
         this.res = response;
         this.grizzlyAsyncTask = grizzlyAsyncTask;
@@ -221,6 +221,6 @@ public final class GrizzlyConnection extends WSHTTPConnection implements WebServ
     private static final PropertyMap model;
 
     static {
-        model = parse(GrizzlyConnection.class);
+        model = parse(JaxwsGrizzlyConnection.class);
     }
 }

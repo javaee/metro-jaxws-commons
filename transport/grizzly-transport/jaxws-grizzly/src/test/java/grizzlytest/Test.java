@@ -2,11 +2,10 @@ package grizzlytest;
 
 import junit.framework.TestCase;
 import org.jvnet.jax_ws_commons.spring.SpringService;
-import org.jvnet.jax_ws_commons.transport.grizzly.server.GrizzlyTransport;
+import org.jvnet.jax_ws_commons.transport.grizzly.server.JaxwsGrizzlyTransport;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.namespace.QName;
-import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 import javax.xml.ws.soap.SOAPBinding;
@@ -40,7 +39,7 @@ public class Test extends TestCase {
 
     private void startServer() throws Exception {
         // start a server
-        GrizzlyTransport server = new GrizzlyTransport();
+        JaxwsGrizzlyTransport server = new JaxwsGrizzlyTransport();
         server.setPort(8181);
         SpringService ss = new SpringService();
         ss.setBean(new EchoServer());

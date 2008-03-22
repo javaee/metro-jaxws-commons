@@ -83,16 +83,26 @@
   </build>
 
   <dependencies>
+    <!-- Grizzly POM -->
     <dependency>
-      <groupId>grizzly</groupId>
-      <artifactId>grizzly</artifactId>
-      <version>1.0.19</version>
+      <groupId>com.sun.grizzly</groupId>
+      <artifactId>grizzly-http-servlet</artifactId>
+      <version>1.7.2</version>
     </dependency>
+    <dependency>
+      <groupId>com.sun.grizzly</groupId>
+      <artifactId>grizzly-http</artifactId>
+      <version>1.7.2</version>
+    </dependency>
+
+    <!-- JAXB POM -->
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>
       <version>2.1.5</version>
     </dependency>
+
+    <!-- JAX-WS POM -->
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-rt</artifactId>
