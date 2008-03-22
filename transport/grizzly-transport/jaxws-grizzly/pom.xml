@@ -95,19 +95,13 @@
       <version>1.7.2</version>
     </dependency>
 
-    <!-- JAXB POM -->
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <version>2.1.5</version>
-    </dependency>
-
     <!-- JAX-WS POM -->
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-rt</artifactId>
       <version>2.1.3</version>
     </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

@@ -9,6 +9,8 @@ import com.sun.xml.ws.api.server.WSEndpoint;
 import com.sun.xml.ws.transport.http.WSHTTPConnection;
 import com.sun.grizzly.tcp.Response;
 import com.sun.grizzly.tcp.Request;
+import com.sun.grizzly.tcp.http11.GrizzlyRequest;
+import com.sun.grizzly.tcp.http11.GrizzlyResponse;
 import com.sun.grizzly.http.AsyncTask;
 import com.sun.grizzly.util.http.MimeHeaders;
 
@@ -35,8 +37,8 @@ import javax.xml.ws.handler.MessageContext;
 public final class JaxwsGrizzlyConnection extends WSHTTPConnection implements WebServiceContextDelegate {
 
 
-    private final Request req;
-    private final Response res;
+    private final GrizzlyRequest req;
+    private final GrizzlyResponse res;
 
     private int status;
 
@@ -45,7 +47,7 @@ public final class JaxwsGrizzlyConnection extends WSHTTPConnection implements We
 
     private AsyncTask grizzlyAsyncTask;
 
-    public JaxwsGrizzlyConnection(@NotNull Request request, @NotNull Response response, AsyncTask grizzlyAsyncTask, boolean isSecure) {
+    public JaxwsGrizzlyConnection(@NotNull GrizzlyRequest request, @NotNull GrizzlyResponse response, AsyncTask grizzlyAsyncTask, boolean isSecure) {
         this.req = request;
         this.res = response;
         this.grizzlyAsyncTask = grizzlyAsyncTask;
@@ -55,8 +57,7 @@ public final class JaxwsGrizzlyConnection extends WSHTTPConnection implements We
     @Override
     @Property({MessageContext.HTTP_REQUEST_HEADERS, Packet.INBOUND_TRANSPORT_HEADERS})
     public @NotNull Map<String,List<String>> getRequestHeaders() {
-        MimeHeaders mimeHeaders = req.getMimeHeaders();
-        return convertHeaders(mimeHeaders);
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
@@ -92,8 +93,7 @@ public final class JaxwsGrizzlyConnection extends WSHTTPConnection implements We
     @Override
     @Property(MessageContext.HTTP_RESPONSE_HEADERS)
     public Map<String,List<String>> getResponseHeaders() {
-        MimeHeaders mimeHeaders = res.getMimeHeaders();
-        return convertHeaders(mimeHeaders);
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
@@ -113,8 +113,7 @@ public final class JaxwsGrizzlyConnection extends WSHTTPConnection implements We
     }
 
     public @NotNull InputStream getInput() throws IOException{
-        throw new UnsupportedOperationException("TODO");
-
+        return req.getInputStream();
     }
 
     public @NotNull OutputStream getOutput() throws IOException {
@@ -122,8 +121,7 @@ public final class JaxwsGrizzlyConnection extends WSHTTPConnection implements We
         outputWritten = true;
 
         res.setStatus(getStatus());
-        throw new UnsupportedOperationException("TODO");
-
+        return res.getOutputStream();
     }
 
     public @NotNull WebServiceContextDelegate getWebServiceContextDelegate() {

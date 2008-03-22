@@ -10,8 +10,7 @@ import com.sun.xml.ws.transport.http.WSHTTPConnection;
 import com.sun.grizzly.tcp.Adapter;
 import com.sun.grizzly.tcp.Request;
 import com.sun.grizzly.tcp.Response;
-import com.sun.grizzly.tcp.http11.InternalOutputBuffer;
-import com.sun.grizzly.tcp.http11.InternalInputBuffer;
+import com.sun.grizzly.tcp.http11.*;
 import com.sun.grizzly.http.AsyncTask;
 
 
@@ -40,7 +39,7 @@ import java.util.Map;
  * @author Jitendra Kotamraju
  */
 
-public class JaxwsGrizzlyAdapter implements Adapter {
+public class JaxwsGrizzlyAdapter extends GrizzlyAdapter {
 
     private static final Logger LOGGER = Logger.getLogger(JaxwsGrizzlyAdapter.class.getName());
 
@@ -69,7 +68,7 @@ public class JaxwsGrizzlyAdapter implements Adapter {
      * @param req incoming http request
      * @param res http response to prepare
      */
-    public void service(Request req, Response res) {
+    public void service(GrizzlyRequest req, GrizzlyResponse res) {
 
         // Get the task associated with this request. This could be solved as a request note instead.
         AsyncTask asyncTask = JaxwsGrizzlyAsyncFilter.removeTaskMapping(req);
@@ -77,24 +76,19 @@ public class JaxwsGrizzlyAdapter implements Adapter {
         LOGGER.log(Level.FINEST, "Got task mapping for request " + req.toString() + ", asyncProcessorTask " + asyncTask);
 
 
-        LOGGER.log(Level.FINE, "Service async request for: " + req.requestURI());
-
         // Prepare the request context
         Context currentContext = new Context();
-        currentContext.anInputBuffer = (InternalInputBuffer) req.getInputBuffer();
-        currentContext.anOutputBuffer = (InternalOutputBuffer) res.getOutputBuffer();
+
         currentContext.req = req;
         currentContext.res = res;
         currentContext.asyncTask = asyncTask;
 
-        // TODO: beware, request parsing does not always seem intuitive
-        //currentContext.contextPath = req.localName().toString();
-        currentContext.contextPath = "";
-        currentContext.pathInfo = req.requestURI().toString();
-
         // TODO: synchornous execution for ?wsdl, non AsyncProvider requests
         processAsynchRequest(currentContext);
 
+    }
+
+    public void afterService(GrizzlyRequest request, GrizzlyResponse response) throws Exception {
     }
 
     /**
@@ -116,7 +110,7 @@ public class JaxwsGrizzlyAdapter implements Adapter {
             ex.printStackTrace();
             try {
                 reqContext.res.setStatus(500);
-                reqContext.res.finish();
+                reqContext.res.finishResponse();
             } catch(IOException ioe) {
                 ioe.printStackTrace();
             }
@@ -141,10 +135,8 @@ public class JaxwsGrizzlyAdapter implements Adapter {
      * Holds request context information
      */
     public static class Context {
-        InternalInputBuffer anInputBuffer;
-        InternalOutputBuffer anOutputBuffer;
-        Request req;
-        Response res;
+        GrizzlyRequest req;
+        GrizzlyResponse res;
         String contextPath;
         String pathInfo;
         AsyncTask asyncTask;

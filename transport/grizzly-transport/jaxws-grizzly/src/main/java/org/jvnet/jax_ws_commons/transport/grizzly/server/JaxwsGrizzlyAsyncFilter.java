@@ -3,6 +3,7 @@ package org.jvnet.jax_ws_commons.transport.grizzly.server;
 
 import com.sun.grizzly.http.*;
 import com.sun.grizzly.tcp.Request;
+import com.sun.grizzly.tcp.http11.GrizzlyRequest;
 
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -43,9 +44,8 @@ public class JaxwsGrizzlyAsyncFilter implements AsyncFilter {
         DefaultProcessorTask defaultProcTask = (DefaultProcessorTask) asyncProcessorTask.getProcessorTask();
         Request req = defaultProcTask.getRequest();
 
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.log(Level.FINEST, "doFilter on request " + req.toString() + ", asyncProcessorTask " + asyncProcessorTask.toString());
-        }
+
+        LOGGER.info("doFilter on request " + req.toString() + ", asyncProcessorTask " + asyncProcessorTask.toString());
 
         requestToTask.put(req, asyncProcessorTask);
 
@@ -63,9 +63,8 @@ public class JaxwsGrizzlyAsyncFilter implements AsyncFilter {
             requestToTask.remove(req);
         }
 
-        if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.log(Level.FINEST, "Continue synchronously flag set to " + continueSynchronously);
-        }
+        LOGGER.info("Continue synchronously flag set to " + continueSynchronously);
+
 
         return continueSynchronously;
     }
@@ -121,7 +120,7 @@ public class JaxwsGrizzlyAsyncFilter implements AsyncFilter {
      * @param request the request
      * @return the task if there was a mapping for the request, null if not
      */
-    public static AsyncTask removeTaskMapping(Request request) {
+    public static AsyncTask removeTaskMapping(GrizzlyRequest request) {
         return (AsyncTask) requestToTask.remove(request);
     }
 }
