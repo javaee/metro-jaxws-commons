@@ -1,31 +1,20 @@
 package org.jvnet.jax_ws_commons.transport.grizzly.server;
 
-import com.sun.xml.ws.api.server.WebServiceContextDelegate;
-
-
+import com.sun.grizzly.tcp.http11.GrizzlyRequest;
+import com.sun.grizzly.tcp.http11.GrizzlyResponse;
 import com.sun.istack.NotNull;
 import com.sun.xml.ws.api.message.Packet;
 import com.sun.xml.ws.api.server.WSEndpoint;
+import com.sun.xml.ws.api.server.WebServiceContextDelegate;
 import com.sun.xml.ws.transport.http.WSHTTPConnection;
-import com.sun.grizzly.tcp.Response;
-import com.sun.grizzly.tcp.Request;
-import com.sun.grizzly.tcp.http11.GrizzlyRequest;
-import com.sun.grizzly.tcp.http11.GrizzlyResponse;
-import com.sun.grizzly.http.AsyncTask;
-import com.sun.grizzly.util.http.MimeHeaders;
 
+import javax.xml.ws.handler.MessageContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-
-import javax.xml.ws.handler.MessageContext;
 
 
 /**
@@ -45,12 +34,9 @@ public final class JaxwsGrizzlyConnection extends WSHTTPConnection implements We
     private boolean outputWritten;
     private boolean isSecure;
 
-    private AsyncTask grizzlyAsyncTask;
-
-    public JaxwsGrizzlyConnection(@NotNull GrizzlyRequest request, @NotNull GrizzlyResponse response, AsyncTask grizzlyAsyncTask, boolean isSecure) {
+    public JaxwsGrizzlyConnection(@NotNull GrizzlyRequest request, @NotNull GrizzlyResponse response, boolean isSecure) {
         this.req = request;
         this.res = response;
-        this.grizzlyAsyncTask = grizzlyAsyncTask;
         this.isSecure = isSecure;
     }
 
@@ -173,48 +159,12 @@ public final class JaxwsGrizzlyConnection extends WSHTTPConnection implements We
      * Delegate further processing to parent class
      */
     public void close() {
-        finishGrizzlyResponse();
         super.close();
     }
 
     protected PropertyMap getPropertyMap() {
         return model;
     }
-
-    void finishGrizzlyResponse() {
-        if (grizzlyAsyncTask != null) {
-            //JBIGrizzlyAsyncFilter.finishResponse(grizzlyAsyncTask);
-            // TODO: setting this to null is a work-around for JAX-WS calling onCompletion / close twice
-            // to make sure finish response is only called once
-            grizzlyAsyncTask = null;
-        }
-    }
-
-    /**
-     * Convert from MimeHeaders to the format JAX-WS uses
-     * with the header name as the map key pointing to a list of values
-     * for that header
-     *
-     * This conversion might be expesive, if this is frequently used it may
-     * be worth changing Grizzly or JAX-WS to remove the need for the conversion
-     */
-    Map<String, List<String>> convertHeaders(MimeHeaders mimeHeaders) {
-        Map<String, List<String>> jaxWSHeaders = new HashMap<String, List<String>>();
-        Enumeration names = mimeHeaders.names();
-        while (names.hasMoreElements()) {
-            String name = (String) names.nextElement();
-            List jaxWSHeaderValues = new ArrayList();
-            Enumeration values = mimeHeaders.values(name);
-            while (values.hasMoreElements()) {
-                String aValue = (String) values.nextElement();
-                jaxWSHeaderValues.add(aValue);
-            }
-            jaxWSHeaders.put(name, jaxWSHeaderValues);
-        }
-
-        return jaxWSHeaders;
-    }
-
 
     private static final PropertyMap model;
 
