@@ -40,11 +40,18 @@ package com.sun.xml.ws.commons.virtualbox;
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.WebServiceException;
+import java.net.URL;
 
 /**
+ * Entry point to VirtualBox web service API.
+ *
  * @author Kohsuke Kawaguchi
  */
 public class VirtualBox {
+    public static IVirtualBox connect(URL url, String userName, String password) {
+        return connect(url.toExternalForm(),userName,password);
+    }
+    
     public static IVirtualBox connect(String url, String userName, String password) {
         try {
             VboxService svc = new VboxService(null,new QName("http://www.virtualbox.org/Service", "vboxService"));
