@@ -35,20 +35,27 @@
  *
  */
 
-import com.sun.xml.ws.commons.virtualbox.RuntimeFaultMsg;
-import com.sun.xml.ws.commons.virtualbox.InvalidObjectFaultMsg;
-import com.sun.xml.ws.commons.virtualbox.VirtualBox;
-import com.sun.xml.ws.commons.virtualbox.IVirtualBox;
-import com.sun.xml.ws.transport.http.client.HttpTransportPipe;
+package com.sun.xml.ws.commons.virtualbox;
+
+import javax.xml.namespace.QName;
+import javax.xml.ws.BindingProvider;
+import javax.xml.ws.WebServiceException;
 
 /**
  * @author Kohsuke Kawaguchi
  */
-public class Main {
-    public static void main(String[] args) throws RuntimeFaultMsg, InvalidObjectFaultMsg {
-        //System.setProperty(HttpTransportPipe.class.getName()+".dump","true");
-
-        IVirtualBox box = VirtualBox.connect("http://129.145.132.188:18083/", "foo", "bar");
-        System.out.println("version="+box.getVersion());
+public class VirtualBox {
+    public static IVirtualBox connect(String url, String userName, String password) {
+        try {
+            VboxService svc = new VboxService(null,new QName("http://www.virtualbox.org/Service", "vboxService"));
+            VboxPortType port = svc.getVboxServicePort();
+            ((BindingProvider)port).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, url);
+            String vbox = port.iWebsessionManagerLogon(userName,password);
+            return new IVirtualBox(vbox,port);
+        } catch (InvalidObjectFaultMsg e) {
+            throw new WebServiceException(e);
+        } catch (RuntimeFaultMsg e) {
+            throw new WebServiceException(e);
+        }
     }
 }
