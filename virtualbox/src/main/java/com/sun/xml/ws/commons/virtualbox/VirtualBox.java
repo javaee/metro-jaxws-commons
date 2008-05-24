@@ -48,16 +48,16 @@ import java.net.URL;
  * @author Kohsuke Kawaguchi
  */
 public class VirtualBox {
-    public static IVirtualBox connect(URL url, String userName, String password) {
-        return connect(url.toExternalForm(),userName,password);
+    public static IVirtualBox connect(URL url) {
+        return connect(url.toExternalForm());
     }
     
-    public static IVirtualBox connect(String url, String userName, String password) {
+    public static IVirtualBox connect(String url) {
         try {
             VboxService svc = new VboxService(null,new QName("http://www.virtualbox.org/Service", "vboxService"));
             VboxPortType port = svc.getVboxServicePort();
             ((BindingProvider)port).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, url);
-            String vbox = port.iWebsessionManagerLogon(userName,password);
+            String vbox = port.iWebsessionManagerLogon("foo","bar");
             return new IVirtualBox(vbox,port);
         } catch (InvalidObjectFaultMsg e) {
             throw new WebServiceException(e);

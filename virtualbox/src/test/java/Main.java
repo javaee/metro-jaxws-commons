@@ -48,7 +48,7 @@ public class Main {
     public static void main(String[] args) throws RuntimeFaultMsg, InvalidObjectFaultMsg {
         //System.setProperty(HttpTransportPipe.class.getName()+".dump","true");
 
-        IVirtualBox box = VirtualBox.connect("http://129.145.132.188:18083/", "foo", "bar");
+        IVirtualBox box = VirtualBox.connect("http://129.145.132.188:18083/");
         System.out.println("version="+box.getVersion());
     }
 }
