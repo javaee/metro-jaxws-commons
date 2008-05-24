@@ -39,6 +39,7 @@ package com.sun.xml.ws.commons.virtualbox;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -51,6 +52,8 @@ class Helper {
      */
     public static <T> List<T> wrap(Class<T> wrapperClass, VboxPortType pt, List<String> thisPtrs) {
         try {
+            if(thisPtrs==null)  return Collections.emptyList();
+            
             Constructor<T> c = wrapperClass.getConstructor(String.class, VboxPortType.class);
             List<T> ret = new ArrayList<T>();
             for (String thisPtr : thisPtrs) {
