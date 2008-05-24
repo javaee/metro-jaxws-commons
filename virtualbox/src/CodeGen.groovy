@@ -154,8 +154,13 @@ def unmarshal(String typeName, JVar expr) {
     if(typeName.startsWith("I")) {
         if(typeName.endsWith("Collection")) {
             // collection
+            String componentName = getComponentName(typeName);
+            if(isStructure(componentName)) {
+                return JOp.cond(expr.eq(JExpr._null()), JExpr._null(), expr.invoke("getArray"));
+            }
+
             return codeModel.ref("Helper").staticInvoke("wrap")
-                .arg(codeModel.ref(getComponentName(typeName)).dotclass())
+                .arg(codeModel.ref(componentName).dotclass())
                 .arg(JExpr.ref("port"))
                 .arg(JOp.cond(expr.eq(JExpr._null()), JExpr._null(), expr.invoke("getArray")));
         }
@@ -171,6 +176,9 @@ def unmarshal(String typeName, JVar expr) {
     return expr;
 }
 
+/**
+ * Generates the code that takes the in-memory value and converts that to the web service type.
+ */
 def marshal(String typeName, JVar expr) {
     if(typeName=="uuid") {
         return expr.invoke("toString");
@@ -230,6 +238,8 @@ JType jaxwsType(String typeName) {
         return pkgRef("ArrayOf"+getComponentName(typeName));
     }
     if(typeName.startsWith("I")) {
+        if(isStructure(typeName))
+            return codeModel.ref(typeName);
         return codeModel.ref(String);
     }
     switch(typeName) {
