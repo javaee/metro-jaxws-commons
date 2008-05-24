@@ -39,6 +39,7 @@ import com.sun.xml.ws.commons.virtualbox.RuntimeFaultMsg;
 import com.sun.xml.ws.commons.virtualbox.InvalidObjectFaultMsg;
 import com.sun.xml.ws.commons.virtualbox.VirtualBox;
 import com.sun.xml.ws.commons.virtualbox.IVirtualBox;
+import com.sun.xml.ws.commons.virtualbox.IMachine;
 import com.sun.xml.ws.transport.http.client.HttpTransportPipe;
 
 /**
@@ -48,7 +49,10 @@ public class Main {
     public static void main(String[] args) throws RuntimeFaultMsg, InvalidObjectFaultMsg {
         //System.setProperty(HttpTransportPipe.class.getName()+".dump","true");
 
-        IVirtualBox box = VirtualBox.connect("http://129.145.132.188:18083/");
+        IVirtualBox box = VirtualBox.connect("http://192.168.2.12:18083/");
         System.out.println("version="+box.getVersion());
+        for (IMachine machine : box.getMachines()) {
+            System.out.println(machine.getName());
+        }
     }
 }
