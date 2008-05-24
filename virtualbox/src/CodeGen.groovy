@@ -195,6 +195,7 @@ JType outerType(String typeName) {
     switch(typeName) {
     case "wstring":             return codeModel.ref(String);
     case "uuid":                return codeModel.ref(UUID);
+    case "long long":
     case "unsigned long long":
     case "unsigned long":       return codeModel.LONG;
     case "unsigned short":      return codeModel.INT;
