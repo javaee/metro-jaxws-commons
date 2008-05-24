@@ -34,7 +34,7 @@ project.addCompileSourceRoot(destDir.toString());
  *      XIDL "interface" element.
  */
 def onInterface(intf) {
-    if(intf.@wsmap=="suppress")
+    if(["suppress","struct"].find{ it==intf.@wsmap } )
         return; // no mapping
 
     def interfaceName = intf.@name
@@ -57,6 +57,8 @@ def onInterface(intf) {
     """)
 
     intf.attribute.each { attr ->
+        if(isTypeSuppressed(attr.@type))    return;
+        
         def attrName = attr.@name
 
         // attribute getter method
@@ -125,8 +127,12 @@ def onInterface(intf) {
     }
 }
 
+private boolean isTypeSuppressed(String type) {
+    return type=="\$unknown" /* not entirely sure if this rule is true */ || library."interface".find { it.@name==type && it.@wsmap=="suppress" };
+}
+
 private boolean isMethodMappingSuppressed(method) {
-    return method.param.find { p -> library."interface".find { it.@name==p.@type && it.@wsmap=="suppress" } };
+    return method.param.find { p -> isTypeSuppressed(p.@type) };
 }
 
 private JBlock createTryCatchBlock(JBlock block) {
@@ -198,6 +204,7 @@ JType outerType(String typeName) {
     case "long long":
     case "unsigned long long":
     case "unsigned long":       return codeModel.LONG;
+    case "long":
     case "unsigned short":      return codeModel.INT;
     }
     return codeModel.ref(typeName);
@@ -212,6 +219,9 @@ JType jaxwsType(String typeName) {
     }
     if(typeName.startsWith("I")) {
         return codeModel.ref(String);
+    }
+    switch(typeName) {
+    case "uuid":                return codeModel.ref(String);
     }
     return outerType(typeName);
 }
