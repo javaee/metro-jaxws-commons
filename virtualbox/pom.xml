@@ -115,4 +115,10 @@
       </plugin>
     </plugins>
   </reporting>
+
+  <scm>
+    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/trunk/virtualbox</connection>
+    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/virtualbox</url>
+  </scm>
+
 </project>
