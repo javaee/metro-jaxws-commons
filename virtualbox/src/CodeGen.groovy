@@ -24,10 +24,9 @@ library["interface"].each { interfaceMap[it.@name]=it; }
 
 interfaceMap.values().each { onInterface(it); }
 
-File destDir = new File(baseDir, "target/generated-sources/wrappers")
-destDir.mkdirs();
+File destDir = new File(baseDir, "target/jaxws/wsimport/java")
 codeModel.build(destDir);
-project.addCompileSourceRoot(destDir.toString());
+// end of the main
 
 /**
  * Generates the interface definition.
