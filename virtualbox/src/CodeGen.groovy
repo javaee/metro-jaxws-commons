@@ -2,6 +2,7 @@
 import com.sun.codemodel.*
 import com.sun.xml.bind.api.impl.NameConverter
 import javax.xml.ws.WebServiceException
+import javax.xml.ws.Holder
 
 // paramters for the code generation
 
@@ -10,7 +11,7 @@ import javax.xml.ws.WebServiceException
 def baseDir = project.basedir;
 
 def xidl = new XmlParser().parse(new File(baseDir,"src/VirtualBox.xidl"));
-def library = xidl.library;
+this.library = xidl.library;
 
 this.codeModel = new JCodeModel();
 this.pkg = codeModel._package("com.sun.xml.ws.commons.virtualbox");
@@ -78,6 +79,8 @@ def onInterface(intf) {
 
     // operation
     intf.method.each { method ->
+        if(isMethodMappingSuppressed(method))  return;
+
         def methodName = method.@name
 
         def retParam = method.param.find { it.@dir=="return" }
@@ -102,14 +105,28 @@ def onInterface(intf) {
         call.arg("_this");
 
         method.param.each { param ->
-            if(param.@dir=="return")    return;
+            switch(param.@dir) {
+            case "return":  return;
+            case "out":
+                JVar p = m.param(codeModel.ref(Holder.class).narrow(outerType(param.@type).boxify()), param.@name);
+                m.javadoc().addParam(param.@name).add(param.desc?.text())
 
-            JVar p = m.param(outerType(param.@type), param.@name);
-            m.javadoc().addParam(param.@name).add(param.desc?.text())
+                call.arg(p); // TODO: marshalling?
+                break;
 
-            call.arg(marshal(param.@type,p));
+            case "in":
+                JVar p = m.param(outerType(param.@type), param.@name);
+                m.javadoc().addParam(param.@name).add(param.desc?.text())
+
+                call.arg(marshal(param.@type,p));
+                break;
+            }
         }
     }
+}
+
+private boolean isMethodMappingSuppressed(method) {
+    return method.param.find { p -> library."interface".find { it.@name==p.@type && it.@wsmap=="suppress" } };
 }
 
 private JBlock createTryCatchBlock(JBlock block) {
@@ -180,6 +197,7 @@ JType outerType(String typeName) {
     case "uuid":                return codeModel.ref(UUID);
     case "unsigned long long":
     case "unsigned long":       return codeModel.LONG;
+    case "unsigned short":      return codeModel.INT;
     }
     return codeModel.ref(typeName);
 }
