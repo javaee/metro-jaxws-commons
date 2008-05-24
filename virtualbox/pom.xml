@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.jvnet.jax-ws-commons</groupId>
@@ -9,7 +10,7 @@
 
   <artifactId>virtualbox</artifactId>
   <packaging>jar</packaging>
-  <version>1.6</version>
+  <version>1.6-SNAPSHOT</version>
   <name>VirtualBox web service client</name>
 
   <build>
@@ -117,9 +118,9 @@
   </reporting>
 
   <scm>
-    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/tags/virtualbox-1.6</connection>
-    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/tags/virtualbox-1.6</url>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/virtualbox/tags/virtualbox-1.6</developerConnection>
+    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/trunk/virtualbox</connection>
+    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/trunk/virtualbox</developerConnection>
+    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/virtualbox</url>
   </scm>
 
 </project>
