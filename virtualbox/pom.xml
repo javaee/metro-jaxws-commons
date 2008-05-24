@@ -27,6 +27,7 @@
         </executions>
         <configuration>
           <packageName>com.sun.xml.ws.commons.virtualbox</packageName>
+          <target>2.0</target>
           <wsdlFiles>
             <wsdlFile>vboxwebService.wsdl</wsdlFile>
           </wsdlFiles>
