@@ -107,7 +107,7 @@ def onInterface(intf) {
             JVar p = m.param(outerType(param.@type), param.@name);
             m.javadoc().addParam(param.@name).add(param.desc?.text())
 
-            call.arg(p);
+            call.arg(marshal(param.@type,p));
         }
     }
 }
@@ -139,7 +139,7 @@ def unmarshal(String typeName, JVar expr) {
         return JExpr._new(codeModel.ref(typeName)).arg(expr).arg(JExpr.ref("port"));
     }
     if(typeName=="uuid") {
-        return JExpr._new(codeModel.ref(UUID)).arg(expr);
+        return codeModel.ref(UUID).staticInvoke("fromString").arg(expr);
     }
     return expr;
 }
@@ -148,6 +148,8 @@ def marshal(String typeName, JVar expr) {
     if(typeName=="uuid") {
         return expr.invoke("toString");
     }
+    if(typeName.startsWith("I"))
+        return JOp.cond(expr.eq(JExpr._null()), JExpr._null(), expr.ref("_this"));
     return expr;
 }
 
