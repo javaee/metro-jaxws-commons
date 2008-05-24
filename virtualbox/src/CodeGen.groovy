@@ -134,7 +134,16 @@ private boolean isTypeSuppressed(String type) {
 }
 
 private boolean isMethodMappingSuppressed(method) {
-    return method.param.find { p -> isTypeSuppressed(p.@type) };
+    if(method.param.find { p -> isTypeSuppressed(p.@type) })    return true;
+
+    // for now, don't handle [out] parameter for wrapper types. there's only one method IHardDisk.cloneToImage()
+    // that does this, so it's not worth my effort for now
+    if(method.param.find { p -> p.@dir=="out" && p.@type.startsWith("I") && !isStructure(p.@type); }) {
+        System.out.println("[WARNING] Skipping the ${method.@name} method");
+        return true;
+    }
+
+    return false;
 }
 
 private JBlock createTryCatchBlock(JBlock block) {
