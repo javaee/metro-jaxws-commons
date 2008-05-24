@@ -1,10 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.sun.xml.ws.commons</groupId>
+  <parent>
+    <groupId>org.jvnet.jax-ws-commons</groupId>
+    <artifactId>pom</artifactId>
+    <version>1.0</version>
+    <relativePath>../pom/pom.xml</relativePath>
+  </parent>
+
   <artifactId>virtualbox</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.6-SNAPSHOT</version>
   <name>VirtualBox web service client</name>
 
   <build>
@@ -80,6 +86,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <!-- this is just to make it easier to edit CodeGen.groovy with IDE -->
       <groupId>com.sun.codemodel</groupId>
       <artifactId>codemodel</artifactId>
       <version>2.1</version>
