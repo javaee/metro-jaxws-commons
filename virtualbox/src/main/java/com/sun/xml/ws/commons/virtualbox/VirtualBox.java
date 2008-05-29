@@ -54,7 +54,10 @@ public class VirtualBox {
     
     public static IVirtualBox connect(String url) {
         try {
-            VboxService svc = new VboxService(null,new QName("http://www.virtualbox.org/Service", "vboxService"));
+            URL wsdl = VirtualBox.class.getClassLoader().getResource("vboxwebService.wsdl");
+            if(wsdl==null)
+                throw new LinkageError("vboxwebService.wsdl not found, but it should have been in the jar");
+            VboxService svc = new VboxService(wsdl,new QName("http://www.virtualbox.org/Service", "vboxService"));
             VboxPortType port = svc.getVboxServicePort();
             ((BindingProvider)port).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, url);
             String vbox = port.iWebsessionManagerLogon("foo","bar");

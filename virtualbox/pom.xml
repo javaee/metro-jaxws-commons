@@ -9,10 +9,19 @@
 
   <artifactId>virtualbox</artifactId>
   <packaging>jar</packaging>
-  <version>1.7-SNAPSHOT</version>
+  <version>1.6.2-SNAPSHOT</version>
   <name>VirtualBox web service client</name>
 
   <build>
+    <resources>
+      <!-- copy WSDL since we'll need them at runtime -->
+      <resource>
+        <directory>src/wsdl</directory>
+        <includes>
+          <include>*.wsdl</include>
+        </includes>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
