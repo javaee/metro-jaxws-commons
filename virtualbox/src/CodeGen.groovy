@@ -105,7 +105,7 @@ def onInterface(intf) {
             body._return(unmarshal(retParam.@type,body.decl(jaxwsType(retParam.@type),"retVal",call)));
         }
         // implicit first arg
-        call.arg("_this");
+        call.arg(_this);
 
         method.param.each { param ->
             switch(param.@dir) {
