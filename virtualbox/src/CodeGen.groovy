@@ -212,8 +212,35 @@ private boolean isStructure(String typeName) {
  */
 def buildJavadoc(documentable,xml) {
     if(xml.desc==null)  return;
+    _buildJavadoc(documentable.javadoc(),xml.desc[0]);
+}
 
-    documentable.javadoc().add(xml.desc.text())
+def _buildJavadoc(javadoc,node) {
+    if(node==null)  return;
+    node.children().each { child ->
+        if(child instanceof groovy.util.Node) {
+            def tag = child.name();
+            if(tag=="link") {
+                javadoc.add("{@link "+child.@to.replace("::","#")+"}");
+                return;
+            }
+            if(tag=="see") {
+                javadoc.add("\n@see "+child.text());
+                return;
+            }
+            if(tag=="note")
+                tag = "blockquote";
+            surroundWith(javadoc,tag,child);
+        } else {
+            javadoc.add(child.replace('<','&lt;'))
+        }
+    }
+}
+
+def surroundWith(javadoc, String tag, node) {
+    javadoc.add('<'+tag+'>');
+    _buildJavadoc(javadoc,node);
+    javadoc.add('</'+tag+'>');
 }
 
 /**
