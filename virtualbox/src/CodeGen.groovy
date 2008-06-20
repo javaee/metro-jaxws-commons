@@ -126,6 +126,14 @@ def onInterface(intf) {
             }
         }
     }
+    
+    if(interfaceName=="IVirtualBox") {
+        m = clz.method(JMod.PUBLIC, outerType("ISession"), "getSessionObject");
+        body = createTryCatchBlock(m.body());
+        call = port.invoke("iWebsessionManagerGetSessionObject");
+        call.arg(_this);
+        body._return(unmarshal("ISession",body.decl(codeModel.ref(String),"retVal",call)));
+    }
 }
 
 private boolean isTypeSuppressed(String type) {
