@@ -48,10 +48,21 @@ import java.net.URL;
  * @author Kohsuke Kawaguchi
  */
 public class VirtualBox {
+    /**
+     * Connects to VirtualBox at the specified URL.
+     *
+     * <p>
+     * A particularly noteworthy method of {@link IVirtualBox}
+     * is {@link IVirtualBox#getSessionObject()}, which lets
+     * you create a new {@link ISession}.
+     */
     public static IVirtualBox connect(URL url) {
         return connect(url.toExternalForm());
     }
-    
+
+    /**
+     * Type unsafe version of the {@link #connect(URL)}
+     */
     public static IVirtualBox connect(String url) {
         try {
             URL wsdl = VirtualBox.class.getClassLoader().getResource("vboxwebService.wsdl");
