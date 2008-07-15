@@ -41,7 +41,7 @@ import groovy.xml.dom.DOMCategory
 import groovy.xml.StreamingMarkupBuilder
 
 class MetroGrailsPlugin {
-    def dependsOn = [services: '1.0.1']
+//    def dependsOn = []
 	
     def author = "Martin Grebac"
     def authorEmail = "martin.grebac@sun.com"
@@ -51,7 +51,7 @@ METRO plugin allows applications developed with Grails framework to expose servi
 classes as SOAP Web Services. It uses the SOAP implementation from METRO (includes JAX-WS).
 '''
     def documentation = "http://jax-ws-commons.dev.java.net/grails/"
-    def version = '1.0'
+    def version = '1.0.1'
     def loadAfter = ['services']    
     def watchedResources = ["file:./grails-app/services/**/*Service.groovy",
                             "file:./plugins/*/grails-app/services/**/*Service.groovy",
