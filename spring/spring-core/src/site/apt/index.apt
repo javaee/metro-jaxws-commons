@@ -27,6 +27,10 @@ allow users to configure your extensions.
 
 
 
+License
+
+  Distributed under dual license consisting of the {{{https://glassfish.dev.java.net/public/CDDL+GPL.html}CDDL v1.0 and GPL v2}}
+
 Quick Start
 
   Let's consider the most typical case, where you develop a web
