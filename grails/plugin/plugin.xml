@@ -1,4 +1,4 @@
-<plugin name='metro' version='1.0'>
+<plugin name='metro' version='1.0.2'>
   <author>Martin Grebac</author>
   <authorEmail>martin.grebac@sun.com</authorEmail>
   <title>Add METRO Web Service support to services built with Grails framework.</title>
