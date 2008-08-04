@@ -89,7 +89,7 @@ classes as SOAP Web Services. It uses the SOAP implementation from METRO (includ
                         println "Generating spring configuration for: ${shortName}"
 
                         if (shortName?.contains('.')) {
-                            shortName = shortName.substring(shortName.lastIndexOf('.'), shortName.size())
+                            shortName = shortName.substring(shortName.lastIndexOf('.') + 1, shortName.size())
                         }
 
                         wss.binding(url:"/services/${shortName}") {
