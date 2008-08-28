@@ -126,13 +126,40 @@ def onInterface(intf) {
             }
         }
     }
-    
+
+    // two methods should be logically on IVirtualBox but they are outside, presumably because those are only applicable to web services.
     if(interfaceName=="IVirtualBox") {
-        m = clz.method(JMod.PUBLIC, outerType("ISession"), "getSessionObject");
-        body = createTryCatchBlock(m.body());
-        call = port.invoke("iWebsessionManagerGetSessionObject");
-        call.arg(_this);
-        body._return(unmarshal("ISession",body.decl(codeModel.ref(String),"retVal",call)));
+        clz.direct("""
+    /**
+     * Returns a managed object reference to the internal ISession object that was created
+     * for this web service session when the client logged on.
+     */
+    public ISession getSessionObject() {
+        try {
+            String session = port.iWebsessionManagerGetSessionObject(_this);
+            return new ISession(session,port);
+        } catch (InvalidObjectFaultMsg e) {
+            throw new WebServiceException(e);
+        } catch (RuntimeFaultMsg e) {
+            throw new WebServiceException(e);
+        }
+    }
+
+    /**
+     * Logs off the client who has previously logged on
+     * and destroys all resources associated with the session (most importantly, all
+     * managed objects created in the server while the session was active).
+     */
+    public void logoff() {
+        try {
+            port.iWebsessionManagerLogoff(_this);
+        } catch (InvalidObjectFaultMsg e) {
+            throw new WebServiceException(e);
+        } catch (RuntimeFaultMsg e) {
+            throw new WebServiceException(e);
+        }
+    }
+""")
     }
 }
 
