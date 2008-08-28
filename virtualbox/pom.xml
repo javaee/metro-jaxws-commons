@@ -9,7 +9,7 @@
 
   <artifactId>virtualbox</artifactId>
   <packaging>jar</packaging>
-  <version>1.6-rev5-SNAPSHOT</version>
+  <version>1.6-rev5</version>
   <name>VirtualBox web service client</name>
 
   <build>
@@ -135,9 +135,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/trunk/virtualbox</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/trunk/virtualbox</developerConnection>
-    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/virtualbox</url>
+    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/tags/virtualbox-1.6-rev5</connection>
+    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/tags/virtualbox-1.6-rev5</developerConnection>
+    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/tags/virtualbox-1.6-rev5</url>
   </scm>
 
 </project>
