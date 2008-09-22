@@ -435,7 +435,7 @@ public class SpringService implements FactoryBean, ServletContextAware, Initiali
             source = (SDDocumentSource) resource;
         }
         else {
-            throw new IllegalArgumentException("Unknown type " + resource);
+            throw new IllegalArgumentException("Unknown type \"" + resource.getClass().getName() + "\" for resource " + resource);
         }
 
         return source;
