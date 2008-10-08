@@ -1,0 +1,29 @@
+                                    ------
+                                    JMS binding support for JAX-WS
+                                    ------
+                                    ------
+                                    ------
+
+What is this?
+
+  JAX-WS RI supports a "pluggable encoding/transport" --- meaning it supports various protocol/transport, not just SOAP/HTTP. This extension takes advantage of this and allows JAX-WS services to be exposed via SOAP/JMS
+
+  JMS support is implemented as a custom binding. So just like there are SOAP/HTTP binding,  you can specify JMS binding to expose a service as SOAP/JMS service. The following code shows one way of exposing a service over SOAP/JMS.
+
+---------------------------
+@BindingType(JMSBindingID.JMS_BINDING)
+public class MyService {
+
+    public Book get(@WebParam(name="id") int id) {
+        Book b = new Book();
+        b.id = id;
+        return b;
+    }
+
+    public static final class Book {
+        public int id = 1;
+        public String title = "Java";
+    }
+
+}
+---------------------------
