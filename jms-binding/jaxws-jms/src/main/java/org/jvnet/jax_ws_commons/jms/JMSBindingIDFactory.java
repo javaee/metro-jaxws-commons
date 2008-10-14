@@ -39,6 +39,7 @@ package org.jvnet.jax_ws_commons.jms;
 import com.sun.istack.NotNull;
 import com.sun.xml.ws.api.BindingID;
 import com.sun.xml.ws.api.BindingIDFactory;
+import com.sun.xml.ws.api.SOAPVersion;
 
 import javax.xml.ws.WebServiceException;
 
@@ -47,8 +48,19 @@ import javax.xml.ws.WebServiceException;
  */
 public class JMSBindingIDFactory extends BindingIDFactory {
 
-    public @NotNull BindingID parse(@NotNull String lexical) throws WebServiceException {
-        return new JMSBindingID();
+    private static final JMSBindingID SOAP11_JMS = new JMSBindingID(
+        SOAPVersion.SOAP_11, JMSBindingID.SOAP11JMS_BINDING);
+
+    private static final JMSBindingID SOAP12_JMS = new JMSBindingID(
+        SOAPVersion.SOAP_12, JMSBindingID.SOAP12JMS_BINDING);
+
+    public BindingID parse(@NotNull String lexical) throws WebServiceException {
+        if(lexical.equals(SOAP11_JMS.toString())) {
+            return SOAP11_JMS;
+        } else if(lexical.equals(SOAP12_JMS.toString())) {
+            return SOAP12_JMS;
+        }
+        return null;
     }
     
 }

@@ -46,7 +46,7 @@ import org.jvnet.jax_ws_commons.jms.JMSBindingID;
  * @author Jitendra Kotamraju
  */
 @WebService
-@BindingType(JMSBindingID.JMS_BINDING)
+@BindingType(JMSBindingID.SOAP12JMS_BINDING)
 public class MyService {
 
     public Book get(@WebParam(name="p1") int p1, @WebParam(name="p2") String p2) {

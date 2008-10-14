@@ -48,11 +48,28 @@ import com.sun.xml.ws.api.pipe.Codecs;
  */
 public class JMSBindingID extends BindingID {
 
-    public static final String JMS_BINDING = "https://jax-ws-commons.dev.java.net/jms/";
+   /**
+    * A constant representing the identity of the SOAP 1.1 over JMS binding.
+    */
+    public static final String SOAP11JMS_BINDING = "https://jax-ws-commons.dev.java.net/jms/soap11";
+
+   /**
+    * A constant representing the identity of the SOAP 1.2 over JMS binding.
+    */
+    public static final String SOAP12JMS_BINDING = "https://jax-ws-commons.dev.java.net/jms/soap12";
+
     private static final String JMS_BINDING_TRANSPORT = "http://www.soapjms.org/2007/08/soap/bindings/JMS/";
 
+    private final SOAPVersion soapVersion;
+    private final String lexical;
+
+    JMSBindingID(SOAPVersion soapVersion, String lexical) {
+        this.soapVersion = soapVersion;
+        this.lexical = lexical;
+    }
+
     public SOAPVersion getSOAPVersion() {
-        return SOAPVersion.SOAP_11;
+        return soapVersion;
     }
 
     public @NotNull Codec createEncoder(@NotNull WSBinding binding) {
@@ -65,7 +82,7 @@ public class JMSBindingID extends BindingID {
 //    }
 
     public String toString() {
-        return JMS_BINDING;
+        return lexical;
     }
 
     @Override
