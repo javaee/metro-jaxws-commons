@@ -17,6 +17,7 @@ import sun.misc.Service;
 import sun.misc.ServiceConfigurationError;
 import sun.security.action.GetPropertyAction;
 import com.sun.net.httpserver.*;
+import com.sun.xml.ws.util.ServiceFinder;
 
 /**
  * Service provider class for HttpServer.
@@ -79,7 +80,13 @@ public abstract class HttpServerProvider {
     }
 
     private static boolean loadProviderAsService() {
-	Iterator i = Service.providers(HttpServerProvider.class,
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        for (HttpServerProvider factory : ServiceFinder.find(HttpServerProvider.class, cl)) {
+            provider = factory;
+            return true;
+        }
+
+    Iterator i = Service.providers(HttpServerProvider.class,
 				       ClassLoader.getSystemClassLoader());
 	for (;;) {
 	    try {
