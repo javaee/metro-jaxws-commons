@@ -99,11 +99,11 @@ public class LWHSExchange extends HttpExchange {
     }
 
     public void setAttribute(String name, Object value) {
-
+        throw new UnsupportedOperationException();
     }
 
     public void setStreams(InputStream i, OutputStream o) {
-
+        throw new UnsupportedOperationException();
     }
 
     public HttpPrincipal getPrincipal() {

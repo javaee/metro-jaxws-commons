@@ -5,7 +5,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * @author Jitendra Kotamraju
  */
-@XmlRootElement
 public class Book {
     private String title;
     private String author;
