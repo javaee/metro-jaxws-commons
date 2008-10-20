@@ -75,7 +75,10 @@ public class LWHSExchange extends HttpExchange {
     }
 
     public void sendResponseHeaders(int rCode, long responseLength) throws IOException {
-
+        response.setStatus(rCode);
+        if (responseLength > 0) {
+            response.setContentLengthLong(responseLength);
+        }
     }
 
     public InetSocketAddress getRemoteAddress() {
