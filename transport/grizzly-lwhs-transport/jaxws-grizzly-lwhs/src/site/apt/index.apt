@@ -1,10 +1,10 @@
                                     ------
-                                    Grizzly transport for JAX-WS
+                                    Grizzly lwhs transport for JAX-WS
                                     ------
                                     ------
                                     ------
 
 What is this?
 
-  JAX-WS works with various transports and it also provides plugin extensions to write any custom transport. This extension takes advantage of the extensions and allows JAX-WS services to be used with Grizzly transport.
+  JAX-WS RI implemented Endpoint API using {{{http://java.sun.com/javase/6/docs/jre/api/net/httpserver/spec/com/sun/net/httpserver/package-summary.html}lighte weight httpserver API}}. {{{http://java.sun.com/javase/6/docs/jre/api/net/httpserver/spec/com/sun/net/httpserver/spi/package-summary.html}Light weight httpserver SPI}} allows to plugin any http server implementation for the API. This project implements the light weight httpserver API using {{{http://grizzly.dev.java.net}grizzly}}. That means JAX-WS RI code doesn't have to change. And Endpoint.publish() gets all the benefits of grizzly(for e.g performance).
 
