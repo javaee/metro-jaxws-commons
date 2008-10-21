@@ -4,13 +4,13 @@
   <parent>
     <groupId>org.jvnet.jax-ws-commons</groupId>
     <artifactId>grizzly-lwhs</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>jaxws-grizzly-lwhs</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <name>Grizzly lwhs transport extension</name>
   <description>Grizzly lwhs transport extension for JAX-WS RI</description>
 
