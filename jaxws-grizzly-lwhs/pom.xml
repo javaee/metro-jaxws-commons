@@ -1,0 +1,67 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.jvnet.jax-ws-commons</groupId>
+    <artifactId>grizzly-lwhs</artifactId>
+    <version>1.0</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>jaxws-grizzly-lwhs</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0</version>
+  <name>Grizzly lwhs transport extension</name>
+  <description>Grizzly lwhs transport extension for JAX-WS RI</description>
+
+<!--
+  Don't know why maven doesn't pick up grand parent's pom.xml which has
+  this entry. For now, adding it here.
+-->
+  <pluginRepositories>
+    <pluginRepository>
+      <id>java.net2</id>
+      <url>https://maven2-repository.dev.java.net/nonav/repository</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <distributionManagement>
+    <site>
+      <url>file:../../../www/grizzly-lwhs/</url>
+    </site>
+  </distributionManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkMode>never</forkMode>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- Grizzly POM -->
+    <dependency>
+      <groupId>com.sun.grizzly</groupId>
+      <artifactId>grizzly-http</artifactId>
+      <version>1.8.6.2</version>
+    </dependency>
+
+    <!-- JAX-WS POM -->
+    <dependency>
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>jaxws-rt</artifactId>
+      <version>2.1.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
