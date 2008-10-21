@@ -9,14 +9,14 @@
   
   <artifactId>grizzly-lwhs</artifactId>
   <packaging>pom</packaging>
-   <version>1.0</version>
+   <version>1.1-SNAPSHOT</version>
 
   <name>Grizzly support extension</name>
   
   <scm>
-    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/tags/grizzly-lwhs-1.0</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/tags/grizzly-lwhs-1.0</developerConnection>
-    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/tags/grizzly-lwhs-1.0</url>
+    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/trunk/grizzly</connection>
+    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/trunk/grizzly</developerConnection>
+    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/grizzly</url>
   </scm>
   
   <modules>
