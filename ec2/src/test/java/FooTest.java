@@ -24,6 +24,9 @@ public class FooTest extends TestCase {
         File home = new File("/home/kohsuke/.ec2/Sun");
 
         AmazonEC2PortType p = EC2.connect(new File(home, "pk-5242455T55VWUVLW32VDDVC7KLWW3I4L.pem"), new File(home, "cert-5242455T55VWUVLW32VDDVC7KLWW3I4L.pem"));
+
+//        ((BindingProvider)port).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,"http://localhost:12345/");
+        
         DescribeImagesOwnersType owners = new DescribeImagesOwnersType();
         DescribeImagesOwnerType o = new DescribeImagesOwnerType();
         o.setOwner("amazon");

@@ -20,9 +20,7 @@ public class EC2 {
         if(wsdl==null)
             throw new LinkageError("ec2.wsdl not found, but it should have been in the jar");
         AmazonEC2 svc = new AmazonEC2(wsdl,new QName("http://ec2.amazonaws.com/doc/2008-08-08/", "AmazonEC2"));
-        AmazonEC2PortType port = svc.getAmazonEC2Port(new CallbackHandlerFeature(new CertStoreCallBackImpl(privateKey, x509certificate)));
-//        ((BindingProvider)port).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,"http://localhost:12345/");
-        return port;
+        return svc.getAmazonEC2Port(new CallbackHandlerFeature(new CertStoreCallBackImpl(privateKey, x509certificate)));
     }
 
 }
