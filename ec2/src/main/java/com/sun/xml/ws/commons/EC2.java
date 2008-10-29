@@ -38,6 +38,7 @@ public class EC2 {
         AmazonEC2PortType port = svc.getAmazonEC2Port();
         ((BindingProvider)port).getRequestContext().put(CertStoreCallBackImpl.PRIVATEKEY_PROPERTY,loadKey(privateKey));
         ((BindingProvider)port).getRequestContext().put(CertStoreCallBackImpl.CERTIFICATE_PROPERTY,loadX509Certificate(x509certificate));
+        ((BindingProvider)port).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,"ec2://ec2.amazonaws.com/");
         return port;
     }
 
