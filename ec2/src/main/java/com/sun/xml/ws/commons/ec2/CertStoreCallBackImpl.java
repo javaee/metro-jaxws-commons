@@ -68,22 +68,20 @@ public class CertStoreCallBackImpl implements CallbackHandler {
     }
 
     private void handle(KeyStoreCallback ksc) throws IOException {
-             try {
-                 KeyStore ks = KeyStore.getInstance("jks"); // what's 'jks' anyway!?
-                 ks.load(null, null); // initialize an empty keystore. brain dead --- why not init() method?
+        try {
+             KeyStore ks = KeyStore.getInstance("jks"); // what's 'jks' anyway!?
+             ks.load(null, null); // initialize an empty keystore. brain dead --- why not init() method?
 
-                 Packet p = Fiber.current().getPacket();
+             Packet p = Fiber.current().getPacket();
 
-                 // alias doesn't matter because we only put one key and Metro is smart enough to find that one
-                 ks.setKeyEntry("default", getPrivateKey(p), new char[0], new Certificate[]{
-                         getCertificate(p)
-                 });
+             // alias doesn't matter because we only put one key and Metro is smart enough to find that one
+             ks.setKeyEntry("default", getPrivateKey(p), new char[0], new Certificate[]{getCertificate(p)});
 
-                 ksc.setKeystore(ks);
-             } catch (GeneralSecurityException e) {
-                 throw new RuntimeException(e); // huh?
-             }
+             ksc.setKeystore(ks);
+         } catch (GeneralSecurityException e) {
+             throw new RuntimeException(e); // huh?
          }
+    }
 
     private X509Certificate getCertificate(Packet p) {
         return (X509Certificate) p.invocationProperties.get(CERTIFICATE_PROPERTY);
