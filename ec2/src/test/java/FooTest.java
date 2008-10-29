@@ -15,7 +15,7 @@ import java.io.File;
  * @author Kohsuke Kawaguchi
  */
 public class FooTest extends TestCase {
-    public void test1() {
+    public void test1() throws Exception {
 //        Endpoint e = Endpoint.create(SOAPBinding.SOAP11HTTP_BINDING, new EchoService());
 //        e.publish("http://127.0.0.1:12345/");
 
