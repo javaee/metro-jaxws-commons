@@ -2284,7 +2284,6 @@
     <wsp:Policy wsu:Id="AmazonEC2BindingPolicy" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsaws="http://www.w3.org/2005/08/addressing" xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy" xmlns:sc="http://schemas.sun.com/2006/03/wss/client" xmlns:wspp="http://java.sun.com/xml/ns/wsit/policy">
     <wsp:ExactlyOne>
       <wsp:All>
-        <wsaws:UsingAddressing xmlns:wsaws="http://www.w3.org/2006/05/addressing/wsdl"/>
         <sp:AsymmetricBinding>
           <wsp:Policy>
             <sp:InitiatorToken>
@@ -2327,12 +2326,13 @@
         </sp:Wss10>
         -->
         <sc:KeyStore wspp:visibility="private" callbackHandler="com.sun.xml.ws.commons.ec2.CertStoreCallBackImpl" />
+        <sc:AllowMissingTimestamp /><!-- this silences the security system complaining that the response doesn't have any security header.  -->
         <!--sc:CertStore callbackHandler="com.sun.xml.ws.commons.ec2.CertStoreCallBackImpl" /-->
         <sp:SignedParts>
           <sp:Body/>
         </sp:SignedParts>
+        <sc:DisableInclusivePrefixList />
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
-  
 </definitions>
