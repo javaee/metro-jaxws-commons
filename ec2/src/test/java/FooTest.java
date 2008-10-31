@@ -2,14 +2,10 @@ import com.sun.xml.ws.commons.EC2;
 import com.sun.xml.ws.commons.ec2.AmazonEC2PortType;
 import com.sun.xml.ws.commons.ec2.DescribeImagesOwnerType;
 import com.sun.xml.ws.commons.ec2.DescribeImagesOwnersType;
-import com.sun.xml.ws.commons.ec2.DescribeImagesResponseInfoType;
 import com.sun.xml.ws.commons.ec2.DescribeImagesType;
 import com.sun.xml.ws.transport.http.client.HttpTransportPipe;
 import junit.framework.TestCase;
 
-import javax.xml.ws.Endpoint;
-import javax.xml.ws.Holder;
-import javax.xml.ws.soap.SOAPBinding;
 import java.io.File;
 
 /**
