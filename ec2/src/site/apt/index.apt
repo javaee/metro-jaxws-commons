@@ -8,7 +8,7 @@ talk to this web service with Metro, the onus is on the developer to configure M
 correctly, which is possible but tedious.
 
   This module is developed to hide this manual Metro configuration. This module
-is also compiled with {{{https://jaxb2-commons.dev.java.net/fluent-api/}the fluent API JAXB plugin},
+is also compiled with {{{https://jaxb2-commons.dev.java.net/fluent-api/}the fluent API JAXB plugin}},
 to improve the usability.
 
   The API is generated from their 2008-08-08 version of WSDL.  For more details about EC2 SOAP API and its semantics,
