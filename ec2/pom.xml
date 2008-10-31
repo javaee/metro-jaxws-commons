@@ -9,7 +9,7 @@
 
   <artifactId>ec2</artifactId>
   <packaging>jar</packaging>
-  <version>2008-08-08-rev-1-SNAPSHOT</version>
+  <version>2008-08-08-rev-1</version>
   <name>EC2 web service client</name>
 
   <build>
@@ -130,9 +130,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/trunk/ec2</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/trunk/ec2</developerConnection>
-    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/ec2</url>
+    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/tags/ec2-2008-08-08-rev-1</connection>
+    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/tags/ec2-2008-08-08-rev-1</developerConnection>
+    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/tags/ec2-2008-08-08-rev-1</url>
   </scm>
 
 </project>
