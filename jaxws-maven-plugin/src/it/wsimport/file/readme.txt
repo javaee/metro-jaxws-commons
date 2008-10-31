@@ -1,1 +1,0 @@
-Example to invoke wsimport via a local wsdl file 
