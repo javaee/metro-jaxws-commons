@@ -1,0 +1,26 @@
+  This library packages pre-generated web service client API for
+{{{http://aws.amazon.com/ec2/}Amazon EC2 web services}} for
+{{{https://metro.dev.java.net/}Metro}}.
+
+  EC2 SOAP API requires a signed SOAP message, but their WSDL doesn't say it
+in an machine readable fashion (that is, by using WS-Policy.) Therefore, to
+talk to this web service with Metro, the onus is on the developer to configure Metro
+correctly, which is possible but tedious.
+
+  This module is developed to hide this manual Metro configuration. The
+API is generated from their 2008-08-08 version.
+
+  For more details about EC2 SOAP API, refer to
+{{{http://developer.amazonwebservices.com/connect/kbcategory.jspa?categoryID=87}documentation by Amazon}}.
+The following short program snippet illustrates how to use this API.
+
+-------------------
+// create a proxy that talks to the server. This requiers your AWS private key and X509 certificate.
+// the resulting port object is multi-thread safe
+File privateKey = ...;
+File certificate = ...;
+AmazonEC2PortType p = EC2.connect(privateKey,certificate);
+
+// at this point you can make any API call
+p.describeImages(...);
+-------------------
