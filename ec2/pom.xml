@@ -9,7 +9,7 @@
 
   <artifactId>ec2</artifactId>
   <packaging>jar</packaging>
-  <version>2008-08-08-SNAPSHOT</version>
+  <version>2008-08-08-rev-1-SNAPSHOT</version>
   <name>EC2 web service client</name>
 
   <build>
