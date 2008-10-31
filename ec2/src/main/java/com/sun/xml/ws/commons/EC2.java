@@ -8,6 +8,7 @@ import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingExcepti
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.BindingProvider;
+import javax.xml.ws.WebServiceException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,6 +28,23 @@ import java.security.spec.PKCS8EncodedKeySpec;
  * @author Kohsuke Kawaguchi
  */
 public class EC2 {
+    /**
+     * Creates a JAX-WS proxy object that you can use to talk to EC2.
+     *
+     * @param privateKey
+     *      Private key that proves your identity to EC2. This is the "pk-*.pem" file.
+     * @param x509certificate
+     *      X509 certificate, which is the public key. This is the "cert-*.pem" file.
+     * @return
+     *      A proxy object that exposes EC2 SOAP API as method calls. This object is multi-thread safe.
+     * 
+     * @throws IOException
+     *      If key files fail to load.
+     * @throws GeneralSecurityException
+     *      If cryptography related problem is encounted while handling the key.
+     * @throws WebServiceException
+     *      If Metro fails.
+     */
     public static AmazonEC2PortType connect(File privateKey, File x509certificate) throws IOException, GeneralSecurityException {
         URL wsdl = EC2.class.getClassLoader().getResource("ec2.wsdl");
         if(wsdl==null)
@@ -38,7 +56,7 @@ public class EC2 {
         AmazonEC2PortType port = svc.getAmazonEC2Port();
         ((BindingProvider)port).getRequestContext().put(CertStoreCallBackImpl.PRIVATEKEY_PROPERTY,loadKey(privateKey));
         ((BindingProvider)port).getRequestContext().put(CertStoreCallBackImpl.CERTIFICATE_PROPERTY,loadX509Certificate(x509certificate));
-        ((BindingProvider)port).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,"ec2://ec2.amazonaws.com/");
+        ((BindingProvider)port).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,"https://ec2.amazonaws.com/");
         return port;
     }
 
