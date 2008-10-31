@@ -2335,4 +2335,9 @@
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
+
+  <!-- since there are almost always multiple out parameters, disable wrapper style -->
+  <bindings xmlns="http://java.sun.com/xml/ns/jaxws">
+    <enableWrapperStyle>false</enableWrapperStyle>
+  </bindings>
 </definitions>

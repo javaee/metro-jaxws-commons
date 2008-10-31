@@ -3,6 +3,7 @@ import com.sun.xml.ws.commons.ec2.AmazonEC2PortType;
 import com.sun.xml.ws.commons.ec2.DescribeImagesOwnerType;
 import com.sun.xml.ws.commons.ec2.DescribeImagesOwnersType;
 import com.sun.xml.ws.commons.ec2.DescribeImagesResponseInfoType;
+import com.sun.xml.ws.commons.ec2.DescribeImagesType;
 import com.sun.xml.ws.transport.http.client.HttpTransportPipe;
 import junit.framework.TestCase;
 
@@ -27,14 +28,11 @@ public class FooTest extends TestCase {
 
 //        ((BindingProvider)port).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,"http://localhost:12345/");
         
-        DescribeImagesOwnersType owners = new DescribeImagesOwnersType();
-        DescribeImagesOwnerType o = new DescribeImagesOwnerType();
-        o.setOwner("amazon");
-        owners.getItem().add(o);
-
-        Holder<DescribeImagesResponseInfoType> rsp = new Holder<DescribeImagesResponseInfoType>();
-        p.describeImages(null, null, owners, new Holder<String>(), rsp);
-
-        System.out.println(rsp.value);
+        System.out.println(p.describeImages(
+                new DescribeImagesType().withOwnersSet(
+                    new DescribeImagesOwnersType().withItem(
+                        new DescribeImagesOwnerType().withOwner("amazon")
+                    )
+                )).getImagesSet());
     }
 }
