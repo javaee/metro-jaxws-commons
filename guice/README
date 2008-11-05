@@ -1,0 +1,7 @@
+Google guice integration for jax-ws:
+
+Dependencies:
+guice-snapshot20081016.jar - found at http://google-guice.googlecode.com
+webservices-api.jar
+webservices-extra-api.jar
+webservices-rt.jar

@@ -1,0 +1,31 @@
+<project name="guicemanaged" default="dist" basedir=".">
+  <description>
+      Guice managed endpoints in jax-ws
+  </description>
+  <property name="src" location="src"/>
+  <property name="build" location="build"/>
+  <property name="dist" location="."/>
+  <property name="lib" location="lib"/>
+
+  <target name="init">
+    <mkdir dir="${build}"/>
+  </target>
+
+  <path id="classpath">
+   <fileset dir="${lib}">
+     <include name="*.jar"/>
+    </fileset>
+  </path>
+
+  <target name="compile" depends="init">
+    <javac srcdir="${src}" destdir="${build}">
+        <classpath>
+            <path refid="classpath"/>
+        </classpath>
+    </javac>
+
+  </target>
+  <target name="dist" depends="compile">
+    <jar jarfile="${dist}/guicemanaged.jar" basedir="${build}"/>
+  </target>
+</project>
