@@ -80,7 +80,7 @@
       </extension>
     </extensions>
   </build>
-  
+  <!--
   <modules>
     <module>../http-session-scope</module>
     <module>../spring</module>
@@ -88,4 +88,5 @@
     <module>../transport/smtp</module>
     <module>../dime</module>
   </modules>
+  -->
 </project>
