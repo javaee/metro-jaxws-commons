@@ -52,5 +52,5 @@ import static java.lang.annotation.ElementType.TYPE;
 @WebServiceFeatureAnnotation(id=GuiceManagedFeature.ID, bean=GuiceManagedFeature.class)
 @InstanceResolverAnnotation(GuiceManagedInstanceResolver.class)
 public @interface GuiceManaged {
-    public Class<? extends Module> module();
+    public Class<? extends Module>[] module();
 }

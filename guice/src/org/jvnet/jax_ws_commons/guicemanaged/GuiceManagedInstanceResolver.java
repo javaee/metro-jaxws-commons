@@ -1,5 +1,7 @@
 package org.jvnet.jax_ws_commons.guicemanaged;
 
+import java.util.List;
+import java.util.ArrayList;
 import com.sun.xml.ws.server.AbstractMultiInstanceResolver;
 import com.sun.xml.ws.api.message.Packet;
 import com.sun.istack.NotNull;
@@ -18,20 +20,18 @@ import com.google.inject.Module;
  * @since Nov 4, 2008
  */
 public class GuiceManagedInstanceResolver<T> extends AbstractMultiInstanceResolver<T> {
-    //private T instance=null;
-    private Injector injector=null;
-    public GuiceManagedInstanceResolver(@NotNull Class<T> clazz)
+    private final Injector injector;
+    public GuiceManagedInstanceResolver(@NotNull Class<T> clazz) throws IllegalAccessException, InstantiationException 
     {
         super(clazz);
+	List<Module> moduleInstances = new ArrayList<Module>();
+        Class<? extends Module>[] moduleClasses = clazz.getAnnotation(GuiceManaged.class).module();
+	    for(Class<? extends Module> moduleClass : moduleClasses)
+	    {
+		    moduleInstances.add(moduleClass.newInstance());
+	    }
 
-        Class<? extends Module> moduleClass = clazz.getAnnotation(GuiceManaged.class).module();
-        try {
-            injector = Guice.createInjector(moduleClass.newInstance());
-        } catch (InstantiationException e) {
-            e.printStackTrace(); 
-        } catch (IllegalAccessException e) {
-           e.printStackTrace();
-        }
+	    injector = Guice.createInjector(moduleInstances);
     }
 
     /**
