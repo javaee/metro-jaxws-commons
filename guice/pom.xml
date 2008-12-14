@@ -1,0 +1,44 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jvnet.jax_ws_commons</groupId>
+  <artifactId>guicemanaged</artifactId>
+  <packaging>jar</packaging>
+  <version>0.3</version>
+  <name>JAX-WS Guice integration</name>
+  <url>https://jax-ws-commons.dev.java.net/guice/</url>
+  <developers>
+      <developer>
+          <name>Marcus Eriksson</name>
+          <email>krummas@gmail.com</email>
+          <id>marcuseriksson</id>
+      </developer>
+  </developers>
+  <build>
+    <plugins>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-compiler-plugin</artifactId>
+	<version>2.0.2</version>
+	<configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+	</configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+
+  <dependencies>
+    <dependency>
+        <groupId>com.google.code.guice</groupId>
+        <artifactId>guice</artifactId>
+        <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>jaxws-rt</artifactId>
+      <version>2.1.3</version>
+    </dependency>
+  </dependencies>
+</project>
