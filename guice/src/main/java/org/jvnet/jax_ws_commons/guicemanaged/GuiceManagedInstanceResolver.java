@@ -4,10 +4,16 @@ import java.util.List;
 import java.util.ArrayList;
 import com.sun.xml.ws.server.AbstractMultiInstanceResolver;
 import com.sun.xml.ws.api.message.Packet;
+import com.sun.xml.ws.api.server.WSWebServiceContext;
+import com.sun.xml.ws.api.server.WSEndpoint;
+import com.sun.xml.ws.api.server.ResourceInjector;
 import com.sun.istack.NotNull;
 import com.google.inject.Injector;
 import com.google.inject.Guice;
 import com.google.inject.Module;
+import com.google.inject.AbstractModule;
+
+import javax.xml.ws.WebServiceContext;
 
 /**
  * The instance resolver
@@ -20,18 +26,12 @@ import com.google.inject.Module;
  * @since Nov 4, 2008
  */
 public class GuiceManagedInstanceResolver<T> extends AbstractMultiInstanceResolver<T> {
-    private final Injector injector;
-    public GuiceManagedInstanceResolver(@NotNull Class<T> clazz) throws IllegalAccessException, InstantiationException 
+    private Injector injector = null;
+    private ResourceInjector resourceInjector;
+    private WSWebServiceContext webServiceContext;
+    public GuiceManagedInstanceResolver(@NotNull Class<T> clazz) throws IllegalAccessException, InstantiationException
     {
         super(clazz);
-	List<Module> moduleInstances = new ArrayList<Module>();
-        Class<? extends Module>[] moduleClasses = clazz.getAnnotation(GuiceManaged.class).module();
-	    for(Class<? extends Module> moduleClass : moduleClasses)
-	    {
-		    moduleInstances.add(moduleClass.newInstance());
-	    }
-
-	    injector = Guice.createInjector(moduleInstances);
     }
 
     /**
@@ -45,7 +45,52 @@ public class GuiceManagedInstanceResolver<T> extends AbstractMultiInstanceResolv
      * @param packet
      * @return
      */
+    @Override
     public T resolve(@NotNull Packet packet) {
-        return injector.getInstance(this.clazz);
+        T instance = injector.getInstance(this.clazz);
+        resourceInjector.inject(webServiceContext,instance);
+        return instance;
+    }
+
+    /**
+     * save the web service context instance
+     * @param wsc
+     * @param endpoint
+     */
+
+    @Override
+    public void start(WSWebServiceContext wsc, WSEndpoint endpoint) {
+        super.start(wsc,endpoint);
+        resourceInjector = getResourceInjector(endpoint);
+        webServiceContext=wsc;
+        try {
+            injector = getInjector();
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Illegal access in the endpoint",e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException("Could not instantiate the endpoint",e);
+        }
+    }
+
+    /**
+     * Create an injector, adds a module for the web service context instance
+     * 
+     * @return
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     */
+    private Injector getInjector() throws IllegalAccessException, InstantiationException {
+        List<Module> moduleInstances = new ArrayList<Module>();
+        Class<? extends Module>[] moduleClasses = clazz.getAnnotation(GuiceManaged.class).module();
+        for(Class<? extends Module> moduleClass : moduleClasses)
+        {
+            moduleInstances.add(moduleClass.newInstance());
+        }
+        moduleInstances.add(new AbstractModule() {
+            protected void configure() {
+                bind(WebServiceContext.class).toInstance(webServiceContext);
+            }
+        });
+        return Guice.createInjector(moduleInstances);
     }
 }

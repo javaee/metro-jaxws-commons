@@ -9,7 +9,7 @@
   </parent>
   <artifactId>guicemanaged</artifactId>
   <packaging>jar</packaging>
-  <version>0.3</version>
+  <version>0.4</version>
   <name>JAX-WS Guice integration</name>
   <url>https://jax-ws-commons.dev.java.net/guice/</url>
   <developers>
