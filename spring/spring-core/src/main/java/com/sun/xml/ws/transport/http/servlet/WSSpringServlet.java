@@ -37,6 +37,7 @@ package com.sun.xml.ws.transport.http.servlet;
 
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -81,6 +82,21 @@ public class WSSpringServlet extends HttpServlet {
             binding.create(l);
 
         delegate = new WSServletDelegate(l,getServletContext());
+    }
+
+    /**
+     * destroys the servlet and releases all associated resources,
+     * such as the Spring application context and the JAX-WS delegate.
+     */
+    @Override
+    public void destroy() {
+        WebApplicationContext wac =
+                WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+        if (wac instanceof ConfigurableApplicationContext) {
+            ((ConfigurableApplicationContext) wac).close();
+        }
+        delegate.destroy();
+        delegate = null;
     }
 
     protected void doPost( HttpServletRequest request, HttpServletResponse response) throws ServletException {
