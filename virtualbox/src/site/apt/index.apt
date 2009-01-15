@@ -5,7 +5,7 @@ additional wrapper code that drastically improves the usability of the
 VirtualBox web service API.
 
   To use web services to interact with VirtualBox, you have to first
-start a server. VirtualBox 1.6.0 has {{{http://www.virtualbox.org/ticket/1565}a bug}}
+start a server. VirtualBox has {{{http://www.virtualbox.org/ticket/1565}a bug}}
 that requires you to disable authentication, so first
 you'd run <<<VBoxManage>>> to do this, as follows:
 
