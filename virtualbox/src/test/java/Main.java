@@ -51,7 +51,7 @@ public class Main {
 
         IVirtualBox box = VirtualBox.connect("http://192.168.2.12:18083/");
         System.out.println("version="+box.getVersion());
-        for (IMachine machine : box.getMachines()) {
+        for (IMachine machine : box.getMachines2()) {
             System.out.println(machine.getName());
         }
     }

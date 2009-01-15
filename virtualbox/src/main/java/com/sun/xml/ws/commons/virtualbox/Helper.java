@@ -40,6 +40,7 @@ package com.sun.xml.ws.commons.virtualbox;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.UUID;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -47,6 +48,14 @@ import java.lang.reflect.InvocationTargetException;
  * @author Kohsuke Kawaguchi
  */
 class Helper {
+    public static List<UUID> uuidListUnmarshal(List<String> strs) {
+        if(strs==null)  return null;
+        List<UUID> r = new ArrayList<UUID>(strs.size());
+        for (String str : strs)
+            r.add(UUID.fromString(str));
+        return r;
+    }
+
     /**
      * Wraps the given "this" tokens returned from the web service into the wrapper object.
      */

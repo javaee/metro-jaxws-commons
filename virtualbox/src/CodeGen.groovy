@@ -22,6 +22,10 @@ this.portType = pkgRef("VboxPortType");
 this.interfaceMap = [:];
 library["interface"].each { interfaceMap[it.@name]=it; }
 
+// enum name -> their XML element
+this.enums = [:];
+library["enum"].each { enums[it.@name]=it; }
+
 interfaceMap.values().each { onInterface(it); }
 
 File destDir = new File(baseDir, "target/jaxws/wsimport/java")
@@ -63,18 +67,18 @@ def onInterface(intf) {
         def attrName = attr.@name
 
         // attribute getter method
-        def type = outerType(attr.@type)
+        def type = outerType(attr)
 
         JMethod get = clz.method(JMod.PUBLIC, type, "get" + cap(attrName));
         buildJavadoc(get,attr)
         def body = createTryCatchBlock(get.body());
-        def retVal = body.decl(jaxwsType(attr.@type),"retVal",port.invoke(decap(interfaceName)+"Get"+cap(attrName)).arg(_this));
-        body._return(unmarshal(attr.@type,retVal));
+        def retVal = body.decl(jaxwsType(attr),"retVal",port.invoke(decap(interfaceName)+"Get"+cap(attrName)).arg(_this));
+        body._return(unmarshal(attr.@type,attr.@safearray,retVal));
 
         if(!attr.@readonly) {
             // attribuet setter method
             JMethod set = clz.method(JMod.PUBLIC, void.class, "set" + cap(attrName));
-            def value = marshal(attr.@type,set.param(outerType(attr.@type),"value"));
+            def value = marshal(attr.@type,set.param(outerType(attr),"value"));
             buildJavadoc(set,attr)
             createTryCatchBlock(set.body()).invoke(port,decap(interfaceName)+"Set"+cap(attrName)).arg(_this).arg(value);
         }
@@ -87,7 +91,13 @@ def onInterface(intf) {
         def methodName = method.@name
 
         def retParam = method.param.find { it.@dir=="return" }
-        def retType = retParam == null ? void.class : outerType(retParam.@type)
+
+        // if the method has both return value and out params, JAX-WS will not use the return value convention,
+        // but just treat it like yet another out parameter.
+        if(method.param.find{ it.@dir=="out" }!=null)
+            retParam=null;
+
+        def retType = retParam == null ? void.class : outerType(retParam)
 
         JMethod m = clz.method(JMod.PUBLIC, retType, methodName);
         buildJavadoc(m,method);
@@ -102,23 +112,24 @@ def onInterface(intf) {
             call = body.invoke(port,portMethodName)
         } else {
             call = port.invoke(portMethodName);
-            body._return(unmarshal(retParam.@type,body.decl(jaxwsType(retParam.@type),"retVal",call)));
+            body._return(unmarshal(retParam.@type, retParam.@safearray, body.decl(jaxwsType(retParam),"retVal",call)));
         }
         // implicit first arg
         call.arg(_this);
 
         method.param.each { param ->
+            if(param==retParam) return;
             switch(param.@dir) {
-            case "return":  return;
+            case "return":
             case "out":
-                JVar p = m.param(codeModel.ref(Holder.class).narrow(outerType(param.@type).boxify()), param.@name);
+                JVar p = m.param(codeModel.ref(Holder.class).narrow(outerType(param).boxify()), param.@name);
                 m.javadoc().addParam(param.@name).add(param.desc?.text())
 
                 call.arg(p); // TODO: marshalling?
                 break;
 
             case "in":
-                JVar p = m.param(outerType(param.@type), param.@name);
+                JVar p = m.param(outerType(param), param.@name);
                 m.javadoc().addParam(param.@name).add(param.desc?.text())
 
                 call.arg(marshal(param.@type,p));
@@ -193,8 +204,15 @@ private JBlock createTryCatchBlock(JBlock block) {
 /**
  * Generates the code that takes the return value from web service and return in-memory type.
  */
-def unmarshal(String typeName, JVar expr) {
+def unmarshal(String typeName, safeArrayAttr, JVar expr) {
     if(typeName.startsWith("I")) {
+        if (safeArrayAttr != null) {
+            // collection that returns List<String>
+            if (isStructure(typeName))
+                return expr;
+
+            return codeModel.ref("Helper").staticInvoke("wrap").arg(codeModel.ref(typeName).dotclass()).arg(JExpr.ref("port")).arg(expr);
+        }
         if(typeName.endsWith("Collection")) {
             // collection
             String componentName = getComponentName(typeName);
@@ -214,7 +232,10 @@ def unmarshal(String typeName, JVar expr) {
         return JExpr._new(codeModel.ref(typeName)).arg(expr).arg(JExpr.ref("port"));
     }
     if(typeName=="uuid") {
-        return codeModel.ref(UUID).staticInvoke("fromString").arg(expr);
+        if(safeArrayAttr!=null)
+            return codeModel.ref("Helper").staticInvoke("uuidListUnmarshal").arg(expr);
+        else
+            return codeModel.ref(UUID).staticInvoke("fromString").arg(expr);
     }
     return expr;
 }
@@ -239,7 +260,7 @@ private String getComponentName(String typeName) {
 }
 
 private boolean isStructure(String typeName) {
-    return interfaceMap[typeName]?.@wsmap=="struct";
+    return interfaceMap[typeName]?.@wsmap=="struct" || enums[typeName]!=null;
 }
 
 /**
@@ -280,42 +301,63 @@ def surroundWith(javadoc, String tag, node) {
 
 /**
  * Returns the Java type used in the publicly visible part of the API that represents the given type name in XIDL.
+ *
+ * @param e
+ *    XML element with @type and optional @safeArray
  */
-JType outerType(String typeName) {
+JType outerType(e) {
+    String typeName = e.@type;
+
     if(typeName==null)  return codeModel.VOID;
     if(typeName =~ /I.+Collection/) {
         return codeModel.ref(List).narrow(pkgRef(getComponentName(typeName)));
     }
-    
+
+    def r = null;
     switch(typeName) {
-    case "wstring":             return codeModel.ref(String);
-    case "uuid":                return codeModel.ref(UUID);
-    case "unsigned long long":  return codeModel.ref(BigInteger); // in ICustomHardDisk.createDynamicImage() it's BigInteger
+    case "wstring":             r = codeModel.ref(String); break;
+    case "uuid":                r = codeModel.ref(UUID); break;
+    case "unsigned long long":  r = codeModel.ref(BigInteger); break; // in ICustomHardDisk.createDynamicImage() it's BigInteger
     case "long long":
     case "result":
-    case "unsigned long":       return codeModel.LONG;
+    case "unsigned long":       r = codeModel.LONG; break;
     case "long":
-    case "unsigned short":      return codeModel.INT;
+    case "unsigned short":      r = codeModel.INT; break;
+    default:                    r = codeModel.ref(typeName); break;
     }
-    return codeModel.ref(typeName);
+    return toArray(r,e);
 }
 
 /**
  * Returns the Java type JAX-WS uses for the given type name in XIDL.
+ *
+ * @param e
+ *    XML element with @type and optional @safeArray
  */
-JType jaxwsType(String typeName) {
+JType jaxwsType(e) {
+    String typeName = e.@type;
     if(typeName =~ /I.+Collection/) {
         return pkgRef("ArrayOf"+getComponentName(typeName));
     }
     if(typeName.startsWith("I")) {
         if(isStructure(typeName))
-            return codeModel.ref(typeName);
-        return codeModel.ref(String);
+            return toArray(codeModel.ref(typeName),e);
+        return toArray(codeModel.ref(String),e);
     }
     switch(typeName) {
-    case "uuid":                return codeModel.ref(String);
+    case "uuid":                return toArray(codeModel.ref(String),e);
     }
-    return outerType(typeName);
+    return outerType(e);
+}
+
+/**
+ * If the safearray attribute is specified on &lt;attribute> element, wrap into a collection type.
+ *
+ * @param e
+ *    XML element with @type and optional @safeArray
+ */
+JType toArray(JType t, e) {
+  return e.@safearray!=null ? codeModel.ref(List.class).narrow(t.boxify()) : t;
 }
 
 String cap(String str) {
