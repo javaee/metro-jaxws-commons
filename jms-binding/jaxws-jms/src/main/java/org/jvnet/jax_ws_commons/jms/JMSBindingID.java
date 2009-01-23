@@ -76,10 +76,10 @@ public class JMSBindingID extends BindingID {
         return Codecs.createSOAPBindingCodec(binding, Codecs.createSOAPEnvelopeXmlCodec(binding.getSOAPVersion()));
     }
 
-//    @Override
-//    public String getTransport() {
-//        return JMS_BINDING_TRANSPORT;
-//    }
+    @Override
+    public String getTransport() {
+        return JMS_BINDING_TRANSPORT;
+    }
 
     public String toString() {
         return lexical;

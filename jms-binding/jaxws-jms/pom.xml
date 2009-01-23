@@ -41,6 +41,8 @@
         </executions>
         <configuration>
           <sei>foo.MyService</sei>
+          <genWsdl>true</genWsdl>
+          <protocol>soap1.1/jms</protocol>
         </configuration>
         <dependencies>
           <dependency>
@@ -59,7 +61,12 @@
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-rt</artifactId>
-      <version>2.1.5-SNAPSHOT</version>
+      <version>2.1.6-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>jaxws-tools</artifactId>
+      <version>2.1.6-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
