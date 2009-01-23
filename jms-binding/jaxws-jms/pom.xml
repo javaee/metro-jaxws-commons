@@ -42,7 +42,9 @@
         <configuration>
           <sei>foo.MyService</sei>
           <genWsdl>true</genWsdl>
+<!--
           <protocol>soap1.1/jms</protocol>
+-->
         </configuration>
         <dependencies>
           <dependency>
