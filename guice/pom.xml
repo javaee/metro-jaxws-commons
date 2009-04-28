@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.jvnet.jax-ws-commons</groupId>
     <artifactId>pom</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
     <relativePath>../pom/pom.xml</relativePath>
   </parent>
   <artifactId>guicemanaged</artifactId>
@@ -63,7 +63,7 @@
   <distributionManagement>
     <repository>
       <id>java.net-m2-repository</id>
-      <url>java-net:/maven2-repository/trunk/www/repository/</url>
+      <url>java-net:/maven2-repository/trunk/repository/</url>
     </repository>
   </distributionManagement>
   <repositories>

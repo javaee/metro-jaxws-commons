@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.jvnet.jax-ws-commons</groupId>
     <artifactId>pom</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
     <relativePath>../pom/pom.xml</relativePath>
   </parent>
 
@@ -40,20 +40,7 @@
   </developers>
 
     
-    <repositories>
-        <repository>
-            <id>java.net</id>
-            <url>https://maven-repository.dev.java.net/nonav/repository</url>
-            <layout>legacy</layout>
-        </repository>
-        <repository>
-            <id>java.net2</id>
-            <url>https://maven2-repository.dev.java.net/nonav/repository</url>
-        </repository>
-    </repositories>
-
-    
-    <distributionManagement>
+   <distributionManagement>
 <!--
         <repository>
             <uniqueVersion>false</uniqueVersion>
