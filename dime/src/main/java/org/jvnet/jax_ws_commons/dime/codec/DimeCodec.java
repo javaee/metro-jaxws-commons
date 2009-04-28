@@ -13,6 +13,7 @@ import javax.activation.DataSource;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.ws.WebServiceException;
 
 import org.jvnet.jax_ws_commons.dime.annotation.DimeOutput;
 import org.jvnet.jax_ws_commons.dime.attachment.DimeMessage;
@@ -125,7 +126,7 @@ public class DimeCodec implements Codec {
 
             dimeMessage.writeTo(out);
         } catch (final XMLStreamException e) {
-            throw new IOException(e);
+            throw new WebServiceException(e);
         }
 
         return DimeContentType.getInstance();
