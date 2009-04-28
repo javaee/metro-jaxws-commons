@@ -15,7 +15,7 @@
 			<item name="Introduction" href="index.html" />
 
 			<item name="Downloads">
-	            <item name="Project code" href="https://maven2-repository.dev.java.net/source/browse/maven2-repository/trunk/www/repository/org/jvnet/jax-ws-commons/dime/" />
+	            <item name="Project code" href="https://maven2-repository.dev.java.net/source/browse/maven2-repository/trunk/repository/org/jvnet/jax-ws-commons/dime/" />
 	            <item name="Sample VBA Client" href="dime-client.doc" />
 	            <item name="Sample Server" href="dime-server.war" />
 	        </item>
