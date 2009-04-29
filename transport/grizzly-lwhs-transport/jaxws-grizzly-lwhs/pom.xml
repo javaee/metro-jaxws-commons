@@ -14,17 +14,6 @@
   <name>Grizzly lwhs transport extension</name>
   <description>Grizzly lwhs transport extension for JAX-WS RI</description>
 
-<!--
-  Don't know why maven doesn't pick up grand parent's pom.xml which has
-  this entry. For now, adding it here.
--->
-  <pluginRepositories>
-    <pluginRepository>
-      <id>java.net2</id>
-      <url>https://maven2-repository.dev.java.net/nonav/repository</url>
-    </pluginRepository>
-  </pluginRepositories>
-
   <build>
     <plugins>
       <plugin>
