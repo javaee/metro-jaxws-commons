@@ -72,6 +72,8 @@ public class VirtualBox {
             VboxPortType port = svc.getVboxServicePort();
             ((BindingProvider)port).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, url);
             String vbox = port.iWebsessionManagerLogon("foo","bar");
+            if("".equals(vbox))
+                throw new WebServiceException("Failed to login. Maybe you need to do 'VBoxManage setproperty websrvauthlibrary null'?"); 
             return new IVirtualBox(vbox,port);
         } catch (InvalidObjectFaultMsg e) {
             throw new WebServiceException(e);
