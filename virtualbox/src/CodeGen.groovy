@@ -323,6 +323,7 @@ JType outerType(e) {
     case "unsigned long":       r = codeModel.LONG; break;
     case "long":
     case "unsigned short":      r = codeModel.INT; break;
+    case "boolean":             r = codeModel.BOOLEAN; break;
     default:                    r = codeModel.ref(typeName); break;
     }
     return toArray(r,e);
