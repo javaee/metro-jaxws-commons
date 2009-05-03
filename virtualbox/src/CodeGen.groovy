@@ -46,19 +46,25 @@ def onInterface(intf) {
     JDefinedClass clz = pkg._class(interfaceName);
     buildJavadoc(clz,intf)
 
+    // choose the right base class
+    if(intf."@extends".startsWith('$'))
+        base = codeModel.ref("com.sun.xml.ws.commons.virtualbox.VBoxObject");
+    else
+        base = codeModel.ref(intf."@extends");
+    clz._extends(base);
+
     // the port type that we use for the communication
-    port = clz.field(JMod.PUBLIC|JMod.FINAL,portType,"port");
+    port = JExpr.ref("port");
 
     // the token passed through web service as the 'this' pointer
-    _this = clz.field(JMod.PUBLIC|JMod.FINAL,String,"_this");
+    _this = JExpr.ref("_this");
 
     // constructor
     JMethod cons = clz.constructor(JMod.PUBLIC);
     cons.param(String.class,"_this");
     cons.param(portType,"port");
     cons.body().directStatement("""
-        this._this = _this;
-        this.port = port;
+        super(_this,port);
     """)
 
     intf.attribute.each { attr ->
