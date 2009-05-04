@@ -1,8 +1,0 @@
-{
-  'config': {
-    'version': '.9',
-    'glue' : {
-         'includes': ['/glue.js', '/resources/system-glue.js']
-       }
-    }
-}
