@@ -64,6 +64,10 @@ public class VirtualBox {
      * Type unsafe version of the {@link #connect(URL)}
      */
     public static IVirtualBox connect(String url) {
+        // working around https://jax-ws.dev.java.net/issues/show_bug.cgi?id=554
+        // this is also necessary when context classloader doesn't have the JAX-WS API
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(IVirtualBox.class.getClassLoader());
         try {
             URL wsdl = VirtualBox.class.getClassLoader().getResource("vboxwebService.wsdl");
             if(wsdl==null)
@@ -79,6 +83,8 @@ public class VirtualBox {
             throw new WebServiceException(e);
         } catch (RuntimeFaultMsg e) {
             throw new WebServiceException(e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(cl);
         }
     }
 }
