@@ -48,7 +48,7 @@ public class EC2 {
         URL wsdl = EC2.class.getClassLoader().getResource("ec2.wsdl");
         if(wsdl==null)
             throw new LinkageError("ec2.wsdl not found, but it should have been in the jar");
-        AmazonEC2 svc = new AmazonEC2(wsdl,new QName("http://ec2.amazonaws.com/doc/2008-08-08/", "AmazonEC2"));
+        AmazonEC2 svc = new AmazonEC2(wsdl,new QName("http://ec2.amazonaws.com/doc/2009-04-04/", "AmazonEC2"));
         // TODO: when Metro hits 1.5 we can use CallbackHandlerFeature
 //        return svc.getAmazonEC2Port(new CallbackHandlerFeature(new CertStoreCallBackImpl(privateKey, x509certificate)));
 

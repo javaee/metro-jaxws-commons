@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://ec2.amazonaws.com/doc/2008-08-08/"
-  targetNamespace="http://ec2.amazonaws.com/doc/2008-08-08/">
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://ec2.amazonaws.com/doc/2009-04-04/"
+  targetNamespace="http://ec2.amazonaws.com/doc/2009-04-04/">
 
   <types>
 		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 		           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		           xmlns:tns="http://ec2.amazonaws.com/doc/2008-08-08/"
-		           targetNamespace="http://ec2.amazonaws.com/doc/2008-08-08/"    
+		           xmlns:tns="http://ec2.amazonaws.com/doc/2009-04-04/"
+		           targetNamespace="http://ec2.amazonaws.com/doc/2009-04-04/"    
 		           elementFormDefault="qualified">
 		  
 		  <xs:annotation>
@@ -166,6 +166,7 @@
 		      <xs:element name="kernelId" type="xs:string" minOccurs="0" maxOccurs="1"/>
 		      <xs:element name="ramdiskId" type="xs:string" minOccurs="0" maxOccurs="1"/>
 		      <xs:element name="blockDeviceMapping" type="tns:BlockDeviceMappingType" minOccurs="0" maxOccurs="1" />
+		      <xs:element name="monitoring" type="tns:MonitoringInstanceType" minOccurs="0" maxOccurs="1" />
 		    </xs:sequence>
 		  </xs:complexType>
 		
@@ -208,6 +209,12 @@
 		    </xs:sequence> 
 		  </xs:complexType> 
 		
+		  <xs:complexType name="MonitoringInstanceType"> 
+		    <xs:sequence> 
+		      <xs:element name="enabled" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+		    </xs:sequence> 
+		  </xs:complexType>
+		  
 		  <!-- RunInstances response definitions -->
 		
 		  <xs:element name="RunInstancesResponse" type="tns:RunInstancesResponseType"/>
@@ -256,6 +263,7 @@
 		      <xs:element name="kernelId" type="xs:string" minOccurs="0"/>
 		      <xs:element name="ramdiskId" type="xs:string" minOccurs="0"/>
 		      <xs:element name="platform" type="xs:string" minOccurs="0"/>
+		      <xs:element name="monitoring" type="tns:InstanceMonitoringStateType" minOccurs="0" maxOccurs="1" />
 		    </xs:sequence>
 		  </xs:complexType>
 		
@@ -938,6 +946,7 @@
 		    <xs:sequence>
 		      <xs:element name="zoneName" type="xs:string"/>
 		      <xs:element name="zoneState" type="xs:string"/>
+		      <xs:element name="regionName" type="xs:string"/>
 		    </xs:sequence>
 		  </xs:complexType>
 		
@@ -1447,6 +1456,248 @@
 		    </xs:sequence>
 		  </xs:complexType>
 		
+		  <!-- DescribeRegions Definitions -->
+		
+		  <xs:element name="DescribeRegions" 
+		              type="tns:DescribeRegionsType" />
+		
+		  <xs:complexType name="DescribeRegionsType">
+		    <xs:sequence>
+		      <xs:element name="regionSet" type="tns:DescribeRegionsSetType"/>
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <xs:complexType name="DescribeRegionsSetType">
+		    <xs:sequence>
+		      <xs:element name="item" type="tns:DescribeRegionsSetItemType" minOccurs="0" maxOccurs="unbounded"/>
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <xs:complexType name="DescribeRegionsSetItemType">
+		    <xs:sequence>
+		      <xs:element name="regionName" type="xs:string"/>
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <!-- DescribeRegions Response definitions -->
+		
+		  <xs:element name="DescribeRegionsResponse" 
+		              type="tns:DescribeRegionsResponseType"/>
+		
+		  <xs:complexType name="DescribeRegionsResponseType">
+		    <xs:sequence>
+		      <xs:element name="requestId" type="xs:string"/>
+		      <xs:element name="regionInfo" type="tns:RegionSetType"/>
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <xs:complexType name="RegionSetType">
+		    <xs:sequence>
+		      <xs:element name="item" type="tns:RegionItemType" minOccurs="0" maxOccurs="unbounded"/>
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <xs:complexType name="RegionItemType">
+		    <xs:sequence>
+		      <xs:element name="regionName" type="xs:string"/>
+		      <xs:element name="regionEndpoint" type="xs:string"/>
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <!-- DescribeReservedInstancesOfferings definitions -->
+		  
+		  <xs:element name="DescribeReservedInstancesOfferings" 
+		              type="tns:DescribeReservedInstancesOfferingsType"/>
+		              
+		  <xs:complexType name="DescribeReservedInstancesOfferingsType">
+		    <xs:sequence>
+		      <xs:element name="reservedInstancesOfferingsSet" type="tns:DescribeReservedInstancesOfferingsSetType" minOccurs="0"/>
+		      <xs:element name="instanceType" type="xs:string" minOccurs="0" />
+		      <xs:element name="availabilityZone" type="xs:string"  minOccurs="0" />
+		      <xs:element name="productDescription" type="xs:string"  minOccurs="0" />
+		    </xs:sequence>
+		  </xs:complexType>
+		                
+		  <xs:complexType name="DescribeReservedInstancesOfferingsSetType">
+		    <xs:sequence>
+		      <xs:element name="item" type="tns:DescribeReservedInstancesOfferingsSetItemType" minOccurs="0" maxOccurs="unbounded"/>
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <xs:complexType name="DescribeReservedInstancesOfferingsSetItemType">
+		    <xs:sequence>
+		      <xs:element name="reservedInstancesOfferingId" type="xs:string"/>
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <!-- DescribeReservedInstancesOfferingsResponse definitions -->
+		
+		  <xs:element name="DescribeReservedInstancesOfferingsResponse" 
+		              type="tns:DescribeReservedInstancesOfferingsResponseType"/>
+		
+		  <xs:complexType name="DescribeReservedInstancesOfferingsResponseType">
+		    <xs:sequence>
+		      <xs:element name="requestId" type="xs:string"/>    
+		      <xs:element name="reservedInstancesOfferingsSet" type="tns:DescribeReservedInstancesOfferingsResponseSetType"/>
+		    </xs:sequence>
+		  </xs:complexType>
+		  
+		  <xs:complexType name="DescribeReservedInstancesOfferingsResponseSetType">
+		    <xs:sequence>
+		      <xs:element name="item" type="tns:DescribeReservedInstancesOfferingsResponseSetItemType" minOccurs="0" maxOccurs="unbounded"/>
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <xs:complexType name="DescribeReservedInstancesOfferingsResponseSetItemType">
+		    <xs:sequence>
+		      <xs:element name="reservedInstancesOfferingId" type="xs:string" />
+		      <xs:element name="instanceType" type="xs:string" />
+		      <xs:element name="availabilityZone" type="xs:string" />
+		      <xs:element name="duration" type="xs:long" />
+		      <xs:element name="fixedPrice" type="xs:double" />
+		      <xs:element name="usagePrice" type="xs:double" />
+		      <xs:element name="productDescription" type="xs:string" />  
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <!-- PurchaseReservedInstancesOffering definitions -->
+		  <xs:element name="PurchaseReservedInstancesOffering" 
+		              type="tns:PurchaseReservedInstancesOfferingType"/>
+		
+		  <xs:complexType name="PurchaseReservedInstancesOfferingType">
+		  	<xs:sequence>
+		      <xs:element name="reservedInstancesOfferingId" type="xs:string" />
+		      <xs:element name="instanceCount" type="xs:int" />      
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <!-- PurchaseReservedInstancesOfferingResponse definitions -->
+		  <xs:element name="PurchaseReservedInstancesOfferingResponse" 
+		              type="tns:PurchaseReservedInstancesOfferingResponseType"/>
+		
+		  <xs:complexType name="PurchaseReservedInstancesOfferingResponseType">
+		    <xs:sequence>
+		      <xs:element name="requestId" type="xs:string"/>    
+		      <xs:element name="reservedInstancesId" type="xs:string" />
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <!-- DescribeReservedInstances definitions -->
+		  <xs:element name="DescribeReservedInstances" 
+		              type="tns:DescribeReservedInstancesType"/>
+		
+		  <xs:complexType name="DescribeReservedInstancesType">
+		    <xs:sequence>
+		      <xs:element name="reservedInstancesSet" type="tns:DescribeReservedInstancesSetType" minOccurs="0" />
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <xs:complexType name="DescribeReservedInstancesSetType">
+		    <xs:sequence>
+		      <xs:element name="item" type="tns:DescribeReservedInstancesSetItemType" minOccurs="0" maxOccurs="unbounded" />
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <xs:complexType name="DescribeReservedInstancesSetItemType">
+		    <xs:sequence>
+		      <xs:element name="reservedInstancesId" type="xs:string" />
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <!-- DescribeReservedInstancesResponse definitions -->
+		  <xs:element name="DescribeReservedInstancesResponse" 
+		              type="tns:DescribeReservedInstancesResponseType"/>
+		
+		  <xs:complexType name="DescribeReservedInstancesResponseType">
+		    <xs:sequence>
+		      <xs:element name="requestId" type="xs:string"/>    
+		      <xs:element name="reservedInstancesSet" type="tns:DescribeReservedInstancesResponseSetType" />
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <xs:complexType name="DescribeReservedInstancesResponseSetType">
+		    <xs:sequence>
+		      <xs:element name="item" type="tns:DescribeReservedInstancesResponseSetItemType" minOccurs="0" maxOccurs="unbounded" />
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <xs:complexType name="DescribeReservedInstancesResponseSetItemType">
+		    <xs:sequence>
+		      <xs:element name="reservedInstancesId" type="xs:string" />
+		      <xs:element name="instanceType" type="xs:string" />
+		      <xs:element name="availabilityZone" type="xs:string" />
+		      <xs:element name="start" type="xs:dateTime" />
+		      <xs:element name="duration" type="xs:long" />
+		      <xs:element name="fixedPrice" type="xs:double" />
+		      <xs:element name="usagePrice" type="xs:double" />
+		      <xs:element name="instanceCount" type="xs:integer" />
+		      <xs:element name="productDescription" type="xs:string" />
+		      <xs:element name="state" type="xs:string" />
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		
+		  <!-- MonitorInstances / UnmonitorInstances definitions -->
+		  
+		  <xs:element name="MonitorInstances" 
+		              type="tns:MonitorInstancesType" />
+		  
+		  <xs:element name="UnmonitorInstances" 
+		              type="tns:MonitorInstancesType" />
+		              
+		  <xs:complexType name="MonitorInstancesType">
+		    <xs:sequence>
+		      <xs:element name="instancesSet" type="tns:MonitorInstancesSetType" />
+		    </xs:sequence>
+		  </xs:complexType>
+		  
+		  <xs:complexType name="MonitorInstancesSetType">
+		    <xs:sequence>
+		      <xs:element name="item" type="tns:MonitorInstancesSetItemType" minOccurs="1" maxOccurs="unbounded" />
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <xs:complexType name="MonitorInstancesSetItemType">
+		    <xs:sequence>
+		      <xs:element name="instanceId" type="xs:string" />
+		    </xs:sequence>
+		  </xs:complexType>
+		  
+		  
+		  <!-- MonitorInstancesResponse definitions -->
+		  
+		  <xs:element name="MonitorInstancesResponse" 
+		              type="tns:MonitorInstancesResponseType"/>
+		
+		  <xs:element name="UnmonitorInstancesResponse" 
+		              type="tns:MonitorInstancesResponseType"/>
+		              
+		  <xs:complexType name="MonitorInstancesResponseType">
+		    <xs:sequence>
+		      <xs:element name="requestId" type="xs:string"/>    
+		      <xs:element name="instancesSet" type="tns:MonitorInstancesResponseSetType" />
+		    </xs:sequence>
+		  </xs:complexType>
+		  
+		  <xs:complexType name="MonitorInstancesResponseSetType">
+		    <xs:sequence>
+		      <xs:element name="item" type="tns:MonitorInstancesResponseSetItemType" minOccurs="1" maxOccurs="unbounded" />
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <xs:complexType name="MonitorInstancesResponseSetItemType">
+		    <xs:sequence>
+		      <xs:element name="instanceId" type="xs:string" />
+		      <xs:element name="monitoring" type="tns:InstanceMonitoringStateType" />
+		    </xs:sequence>
+		  </xs:complexType>
+		
+		  <xs:complexType name="InstanceMonitoringStateType">
+		    <xs:sequence>
+		      <xs:element name="state" type="xs:string" />
+		    </xs:sequence>
+		  </xs:complexType>
+		  
 		</xs:schema>
   </types>
 
@@ -1620,6 +1871,14 @@
     <part name="DescribeAvailabilityZonesRequestMsgResp" element="tns:DescribeAvailabilityZonesResponse"/>
   </message>
 
+  <message name="DescribeRegionsRequestMsg">
+    <part name="DescribeRegionsRequestMsgReq" element="tns:DescribeRegions"/>
+  </message>
+
+  <message name="DescribeRegionsResponseMsg">
+    <part name="DescribeRegionsRequestMsgResp" element="tns:DescribeRegionsResponse"/>
+  </message>
+
   <message name='AllocateAddressRequestMsg'>
     <part name='AllocateAddressRequestMsgReq' element='tns:AllocateAddress'/>
   </message>
@@ -1748,6 +2007,46 @@
     <part name="CancelBundleTaskResponseMsgResp" element="tns:CancelBundleTaskResponse" />
   </message>
 
+  <message name="DescribeReservedInstancesOfferingsRequestMsg">
+    <part name="DescribeReservedInstancesOfferingsRequestMsgReq" element="tns:DescribeReservedInstancesOfferings" />
+  </message>
+
+  <message name="DescribeReservedInstancesOfferingsResponseMsg">
+    <part name="DescribeReservedInstancesOfferingsResponseMsgResp" element="tns:DescribeReservedInstancesOfferingsResponse" />
+  </message>
+
+  <message name="PurchaseReservedInstancesOfferingRequestMsg">
+    <part name="PurchaseReservedInstancesOfferingRequestMsgReq" element="tns:PurchaseReservedInstancesOffering" />
+  </message>
+
+  <message name="PurchaseReservedInstancesOfferingResponseMsg">
+    <part name="PurchaseReservedInstancesOfferingResponseMsgResp" element="tns:PurchaseReservedInstancesOfferingResponse" />
+  </message>
+
+  <message name="DescribeReservedInstancesRequestMsg">
+    <part name="DescribeReservedInstancesRequestMsgReq" element="tns:DescribeReservedInstances" />
+  </message>
+
+  <message name="DescribeReservedInstancesResponseMsg">
+    <part name="DescribeReservedInstancesResponseMsgResp" element="tns:DescribeReservedInstancesResponse" />
+  </message>
+
+  <message name="MonitorInstancesRequestMsg">
+    <part name="MonitorInstancesRequestMsgReq" element="tns:MonitorInstances" />
+  </message>
+  
+  <message name="MonitorInstancesResponseMsg">
+    <part name="MonitorInstancesResponseMsgResp" element="tns:MonitorInstancesResponse" />
+  </message>
+  
+  <message name="UnmonitorInstancesRequestMsg">
+    <part name="UnmonitorInstancesRequestMsgReq" element="tns:UnmonitorInstances" />
+  </message>
+  
+  <message name="UnmonitorInstancesResponseMsg">
+    <part name="UnmonitorInstancesResponseMsgResp" element="tns:UnmonitorInstancesResponse" />
+  </message>
+  
   <portType name="AmazonEC2PortType">
     <operation name="RegisterImage">
       <input message="tns:RegisterImageRequestMsg" />
@@ -1897,11 +2196,35 @@
       <input message="tns:CancelBundleTaskRequestMsg" />
       <output message="tns:CancelBundleTaskResponseMsg" />
     </operation>
+    <operation name="DescribeRegions">
+      <input message="tns:DescribeRegionsRequestMsg"/>
+      <output message="tns:DescribeRegionsResponseMsg"/>
+    </operation>
+    <operation name="DescribeReservedInstancesOfferings">
+      <input message="tns:DescribeReservedInstancesOfferingsRequestMsg"/>
+      <output message="tns:DescribeReservedInstancesOfferingsResponseMsg"/>
+    </operation>
+    <operation name="PurchaseReservedInstancesOffering">
+      <input message="tns:PurchaseReservedInstancesOfferingRequestMsg"/>
+      <output message="tns:PurchaseReservedInstancesOfferingResponseMsg"/>
+    </operation>
+    <operation name="DescribeReservedInstances">
+      <input message="tns:DescribeReservedInstancesRequestMsg"/>
+      <output message="tns:DescribeReservedInstancesResponseMsg"/>
+    </operation>    
+    <operation name="MonitorInstances">
+      <input message="tns:MonitorInstancesRequestMsg"/>
+      <output message="tns:MonitorInstancesResponseMsg"/>
+    </operation>    
+    <operation name="UnmonitorInstances">
+      <input message="tns:UnmonitorInstancesRequestMsg"/>
+      <output message="tns:UnmonitorInstancesResponseMsg"/>
+    </operation>    
   </portType>
 
   <binding name="AmazonEC2Binding" type="tns:AmazonEC2PortType">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
-    <wsp:PolicyReference URI="#AmazonEC2BindingPolicy" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"/>
+    <wsp:PolicyReference URI="#AmazonEC2BindingPolicy" xmlns:wsp="http://www.w3.org/ns/ws-policy"/>
 
     <operation name="RegisterImage">
       <soap:operation soapAction="RegisterImage" />
@@ -2272,7 +2595,66 @@
         <soap:body use="literal" />
       </output>
     </operation>
+
+    <operation name="DescribeRegions">
+      <soap:operation soapAction="DescribeRegions" />
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="DescribeReservedInstancesOfferings">
+      <soap:operation soapAction="DescribeReservedInstancesOfferings" />
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="PurchaseReservedInstancesOffering">
+      <soap:operation soapAction="PurchaseReservedInstancesOffering" />
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="DescribeReservedInstances">
+      <soap:operation soapAction="DescribeReservedInstances" />
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
     
+    <operation name="MonitorInstances">
+      <soap:operation soapAction="MonitorInstances" />
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+
+    <operation name="UnmonitorInstances">
+      <soap:operation soapAction="UnmonitorInstances" />
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
   </binding>
 
   <service name="AmazonEC2">
@@ -2281,7 +2663,7 @@
     </port>
   </service>
 
-    <wsp:Policy wsu:Id="AmazonEC2BindingPolicy" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsaws="http://www.w3.org/2005/08/addressing" xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy" xmlns:sc="http://schemas.sun.com/2006/03/wss/client" xmlns:wspp="http://java.sun.com/xml/ns/wsit/policy">
+  <wsp:Policy wsu:Id="AmazonEC2BindingPolicy" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsaws="http://www.w3.org/2005/08/addressing" xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy" xmlns:sc="http://schemas.sun.com/2006/03/wss/client" xmlns:wspp="http://java.sun.com/xml/ns/wsit/policy">
     <wsp:ExactlyOne>
       <wsp:All>
         <sp:AsymmetricBinding>
