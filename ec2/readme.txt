@@ -1,4 +1,11 @@
-This will work when Metro 1.4 is released. Otherwise it fails with
+Steps to run "mvn test":
+
+1. Create an AWS X.509 certificate.
+2. Store the X.509 certificate under <user.home>/.ec2/cert.pem and the private key under <user.home>/.ec2/pk.pem.
+3. Run "mvn test".
+
+
+Releases older than Metro 1.4 are likely to fail with this error message:
 
  SEVERE: WSSTUBE0025: Error in Verifying Security in the Inbound Message.
  com.sun.xml.wss.XWSSecurityException: Security Requirements not met - No Security header in message

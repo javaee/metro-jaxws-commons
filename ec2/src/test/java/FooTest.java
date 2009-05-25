@@ -2,6 +2,7 @@ import com.sun.xml.ws.commons.EC2;
 import com.sun.xml.ws.commons.ec2.AmazonEC2PortType;
 import com.sun.xml.ws.commons.ec2.DescribeImagesOwnerType;
 import com.sun.xml.ws.commons.ec2.DescribeImagesOwnersType;
+import com.sun.xml.ws.commons.ec2.DescribeImagesResponseInfoType;
 import com.sun.xml.ws.commons.ec2.DescribeImagesType;
 import com.sun.xml.ws.transport.http.client.HttpTransportPipe;
 import junit.framework.TestCase;
@@ -18,17 +19,19 @@ public class FooTest extends TestCase {
 
         HttpTransportPipe.dump = true;
 
-        File home = new File("/home/kohsuke/.ec2/Sun");
+        final String userHome = System.getProperty("user.home");
+        final File home = new File(userHome, ".ec2");
 
-        AmazonEC2PortType p = EC2.connect(new File(home, "pk-5242455T55VWUVLW32VDDVC7KLWW3I4L.pem"), new File(home, "cert-5242455T55VWUVLW32VDDVC7KLWW3I4L.pem"));
+        AmazonEC2PortType p = EC2.connect(new File(home, "pk.pem"), new File(home, "cert.pem"));
 
 //        ((BindingProvider)port).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,"http://localhost:12345/");
         
-        System.out.println(p.describeImages(
+        final DescribeImagesResponseInfoType response = p.describeImages(
                 new DescribeImagesType().withOwnersSet(
                     new DescribeImagesOwnersType().withItem(
                         new DescribeImagesOwnerType().withOwner("amazon")
                     )
-                )).getImagesSet());
+                )).getImagesSet();
+        System.out.println(response.getItem());
     }
 }
