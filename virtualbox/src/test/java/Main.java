@@ -47,7 +47,7 @@ import com.sun.xml.ws.transport.http.client.HttpTransportPipe;
  */
 public class Main {
     public static void main(String[] args) throws RuntimeFaultMsg, InvalidObjectFaultMsg {
-        //System.setProperty(HttpTransportPipe.class.getName()+".dump","true");
+        HttpTransportPipe.dump = true;
 
         IVirtualBox box = VirtualBox.connect("http://localhost:18083/");
         System.out.println("version="+box.getVersion());

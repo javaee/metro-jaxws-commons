@@ -28,7 +28,7 @@ library["enum"].each { enums[it.@name]=it; }
 
 interfaceMap.values().each { onInterface(it); }
 
-File destDir = new File(baseDir, "target/jaxws/wsimport/java")
+File destDir = new File(baseDir, "target/generated-sources/wsimport")
 codeModel.build(destDir);
 // end of the main
 
