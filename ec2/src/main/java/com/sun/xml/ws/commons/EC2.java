@@ -1,5 +1,6 @@
 package com.sun.xml.ws.commons;
 
+import com.sun.xml.ws.api.security.CallbackHandlerFeature;
 import com.sun.xml.ws.commons.ec2.AmazonEC2;
 import com.sun.xml.ws.commons.ec2.AmazonEC2PortType;
 import com.sun.xml.ws.commons.ec2.CertStoreCallBackImpl;
@@ -51,12 +52,8 @@ public class EC2 {
             throw new LinkageError("ec2.wsdl not found, but it should have been in the jar");
         }
         AmazonEC2 svc = new AmazonEC2(wsdl, new QName("http://ec2.amazonaws.com/doc/2009-04-04/", "AmazonEC2"));
-        // TODO: when Metro hits 1.5 we can use CallbackHandlerFeature
-//        return svc.getAmazonEC2Port(new CallbackHandlerFeature(new CertStoreCallBackImpl(privateKey, x509certificate)));
-
-        AmazonEC2PortType port = svc.getAmazonEC2Port();
-        ((BindingProvider) port).getRequestContext().put(CertStoreCallBackImpl.PRIVATEKEY_PROPERTY, loadKey(privateKey));
-        ((BindingProvider) port).getRequestContext().put(CertStoreCallBackImpl.CERTIFICATE_PROPERTY, loadX509Certificate(x509certificate));
+        AmazonEC2PortType port = svc.getAmazonEC2Port(new CallbackHandlerFeature(
+                new CertStoreCallBackImpl(loadKey(privateKey), loadX509Certificate(x509certificate))));
         ((BindingProvider) port).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, "https://ec2.amazonaws.com/");
         return port;
     }

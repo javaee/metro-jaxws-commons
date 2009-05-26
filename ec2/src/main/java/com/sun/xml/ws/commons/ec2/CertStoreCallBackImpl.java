@@ -1,8 +1,5 @@
 package com.sun.xml.ws.commons.ec2;
 
-import com.sun.xml.ws.api.message.Packet;
-import com.sun.xml.ws.api.pipe.Fiber;
-import com.sun.xml.ws.commons.EC2;
 import com.sun.xml.wss.impl.callback.CertStoreCallback;
 import com.sun.xml.wss.impl.callback.KeyStoreCallback;
 import com.sun.xml.wss.impl.callback.PrivateKeyCallback;
@@ -27,6 +24,15 @@ import java.security.cert.X509Certificate;
  * @author Kohsuke Kawaguchi
  */
 public class CertStoreCallBackImpl implements CallbackHandler {
+
+    private final PrivateKey privateKey;
+    private final X509Certificate certificate;
+
+    public CertStoreCallBackImpl(PrivateKey privateKey, X509Certificate certificate) {
+        this.privateKey = privateKey;
+        this.certificate = certificate;
+    }
+
     public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
         // I'm just reverse engineering how this method is supposed to work here
         if(callbacks[0] instanceof CertStoreCallback) {
@@ -53,18 +59,15 @@ public class CertStoreCallBackImpl implements CallbackHandler {
         if (r instanceof PrivKeyCertRequest) {
              PrivKeyCertRequest pkcr = (PrivKeyCertRequest) r;
 
-             Packet p = Fiber.current().getPacket();
-             pkcr.setPrivateKey(getPrivateKey(p));
-             pkcr.setX509Certificate(getCertificate(p));
+             pkcr.setPrivateKey(this.privateKey);
+             pkcr.setX509Certificate(this.certificate);
              return;
          }
         throw new UnsupportedOperationException();
     }
 
     private void handle(PrivateKeyCallback pkc) throws IOException {
-        Packet p = Fiber.current().getPacket();
-
-        pkc.setKey(getPrivateKey(p));
+        pkc.setKey(this.privateKey);
     }
 
     private void handle(KeyStoreCallback ksc) throws IOException {
@@ -72,10 +75,8 @@ public class CertStoreCallBackImpl implements CallbackHandler {
              KeyStore ks = KeyStore.getInstance("jks"); // what's 'jks' anyway!?
              ks.load(null, null); // initialize an empty keystore. brain dead --- why not init() method?
 
-             Packet p = Fiber.current().getPacket();
-
              // alias doesn't matter because we only put one key and Metro is smart enough to find that one
-             ks.setKeyEntry("default", getPrivateKey(p), new char[0], new Certificate[]{getCertificate(p)});
+             ks.setKeyEntry("default", this.privateKey, new char[0], new Certificate[]{this.certificate});
 
              ksc.setKeystore(ks);
          } catch (GeneralSecurityException e) {
@@ -83,14 +84,4 @@ public class CertStoreCallBackImpl implements CallbackHandler {
          }
     }
 
-    private X509Certificate getCertificate(Packet p) {
-        return (X509Certificate) p.invocationProperties.get(CERTIFICATE_PROPERTY);
-    }
-
-    private PrivateKey getPrivateKey(Packet p) {
-        return (PrivateKey) p.invocationProperties.get(PRIVATEKEY_PROPERTY);
-    }
-
-    public static final String PRIVATEKEY_PROPERTY = EC2.class.getName() + ".privateKey";
-    public static final String CERTIFICATE_PROPERTY = EC2.class.getName() + ".x509";
 }

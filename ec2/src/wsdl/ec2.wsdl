@@ -2707,9 +2707,7 @@
           </wsp:Policy>
         </sp:Wss10>
         -->
-        <sc:KeyStore wspp:visibility="private" callbackHandler="com.sun.xml.ws.commons.ec2.CertStoreCallBackImpl" />
         <sc:AllowMissingTimestamp /><!-- this silences the security system complaining that the response doesn't have any security header.  -->
-        <sc:CertStore callbackHandler="com.sun.xml.ws.commons.ec2.CertStoreCallBackImpl" />
         <sp:SignedParts>
           <sp:Body/>
         </sp:SignedParts>
