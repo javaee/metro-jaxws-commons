@@ -27,6 +27,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
  * @author Kohsuke Kawaguchi
  */
 public class EC2 {
+
     /**
      * Creates a JAX-WS proxy object that you can use to talk to EC2.
      *
@@ -46,43 +47,45 @@ public class EC2 {
      */
     public static AmazonEC2PortType connect(File privateKey, File x509certificate) throws IOException, GeneralSecurityException {
         URL wsdl = EC2.class.getClassLoader().getResource("ec2.wsdl");
-        if(wsdl==null)
+        if (wsdl == null) {
             throw new LinkageError("ec2.wsdl not found, but it should have been in the jar");
-        AmazonEC2 svc = new AmazonEC2(wsdl,new QName("http://ec2.amazonaws.com/doc/2009-04-04/", "AmazonEC2"));
+        }
+        AmazonEC2 svc = new AmazonEC2(wsdl, new QName("http://ec2.amazonaws.com/doc/2009-04-04/", "AmazonEC2"));
         // TODO: when Metro hits 1.5 we can use CallbackHandlerFeature
 //        return svc.getAmazonEC2Port(new CallbackHandlerFeature(new CertStoreCallBackImpl(privateKey, x509certificate)));
 
         AmazonEC2PortType port = svc.getAmazonEC2Port();
-        ((BindingProvider)port).getRequestContext().put(CertStoreCallBackImpl.PRIVATEKEY_PROPERTY,loadKey(privateKey));
-        ((BindingProvider)port).getRequestContext().put(CertStoreCallBackImpl.CERTIFICATE_PROPERTY,loadX509Certificate(x509certificate));
-        ((BindingProvider)port).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,"https://ec2.amazonaws.com/");
+        ((BindingProvider) port).getRequestContext().put(CertStoreCallBackImpl.PRIVATEKEY_PROPERTY, loadKey(privateKey));
+        ((BindingProvider) port).getRequestContext().put(CertStoreCallBackImpl.CERTIFICATE_PROPERTY, loadX509Certificate(x509certificate));
+        ((BindingProvider) port).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, "https://ec2.amazonaws.com/");
         return port;
     }
 
     private static X509Certificate loadX509Certificate(File certificate) throws GeneralSecurityException, IOException {
-             CertificateFactory factory = CertificateFactory.getInstance("X509");
-             return (X509Certificate) factory.generateCertificate(new FileInputStream(certificate));
-         }
+        CertificateFactory factory = CertificateFactory.getInstance("X509");
+        return (X509Certificate) factory.generateCertificate(new FileInputStream(certificate));
+    }
 
     private static PrivateKey loadKey(File keyfile) throws IOException, GeneralSecurityException {
-             StringBuilder keyBuf = new StringBuilder();
-             BufferedReader br = new BufferedReader(new FileReader(keyfile));
-             String line;
-             while ((line = br.readLine()) != null) {
-                 if (!line.startsWith("-----") && !line.endsWith("-----"))
-                     keyBuf.append(line);
-             }
-             br.close();
+        StringBuilder keyBuf = new StringBuilder();
+        BufferedReader br = new BufferedReader(new FileReader(keyfile));
+        String line;
+        while ((line = br.readLine()) != null) {
+            if (!line.startsWith("-----") && !line.endsWith("-----")) {
+                keyBuf.append(line);
+            }
+        }
+        br.close();
 
-             try {
-                 PKCS8EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(Base64.decode(keyBuf.toString()));
+        try {
+            PKCS8EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(Base64.decode(keyBuf.toString()));
 
-                 KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-                 return keyFactory.generatePrivate(privKeySpec);
-             } catch (Base64DecodingException e) {
-                 IOException x = new IOException("Invalid key file");
-                 x.initCause(e);
-                 throw x;
-             }
-         }
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            return keyFactory.generatePrivate(privKeySpec);
+        } catch (Base64DecodingException e) {
+            IOException x = new IOException("Invalid key file");
+            x.initCause(e);
+            throw x;
+        }
+    }
 }
