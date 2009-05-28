@@ -141,12 +141,14 @@ public class EmailEndpoint {
         this.session = Session.getInstance(props);
         this.sender = new SenderThread(session);
 
-        POP3Info pop3 = feature.getIncoming();
-        this.listener = new POP3Listener(pop3.getScheme(), pop3.getHost(), pop3.getPort(),
+        if (feature.senderOnly) {
+            this.listener = null;
+        } else {
+            POP3Info pop3 = feature.getIncoming();
+            this.listener = new POP3Listener(pop3.getScheme(), pop3.getHost(), pop3.getPort(),
                 pop3.getUid(), pop3.getPassword(), pop3.getInterval());
-        this.listener.setEndPoint(this);
-
-
+            this.listener.setEndPoint(this);
+        }
     }
 
     private class SMTPAuthenticator extends javax.mail.Authenticator {
@@ -211,12 +213,14 @@ public class EmailEndpoint {
     }
 
     public void start() {
-        listener.start();
+        if (listener != null)
+            listener.start();
         sender.start();
     }
 
     public void stop() {
-        listener.stop();
+        if (listener != null)
+            listener.stop();
         sender.shutDown();
     }
 

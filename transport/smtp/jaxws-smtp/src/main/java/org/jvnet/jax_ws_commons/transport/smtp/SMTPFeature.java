@@ -19,6 +19,7 @@ public class SMTPFeature extends WebServiceFeature {
 
     POP3Info pop3;
     SenderInfo senderInfo;
+    public boolean senderOnly;
 
     public SMTPFeature() {
     }
@@ -30,6 +31,12 @@ public class SMTPFeature extends WebServiceFeature {
     public SMTPFeature(String smtpHost, String smtpPort, String fromAddress) {
         senderInfo = new SenderInfo(smtpHost, smtpPort, fromAddress);
     }
+
+    public SMTPFeature(String smtpHost, String smtpPort, String fromAddress, boolean senderOnly) {
+        senderInfo = new SenderInfo(smtpHost, smtpPort, fromAddress);
+        this.senderOnly = senderOnly;
+    }
+
 
     public String getID() {
         return ID;

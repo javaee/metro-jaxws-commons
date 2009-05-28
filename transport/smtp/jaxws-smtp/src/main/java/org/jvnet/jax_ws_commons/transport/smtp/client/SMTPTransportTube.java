@@ -42,25 +42,32 @@ public class SMTPTransportTube extends AbstractTubeImpl {
     private final Codec codec;
     private final EmailEndpoint endpoint;
     private final SmtpHandler incomingHandler;
+    private final boolean senderOnly;
 
     public SMTPTransportTube(Codec codec, WSBinding binding, EndpointAddress endpointAddress) {
         this.codec = codec;
         SMTPFeature feature = binding.getFeature(SMTPFeature.class);
+        this.senderOnly = feature.senderOnly;
         if (feature != null) {
             this.endpoint = new EmailEndpoint(feature);
         } else {
             this.endpoint = new EmailEndpoint(endpointAddress.toString());
         }
-        incomingHandler = new SmtpHandler();
-        endpoint.setMailHandler(incomingHandler);
+        if (senderOnly) {
+            incomingHandler = null;
+        } else {
+            incomingHandler = new SmtpHandler();
+            endpoint.setMailHandler(incomingHandler);
+        }
         this.endpoint.start();
     }
 
     public SMTPTransportTube(SMTPTransportTube that, TubeCloner cloner) {
+        super(that, cloner);
         this.codec = that.codec.copy();
         this.endpoint = that.endpoint;
         this.incomingHandler = that.incomingHandler;
-        cloner.add(this, that);
+        this.senderOnly = that.senderOnly;
     }
 
     @NotNull
@@ -95,12 +102,18 @@ public class SMTPTransportTube extends AbstractTubeImpl {
             }));
 
             UUID msgId = endpoint.send(msg);
-            // TODO what happens when the message arrives before addHandler is called
-            incomingHandler.addHandler(msgId, new MessageHandler(request));
+            if (!senderOnly) {
+                // TODO what happens when the message arrives before addHandler is called
+                incomingHandler.addHandler(msgId, new MessageHandler(request));
+            }
         } catch (IOException e) {
             throw new WebServiceException(e);
         } catch (MessagingException e) {
             throw new WebServiceException(e);
+        }
+        if (senderOnly) {
+            Packet reply = request.createClientResponse(null);
+            return doReturnWith(reply);
         }
         return doSuspend();
     }

@@ -20,6 +20,21 @@ import javax.xml.ws.soap.SOAPBinding;
  */
 public class SmtpTest extends TestCase {
 
+    public void testSenderOnly() throws Exception {
+        SMTPTransportTube.dump = true;
+
+        SMTPFeature feature = new SMTPFeature("sun.com", null, "client@sun.com", true);
+        Service service = Service.create(new QName("FakeService"));
+
+        String add = "smtp://server@sun.com";
+        service.addPort(new QName("FakePort"), SOAPBinding.SOAP11HTTP_BINDING, add);
+        JAXBContext jaxbCtx = JAXBContext.newInstance(Book.class);
+        Dispatch dispatch = service.createDispatch(new QName("FakePort"), jaxbCtx, Service.Mode.PAYLOAD,
+                feature);
+        dispatch.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, add);
+        dispatch.invokeOneWay(new Book("Midnight's Children", "Salman Rushdie", "Unknown"));
+    }
+
     /**
      * Rigourous Test :-)
      */
