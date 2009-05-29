@@ -9,7 +9,7 @@
 
   <artifactId>virtualbox</artifactId>
   <packaging>jar</packaging>
-  <version>2.2-rev3-SNAPSHOT</version>
+  <version>2.2-rev3</version>
   <name>VirtualBox web service client</name>
 
   <build>
