@@ -2708,10 +2708,10 @@
         </sp:Wss10>
         -->
         <sc:AllowMissingTimestamp /><!-- this silences the security system complaining that the response doesn't have any security header.  -->
+        <sc:DisableInclusivePrefixList />
         <sp:SignedParts>
           <sp:Body/>
         </sp:SignedParts>
-        <sc:DisableInclusivePrefixList />
       </wsp:All>
     </wsp:ExactlyOne>
   </wsp:Policy>
