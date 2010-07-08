@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jvnet.jax-ws-commons</groupId>
+    <artifactId>pom</artifactId>
+    <version>1.2</version>
+    <relativePath>../../pom/pom.xml</relativePath>
+  </parent>
+  
+  <artifactId>grizzly-httpspi</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0-SNAPSHOT</version>
+
+  <name>JAXWS HTTP SPI using grizzly</name>
+  
+  <scm>
+    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/trunk/grizzly</connection>
+    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/trunk/grizzly</developerConnection>
+    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/grizzly</url>
+  </scm>
+  
+  <modules>
+    <module>jaxws-grizzly-httpspi</module>
+    <module>testapp</module>
+  </modules>
+</project>
