@@ -4,13 +4,13 @@
   <parent>
     <groupId>org.jvnet.jax-ws-commons</groupId>
     <artifactId>grizzly-httpspi</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>jaxws-grizzly-httpspi</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <name>Grizzly httpspi transport extension</name>
   <description>Grizzly httpspi transport extension for JAX-WS RI</description>
 
