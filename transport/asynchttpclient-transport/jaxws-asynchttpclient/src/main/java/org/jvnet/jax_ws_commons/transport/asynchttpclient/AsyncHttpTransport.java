@@ -37,46 +37,38 @@
 package org.jvnet.jax_ws_commons.transport.asynchttpclient;
 
 import com.ning.http.client.*;
+import com.sun.istack.NotNull;
+import com.sun.istack.Nullable;
 import com.sun.xml.ws.api.EndpointAddress;
 import com.sun.xml.ws.api.message.Packet;
 import com.sun.xml.ws.api.pipe.Codec;
 import com.sun.xml.ws.client.BindingProviderProperties;
-import static com.sun.xml.ws.client.BindingProviderProperties.*;
 import com.sun.xml.ws.client.ClientTransportException;
+import com.sun.xml.ws.developer.JAXWSProperties;
 import com.sun.xml.ws.resources.ClientMessages;
 import com.sun.xml.ws.transport.Headers;
-import com.sun.xml.ws.developer.JAXWSProperties;
 import com.sun.xml.ws.transport.http.client.CookieJar;
 import com.sun.xml.ws.util.ByteArrayBuffer;
 import com.sun.xml.ws.util.RuntimeVersion;
-import com.sun.istack.Nullable;
-import com.sun.istack.NotNull;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.jvnet.jax_ws_commons.transport.asynchttpclient.AsyncHttpTransportTube.AsyncCallbackImpl;
 
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
-import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.ws.BindingProvider;
-import static javax.xml.ws.BindingProvider.SESSION_MAINTAIN_PROPERTY;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.handler.MessageContext;
-import java.io.FilterInputStream;
-import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
-import java.util.zip.GZIPOutputStream;
 import java.util.zip.GZIPInputStream;
 
-import org.jvnet.jax_ws_commons.transport.asynchttpclient.AsyncHttpTransportTube.AsyncCallbackImpl;
+import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 /**
  *
  * @author WS Development Team
@@ -94,7 +86,7 @@ final class AsyncHttpTransport {
     /*package*/ int statusCode;
     /*package*/ String statusMessage;
     private final Map<String, List<String>> reqHeaders;
-    private Map<String, List<String>> respHeaders = null;
+    private Map<String, List<String>> respHeaders;
     private Response response;
     private RequestBuilder requestBuilder;
     private AsyncHttpClient asyncClient;
@@ -102,8 +94,6 @@ final class AsyncHttpTransport {
     private boolean https;
     private final EndpointAddress endpoint;
     private final Packet context;
-    private CookieJar cookieJar = null;
-    private final Integer chunkSize;
     private String method;
 
     AsyncCallbackImpl callback;
@@ -112,7 +102,6 @@ final class AsyncHttpTransport {
         endpoint = packet.endpointAddress;
         context = packet;
         this.reqHeaders = reqHeaders;
-        chunkSize = (Integer)context.invocationProperties.get(JAXWSProperties.HTTP_CLIENT_STREAMING_CHUNK_SIZE);
     }
 
     /*
@@ -121,10 +110,8 @@ final class AsyncHttpTransport {
     public void writeOutput(final Codec codec, final Packet p) {
         try {
             createHttpConnection();
-            //TODO rk sendCookieAsNeeded();
             if (requiresOutputStream()) {
                 requestBuilder.setBody(new Request.EntityWriter(){
-
                     public void writeEntity(OutputStream out) throws IOException {
                         codec.encode(p, out);
                     }
@@ -155,24 +142,24 @@ final class AsyncHttpTransport {
      */
     public OutputStream writeOutput(ByteArrayBuffer b) {
         try {
-
-
             createHttpConnection();
-            //TODO rk sendCookieAsNeeded();
             if (requiresOutputStream()) {
                 requestBuilder.setBody(b.newInputStream());
             }
-
-            Future<Response> responseF = asyncClient.executeRequest(requestBuilder.build());
-            response= responseF.get();
+            asyncClient.executeRequest(requestBuilder.build(), new AsyncCompletionHandlerBase() {
+                @Override
+                public Response onCompleted(Response response) throws Exception {
+                    AsyncHttpTransport.this.response = response;
+                    callback.send();
+                    return response;
+                }
+            });
         } catch (Exception ex) {
             throw new ClientTransportException(
                 ClientMessages.localizableHTTP_CLIENT_FAILED(ex),ex);
         }
-
         return outputStream;
     }
-
 
     public void closeOutput() throws IOException {
         if (outputStream != null) {
@@ -185,25 +172,7 @@ final class AsyncHttpTransport {
      * Get the response from HTTP connection and prepare the input stream for response
      */
     public @Nullable InputStream getInput() {
-        // response processing
-
-        InputStream in;
-        try {
-            //TODO rk saveCookieAsNeeded();
-            in = readResponse();
-            if (in != null) {
-                String contentEncoding = null;
-                /*TODO rk
-                contentEncoding = httpConnection.getContentEncoding();
-                */
-                if (contentEncoding != null && contentEncoding.contains("gzip")) {
-                    in = new GZIPInputStream(in);
-                }
-            }
-        } catch (IOException e) {
-            throw new ClientTransportException(ClientMessages.localizableHTTP_STATUS_CODE(statusCode, statusMessage), e);
-        }
-        return in;
+        return readResponse();
     }
 
     public Map<String, List<String>> getHeaders() {
@@ -211,52 +180,24 @@ final class AsyncHttpTransport {
             return respHeaders;
         }
         respHeaders = new Headers();
-        //TODO rk
-        //respHeaders.putAll(response.getHeaders().iterator());
+        for(Map.Entry<String, List<String>> entry : response.getHeaders()) {
+            respHeaders.put(entry.getKey(), entry.getValue());
+        }
         return respHeaders;
     }
 
     protected @Nullable InputStream readResponse() {
-        InputStream is;
         try {
-            is = response.getResponseBodyAsStream();
+            return response.getResponseBodyAsStream();
         } catch(IOException ioe) {
             throw new WebServiceException(ioe);
         }
-        if (is == null) {
-            return is;
-        }
-        return is;
     }
-
 
     protected void readResponseCodeAndMessage() {
-            statusCode = response.getStatusCode();
-            statusMessage = response.getStatusText();
-     
+        statusCode = response.getStatusCode();
+        statusMessage = response.getStatusText();
     }
-    /* todo rk
-    protected void sendCookieAsNeeded() {
-        Boolean shouldMaintainSessionProperty =
-            (Boolean) context.invocationProperties.get(SESSION_MAINTAIN_PROPERTY);
-        if (shouldMaintainSessionProperty != null && shouldMaintainSessionProperty) {
-            cookieJar = (CookieJar) context.invocationProperties.get(HTTP_COOKIE_JAR);
-            if (cookieJar == null) {
-                cookieJar = new CookieJar();
-
-                // need to store in binding's context so it is not lost
-                context.proxy.getRequestContext().put(HTTP_COOKIE_JAR, cookieJar);
-            }
-            cookieJar.applyRelevantCookies(httpConnection);
-        }
-    }
-
-    private void saveCookieAsNeeded() {
-        if (cookieJar != null) {
-            cookieJar.recordAnyCookies(httpConnection);
-        }
-    }
-    */
 
     private void createHttpConnection() throws IOException {
         AsyncHttpClientConfig.Builder asyncConfigBuilder = new AsyncHttpClientConfig.Builder();
@@ -271,16 +212,16 @@ final class AsyncHttpTransport {
         }
         asyncConfigBuilder.setUserAgent(RuntimeVersion.VERSION.toString());
 
-        // TODO enable compression
-        // asyncConfigBuilder.setCompressionEnabled();
+        List<String> contentEncoding = reqHeaders.get("Content-Encoding");
+
+        if (contentEncoding != null && contentEncoding.get(0).contains("gzip")) {
+            asyncConfigBuilder.setCompressionEnabled(true);
+        }
 
         asyncClient = new AsyncHttpClient(asyncConfigBuilder.build());
 
-
         String requestMethod = (String) context.invocationProperties.get(MessageContext.HTTP_REQUEST_METHOD);
         method = (requestMethod != null) ? requestMethod : "POST";
-
-
 
         requestBuilder = new RequestBuilder(RequestType.valueOf(method));
         requestBuilder.setUrl(endpoint.toString());
@@ -319,14 +260,6 @@ final class AsyncHttpTransport {
 
     public @Nullable String getContentType() {
         return response.getContentType();
-    }
-
-    // overide default SSL HttpClientVerifier to always return true
-    // effectively overiding Hostname client verification when using SSL
-    private static class HttpClientVerifier implements HostnameVerifier {
-        public boolean verify(String s, SSLSession sslSession) {
-            return true;
-        }
     }
 
 }
