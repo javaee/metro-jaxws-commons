@@ -46,6 +46,11 @@ import javax.jws.soap.SOAPBinding;
 public class EchoService {
 
     public Book echo(Book book) {
+        try {
+            Thread.sleep(5000);
+        } catch(InterruptedException e) {
+            // ignored
+        }
         return book;
     }
 

@@ -1,14 +1,13 @@
 package org.jvnet.jax_ws_commons.transport.asynchttpclient;
 
 import com.sun.istack.NotNull;
+import com.sun.istack.Nullable;
 import com.sun.xml.ws.api.SOAPVersion;
 import com.sun.xml.ws.api.WSBinding;
 import com.sun.xml.ws.api.message.Packet;
-import com.sun.xml.ws.api.pipe.Codec;
-import com.sun.xml.ws.api.pipe.ContentType;
-import com.sun.xml.ws.api.pipe.NextAction;
-import com.sun.xml.ws.api.pipe.TubeCloner;
+import com.sun.xml.ws.api.pipe.*;
 import com.sun.xml.ws.api.pipe.helper.AbstractTubeImpl;
+import com.sun.xml.ws.api.server.AsyncProviderCallback;
 import com.sun.xml.ws.client.ClientTransportException;
 import com.sun.xml.ws.resources.ClientMessages;
 import com.sun.xml.ws.transport.Headers;
@@ -27,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * @author Jitendra Kotamraju
  * @author Rama Pulavarthi
  */
 public class AsyncHttpTransportTube extends AbstractTubeImpl {
@@ -50,14 +50,6 @@ public class AsyncHttpTransportTube extends AbstractTubeImpl {
     }
 
     public NextAction processRequest(@NotNull Packet request) {
-        return doReturnWith(process(request));
-    }
-
-    public NextAction processResponse(@NotNull Packet response) {
-        throw new IllegalStateException("HttpTransportPipe's processResponse shouldn't be called.");
-    }
-
-    public Packet process(Packet request) {
         AsyncHttpTransport con;
         try {
             // get transport headers from message
@@ -69,6 +61,8 @@ public class AsyncHttpTransportTube extends AbstractTubeImpl {
             }
 
             con = new AsyncHttpTransport(request,reqHeaders);
+            AsyncCallbackImpl callback = new AsyncCallbackImpl(request, con);
+            con.setCallback(callback);
             //TODO rk request.addSatellite(new HttpResponseProperties(con));
 
             ContentType ct = codec.getStaticContentType(request);
@@ -111,39 +105,73 @@ public class AsyncHttpTransportTube extends AbstractTubeImpl {
             }
 
             con.closeOutput();
-
-            con.readResponseCodeAndMessage();   // throws IOE
-            InputStream response = con.getInput();
-            if(dump) {
-                ByteArrayBuffer buf = new ByteArrayBuffer();
-                if (response != null) {
-                    buf.write(response);
-                    response.close();
-                }
-                dump(buf,"HTTP response - "+request.endpointAddress+" - "+con.statusCode, con.getHeaders());
-                response = buf.newInputStream();
-            }
-
-            if (con.statusCode== WSHTTPConnection.ONEWAY || (request.expectReply != null && !request.expectReply)) {
-                checkStatusCodeOneway(response, con.statusCode, con.statusMessage);   // throws ClientTransportException
-                return request.createClientResponse(null);    // one way. no response given.
-            }
-
-            checkStatusCode(response, con.statusCode, con.statusMessage); // throws ClientTransportException
-
-            String contentType = con.getContentType();
-            // TODO check if returned MIME type is the same as that which was sent
-            // or is acceptable if an Accept header was used
-            Packet reply = request.createClientResponse(null);
-            //reply.addSatellite(new HttpResponseProperties(con));
-            reply.wasTransportSecure = con.isSecure();
-            codec.decode(response, contentType, reply);
-            return reply;
         } catch(WebServiceException wex) {
             throw wex;
         } catch(Exception ex) {
             throw new WebServiceException(ex);
         }
+        return doSuspend();
+    }
+
+    public class AsyncCallbackImpl {
+        private final Packet request;
+        private final Fiber fiber;
+        private final AsyncHttpTransport con;
+
+        public AsyncCallbackImpl(Packet request, AsyncHttpTransport con) {
+            this.request = request;
+            this.fiber = Fiber.current();
+            this.con = con;
+        }
+
+        public void send() {
+            Packet packet;
+            try {
+                con.readResponseCodeAndMessage();   // throws IOE
+                InputStream response = con.getInput();
+                if(dump) {
+                    ByteArrayBuffer buf = new ByteArrayBuffer();
+                    if (response != null) {
+                        buf.write(response);
+                        response.close();
+                    }
+                    dump(buf,"HTTP response - "+request.endpointAddress+" - "+con.statusCode, con.getHeaders());
+                    response = buf.newInputStream();
+                }
+
+                if (con.statusCode== WSHTTPConnection.ONEWAY || (request.expectReply != null && !request.expectReply)) {
+                    checkStatusCodeOneway(response, con.statusCode, con.statusMessage);   // throws ClientTransportException
+                    packet = request.createClientResponse(null);    // one way. no response given.
+                    fiber.resume(packet);
+                }
+
+                checkStatusCode(response, con.statusCode, con.statusMessage); // throws ClientTransportException
+
+                String contentType = con.getContentType();
+                // TODO check if returned MIME type is the same as that which was sent
+                // or is acceptable if an Accept header was used
+                packet = request.createClientResponse(null);
+                //reply.addSatellite(new HttpResponseProperties(con));
+                packet.wasTransportSecure = con.isSecure();
+                codec.decode(response, contentType, packet);
+
+            } catch(WebServiceException wex) {
+                throw wex;
+            } catch(Exception ex) {
+                throw new WebServiceException(ex);
+            }
+            
+            fiber.resume(packet);
+        }
+
+        public void sendError(@NotNull Throwable t) {
+            //fiber.resume(packet);
+        }
+    }
+
+
+    public NextAction processResponse(@NotNull Packet response) {
+        return doReturnWith(response);
     }
 
     private void checkStatusCode(InputStream in, int statusCode, String statusMessage) throws IOException {

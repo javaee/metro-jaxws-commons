@@ -35,18 +35,14 @@
  */
 package asynchttptest;
 
-import com.sun.grizzly.http.embed.GrizzlyWebServer;
 import junit.framework.TestCase;
-import org.jvnet.jax_ws_commons.transport.grizzly_httpspi.GrizzlyHttpContextFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
-import javax.xml.ws.Dispatch;
-import javax.xml.ws.Endpoint;
-import javax.xml.ws.Service;
+import javax.xml.ws.*;
 import javax.xml.ws.soap.SOAPBinding;
 import javax.xml.ws.spi.http.HttpContext;
 import java.io.IOException;
@@ -84,7 +80,9 @@ public class Test extends TestCase {
 
         JAXBElement<Book> elem = new JAXBElement<Book>(new QName("http://asynchttptest/", "echo"), Book.class, book);
         Source source = new JAXBSource(jaxbCtx, elem);
-        source = dispatch.invoke(source);
+        Response<Source> respSource = dispatch.invokeAsync(source);
+
+        source = respSource.get();
         elem = jaxbCtx.createUnmarshaller().unmarshal(source, Book.class);
         assertEquals(new QName("http://asynchttptest/", "echoResponse"), elem.getName());
         

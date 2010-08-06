@@ -51,6 +51,8 @@ import com.sun.xml.ws.util.ByteArrayBuffer;
 import com.sun.xml.ws.util.RuntimeVersion;
 import com.sun.istack.Nullable;
 import com.sun.istack.NotNull;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.HttpsURLConnection;
@@ -69,13 +71,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Future;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.GZIPInputStream;
+
+import org.jvnet.jax_ws_commons.transport.asynchttpclient.AsyncHttpTransportTube.AsyncCallbackImpl;
 /**
  *
  * @author WS Development Team
@@ -105,6 +106,8 @@ final class AsyncHttpTransport {
     private final Integer chunkSize;
     private String method;
 
+    AsyncCallbackImpl callback;
+
     public AsyncHttpTransport(@NotNull Packet packet, @NotNull Map<String,List<String>> reqHeaders) {
         endpoint = packet.endpointAddress;
         context = packet;
@@ -115,37 +118,36 @@ final class AsyncHttpTransport {
     /*
      * Prepare the stream for HTTP request
      */
-    public OutputStream writeOutput(final Codec codec, final Packet p) {
+    public void writeOutput(final Codec codec, final Packet p) {
         try {
-
-
             createHttpConnection();
             //TODO rk sendCookieAsNeeded();
             if (requiresOutputStream()) {
                 requestBuilder.setBody(new Request.EntityWriter(){
 
                     public void writeEntity(OutputStream out) throws IOException {
-                        if (chunkSize != null) {
-                            out = new WSChunkedOuputStream(out, chunkSize);
-                        }
-                        Collection<String> contentEncoding = reqHeaders.get("Content-Encoding");
-                        // TODO need to find out correct encoding based on q value - RFC 2616
-                        if (contentEncoding != null && contentEncoding.iterator().next().contains("gzip")) {
-                            outputStream = new GZIPOutputStream(outputStream);
-                        }
                         codec.encode(p, out);
                     }
                 });
             }
 
-            Future<Response> responseF = asyncClient.executeRequest(requestBuilder.build());
-            response= responseF.get();
+            asyncClient.executeRequest(requestBuilder.build(), new AsyncCompletionHandlerBase() {
+                @Override
+                public Response onCompleted(Response response) throws Exception {
+                    AsyncHttpTransport.this.response = response;
+                    callback.send();
+                    return response;
+                }
+            });
         } catch (Exception ex) {
             throw new ClientTransportException(
                 ClientMessages.localizableHTTP_CLIENT_FAILED(ex),ex);
         }
 
-        return outputStream;
+    }
+
+    void setCallback(AsyncCallbackImpl callback) {
+        this.callback = callback;
     }
 
     /*
@@ -224,26 +226,6 @@ final class AsyncHttpTransport {
         if (is == null) {
             return is;
         }
-        /*TODO rk
-        // Since StreamMessage doesn't read </s:Body></s:Envelope>, there
-        // are some bytes left in the InputStream. This confuses JDK and may
-        // not reuse underlying sockets. Hopefully JDK fixes it in its code !
-        final InputStream temp = is;
-        return new FilterInputStream(temp) {
-            // Workaround for "SJSXP XMLStreamReader.next() closes stream".
-            // So it doesn't read from the closed stream
-            boolean closed;
-            @Override
-            public void close() throws IOException {
-                if (!closed) {
-                    closed = true;
-                    byte[] buf = new byte[8192];
-                    while(temp.read(buf) != -1);
-                    super.close();
-                }
-            }
-        };
-        */
         return is;
     }
 
@@ -289,17 +271,16 @@ final class AsyncHttpTransport {
         }
         asyncConfigBuilder.setUserAgent(RuntimeVersion.VERSION.toString());
 
+        // TODO enable compression
+        // asyncConfigBuilder.setCompressionEnabled();
+
         asyncClient = new AsyncHttpClient(asyncConfigBuilder.build());
 
 
-        /*TODO
-        Integer chunkSize = (Integer)context.invocationProperties.get(JAXWSProperties.HTTP_CLIENT_STREAMING_CHUNK_SIZE);
-        if (chunkSize != null) {
-            httpConnection.setChunkedStreamingMode(chunkSize);
-        }
-        */
         String requestMethod = (String) context.invocationProperties.get(MessageContext.HTTP_REQUEST_METHOD);
         method = (requestMethod != null) ? requestMethod : "POST";
+
+
 
         requestBuilder = new RequestBuilder(RequestType.valueOf(method));
         requestBuilder.setUrl(endpoint.toString());
@@ -309,7 +290,6 @@ final class AsyncHttpTransport {
                 requestBuilder.addHeader(entry.getKey(), value);
             }
         }
-
 
     }
 
@@ -347,32 +327,6 @@ final class AsyncHttpTransport {
         public boolean verify(String s, SSLSession sslSession) {
             return true;
         }
-    }
-
-    /**
-     * HttpURLConnection.getOuputStream() returns sun.net.www.http.ChunkedOuputStream in chunked
-     * streaming mode. If you call ChunkedOuputStream.write(byte[20MB], int, int), then the whole data
-     * is kept in memory. This wraps the ChunkedOuputStream so that it writes only small
-     * chunks.
-     */
-    private static final class WSChunkedOuputStream extends FilterOutputStream {
-        final int chunkSize;
-
-        WSChunkedOuputStream(OutputStream actual, int chunkSize) {
-            super(actual);
-            this.chunkSize = chunkSize;
-        }
-
-        @Override
-        public void write(byte b[], int off, int len) throws IOException {
-            while(len > 0) {
-                int sent = (len > chunkSize) ? chunkSize : len;
-                out.write(b, off, sent);        // don't use super.write() as it writes byte-by-byte
-                len -= sent;
-                off += sent;
-            }
-        }
-
     }
 
 }
