@@ -1,13 +1,11 @@
 package org.jvnet.jax_ws_commons.transport.asynchttpclient;
 
 import com.sun.istack.NotNull;
-import com.sun.istack.Nullable;
 import com.sun.xml.ws.api.SOAPVersion;
 import com.sun.xml.ws.api.WSBinding;
 import com.sun.xml.ws.api.message.Packet;
 import com.sun.xml.ws.api.pipe.*;
 import com.sun.xml.ws.api.pipe.helper.AbstractTubeImpl;
-import com.sun.xml.ws.api.server.AsyncProviderCallback;
 import com.sun.xml.ws.client.ClientTransportException;
 import com.sun.xml.ws.resources.ClientMessages;
 import com.sun.xml.ws.transport.Headers;
@@ -19,17 +17,38 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.soap.SOAPBinding;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 /**
+ * Asynchronous HTTP client transport. It releases the thread after sending
+ * the request. When the response is available, it continues the tube
+ * processing in a different thread.
+ *
+ * @see Fiber#suspend
+ * @see Fiber#resume
+ *
  * @author Jitendra Kotamraju
  * @author Rama Pulavarthi
  */
 public class AsyncHttpTransportTube extends AbstractTubeImpl {
+    /**
+     * Dumps what goes across HTTP transport.
+     */
+    public static boolean dump;
+
+    static {
+        boolean b;
+        try {
+            b = Boolean.getBoolean(AsyncHttpTransportTube.class.getName()+".dump");
+        } catch( Throwable t ) {
+            b = false;
+        }
+        dump = b;
+    }
+
     private final Codec codec;
     private final WSBinding binding;
 
@@ -37,16 +56,14 @@ public class AsyncHttpTransportTube extends AbstractTubeImpl {
         this.codec = codec;
         this.binding = binding;
     }
-    /**
-     * Copy constructor for {@link com.sun.xml.ws.api.pipe.Tube#copy(TubeCloner)}.
-     */
+
     private AsyncHttpTransportTube(AsyncHttpTransportTube that, TubeCloner cloner) {
-        this( that.codec.copy(), that.binding);
+        this(that.codec.copy(), that.binding);
         cloner.add(that,this);
     }
 
     public NextAction processException(@NotNull Throwable t) {
-        throw new IllegalStateException("HttpTransportPipe's processException shouldn't be called.");
+        throw new IllegalStateException("AsyncHttpTransportTube's processException shouldn't be called.");
     }
 
     public NextAction processRequest(@NotNull Packet request) {
@@ -77,7 +94,7 @@ public class AsyncHttpTransportTube extends AbstractTubeImpl {
                     reqHeaders.put("Accept", Collections.singletonList(ct.getAcceptHeader()));
                 }
                 if (binding instanceof SOAPBinding) {
-                    writeSOAPAction(reqHeaders, ct.getSOAPActionHeader(),request);
+                    writeSOAPAction(reqHeaders, ct.getSOAPActionHeader());
                 }
 
                 if(dump)
@@ -91,7 +108,7 @@ public class AsyncHttpTransportTube extends AbstractTubeImpl {
                     reqHeaders.put("Accept", Collections.singletonList(ct.getAcceptHeader()));
                 }
                 if (binding instanceof SOAPBinding) {
-                    writeSOAPAction(reqHeaders, ct.getSOAPActionHeader(), request);
+                    writeSOAPAction(reqHeaders, ct.getSOAPActionHeader());
                 }
 
                 if(dump) {
@@ -154,21 +171,17 @@ public class AsyncHttpTransportTube extends AbstractTubeImpl {
                 //reply.addSatellite(new HttpResponseProperties(con));
                 packet.wasTransportSecure = con.isSecure();
                 codec.decode(response, contentType, packet);
-
-            } catch(WebServiceException wex) {
-                throw wex;
-            } catch(Exception ex) {
-                throw new WebServiceException(ex);
+            } catch(Throwable t) {
+                fiber.resume(t);
+                return;
             }
-            
             fiber.resume(packet);
         }
 
         public void sendError(@NotNull Throwable t) {
-            //fiber.resume(packet);
+            //fiber.resume(t);
         }
     }
-
 
     public NextAction processResponse(@NotNull Packet response) {
         return doReturnWith(response);
@@ -196,13 +209,13 @@ public class AsyncHttpTransportTube extends AbstractTubeImpl {
         }
     }
 
-    /**
+    /*
      * write SOAPAction header if the soapAction parameter is non-null or BindingProvider properties set.
      * BindingProvider properties take precedence.
      */
-    private void writeSOAPAction(Map<String, List<String>> reqHeaders, String soapAction, Packet packet) {
+    private void writeSOAPAction(Map<String, List<String>> reqHeaders, String soapAction) {
         //dont write SOAPAction HTTP header for SOAP 1.2 messages.
-        if(SOAPVersion.SOAP_12.equals(binding.getSOAPVersion()))
+        if (SOAPVersion.SOAP_12.equals(binding.getSOAPVersion()))
             return;
         if (soapAction != null)
             reqHeaders.put("SOAPAction", Collections.singletonList(soapAction));
@@ -236,19 +249,5 @@ public class AsyncHttpTransportTube extends AbstractTubeImpl {
         buf.writeTo(System.out);
         System.out.println("--------------------");
     }
-    
-    /**
-     * Dumps what goes across HTTP transport.
-     */
-    public static boolean dump;
 
-    static {
-        boolean b;
-        try {
-            b = Boolean.getBoolean(AsyncHttpTransportTube.class.getName()+".dump");
-        } catch( Throwable t ) {
-            b = false;
-        }
-        dump = b;
-    }
 }
