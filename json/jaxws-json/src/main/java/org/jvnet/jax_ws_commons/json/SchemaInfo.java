@@ -1,5 +1,44 @@
 package org.jvnet.jax_ws_commons.json;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.jws.soap.SOAPBinding.Style;
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.ws.WebServiceException;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.codehaus.jettison.json.JSONTokener;
+import org.codehaus.jettison.mapped.MappedXMLStreamReader;
+import org.jvnet.jax_ws_commons.json.schema.CompositeJsonType;
+import org.jvnet.jax_ws_commons.json.schema.JsonOperation;
+import org.jvnet.jax_ws_commons.json.schema.JsonTypeBuilder;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
 import com.sun.istack.NotNull;
 import com.sun.istack.XMLStreamException2;
 import com.sun.xml.bind.unmarshaller.DOMScanner;
@@ -19,42 +58,6 @@ import com.sun.xml.xsom.parser.JAXPParser;
 import com.sun.xml.xsom.parser.XMLParser;
 import com.sun.xml.xsom.parser.XSOMParser;
 import com.sun.xml.xsom.visitor.XSVisitor;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.jvnet.jax_ws_commons.json.schema.CompositeJsonType;
-import org.jvnet.jax_ws_commons.json.schema.JsonOperation;
-import org.jvnet.jax_ws_commons.json.schema.JsonTypeBuilder;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import javax.jws.soap.SOAPBinding.Style;
-import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.ws.WebServiceException;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Captures the information parsed from XML Schema.
@@ -152,35 +155,42 @@ public final class SchemaInfo {
     public XMLStreamWriter createXMLStreamWriter(Writer writer) throws XMLStreamException {
         return new MappedXMLStreamWriter(convention, writer) {
             public void writeEndDocument() throws XMLStreamException {
-                try {
-                    // unwrap the root
-                    root = root.getJSONObject((String)root.keys().next());
+        	if (!stack.isEmpty())
+        	    throw new XMLStreamException("Missing some closing tags.");
+        	try {
+        	    // We know the root is a JSONPropertyObject so this cast is safe
+        	    JSONObject root = (JSONObject) current.getValue();
 
-                    Object v;
-                    // if this is the sole return value unwrap that, too
-                    if(root.length()==1)
-                        v = root.get((String)root.keys().next());
-                    else
-                        v = root;
+        	    // the root is the "XXXresponse" object, remove it since it is of
+        	    // no interest
+        	    root = root.getJSONObject((String) root.keys().next());
 
-                    // write
-                    if (v instanceof JSONObject) {
-                        ((JSONObject)v).write(writer);
-                    } else if (v instanceof JSONArray) {
-                        ((JSONArray)v).write(writer);
-                    } else if (v==null) {
-                        writer.write("null");
-                    } else if (v instanceof String) {
-                        writer.write('"'+v.toString()+'"');
-                    } else {
-                        writer.write(v.toString());
-                    }
-                    writer.flush();
-                } catch (JSONException e) {
-                    throw new XMLStreamException2(e);
-                } catch (IOException e) {
-                    throw new XMLStreamException2(e);
-                }
+        	    Object v;
+        	    // if this is the sole return value unwrap that, too
+        	    if (root.length() == 1)
+        		v = root.get((String) root.keys().next());
+        	    else
+        		v = root;
+
+        	    // write
+        	    if (v instanceof JSONObject) {
+        		((JSONObject) v).write(writer);
+        	    } else if (v instanceof JSONArray) {
+        		((JSONArray) v).write(writer);
+        	    } else if (v == null) {
+        		writer.write("null");
+        	    } else if (v instanceof String) {
+        		writer.write('"' + v.toString() + '"');
+        	    } else {
+        		writer.write(v.toString());
+        	    }
+
+        	    writer.flush();
+        	} catch (JSONException e) {
+        	    throw new XMLStreamException2(e);
+        	} catch (IOException e) {
+        	    throw new XMLStreamException2(e);
+        	}
             }
         };
     }
