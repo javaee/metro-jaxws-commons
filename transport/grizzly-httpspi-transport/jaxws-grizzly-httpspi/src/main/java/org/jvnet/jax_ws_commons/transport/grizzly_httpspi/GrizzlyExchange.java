@@ -35,8 +35,8 @@
  */
 package org.jvnet.jax_ws_commons.transport.grizzly_httpspi;
 
-import com.sun.grizzly.tcp.http11.GrizzlyRequest;
-import com.sun.grizzly.tcp.http11.GrizzlyResponse;
+import org.glassfish.grizzly.http.server.Request;
+import org.glassfish.grizzly.http.server.Response;
 
 import javax.xml.ws.spi.http.HttpContext;
 import javax.xml.ws.spi.http.HttpExchange;
@@ -55,13 +55,13 @@ import java.util.Set;
  * @author Jitendra Kotamraju
  */
 class GrizzlyExchange extends HttpExchange {
-    private final GrizzlyRequest request;
-    private final GrizzlyResponse response;
+    private final Request request;
+    private final Response response;
     private Map<String, List<String>> requestHeaders;
     private Map<String, List<String>> responseHeaders;
     private final GrizzlyHttpContext context;
 
-    GrizzlyExchange(GrizzlyHttpContext context, GrizzlyRequest request, GrizzlyResponse response) {
+    GrizzlyExchange(GrizzlyHttpContext context, Request request, Response response) {
         this.context = context;
         this.request = request;
         this.response = response;
@@ -105,7 +105,7 @@ class GrizzlyExchange extends HttpExchange {
 
     @Override
     public String getRequestMethod() {
-        return request.getMethod();
+        return request.getMethod().getMethodString();
     }
 
     @Override
@@ -115,12 +115,12 @@ class GrizzlyExchange extends HttpExchange {
 
     @Override
     public void close() throws IOException {
-        response.finishResponse();
+        response.finish();
     }
 
     @Override
     public InputStream getRequestBody() throws IOException {
-        return request.getInputStream();
+        return request.getInputStream(true);
     }
 
     @Override
@@ -130,6 +130,7 @@ class GrizzlyExchange extends HttpExchange {
 
     @Override
     public void setStatus(int i) {
+        response.setStatus(i);
     }
 
     @Override
@@ -144,7 +145,7 @@ class GrizzlyExchange extends HttpExchange {
 
     @Override
     public String getProtocol() {
-        return request.getProtocol();
+        return request.getProtocol().getProtocolString();
     }
 
     @Override

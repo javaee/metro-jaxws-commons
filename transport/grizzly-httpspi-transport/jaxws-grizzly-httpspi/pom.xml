@@ -30,9 +30,14 @@
   <dependencies>
     <!-- Grizzly POM -->
     <dependency>
-      <groupId>com.sun.grizzly</groupId>
+      <groupId>org.glassfish.grizzly</groupId>
       <artifactId>grizzly-http</artifactId>
-      <version>2.0.0-M3</version>
+      <version>2.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.grizzly</groupId>
+      <artifactId>grizzly-http-server</artifactId>
+      <version>2.1.1</version>
     </dependency>
 
     <!-- JAX-WS POM -->

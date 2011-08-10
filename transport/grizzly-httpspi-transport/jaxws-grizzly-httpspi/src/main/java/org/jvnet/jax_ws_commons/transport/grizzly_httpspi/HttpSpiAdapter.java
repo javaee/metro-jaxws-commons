@@ -35,23 +35,23 @@
  */
 package org.jvnet.jax_ws_commons.transport.grizzly_httpspi;
 
-import com.sun.grizzly.tcp.http11.GrizzlyAdapter;
-import com.sun.grizzly.tcp.http11.GrizzlyRequest;
-import com.sun.grizzly.tcp.http11.GrizzlyResponse;
+import org.glassfish.grizzly.http.server.HttpHandler;
+import org.glassfish.grizzly.http.server.Request;
+import org.glassfish.grizzly.http.server.Response;
 
 import java.io.IOException;
 
 /**
  * @author Jitendra Kotamraju
  */
-class HttpSpiAdapter extends GrizzlyAdapter {
+class HttpSpiAdapter extends HttpHandler {
     private final GrizzlyHttpContext grizzlyHttpContext;
 
     HttpSpiAdapter(GrizzlyHttpContext grizzlyHttpContext) {
         this.grizzlyHttpContext = grizzlyHttpContext;
     }
 
-    public void service(GrizzlyRequest request, GrizzlyResponse response) {
+    public void service(Request request, Response response) {
         GrizzlyExchange exchange = new GrizzlyExchange(grizzlyHttpContext, request, response);
         try {
             grizzlyHttpContext.getHandler().handle(exchange);

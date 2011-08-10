@@ -36,7 +36,7 @@
 package org.jvnet.jax_ws_commons.transport.grizzly_httpspi;
 
 
-import com.sun.grizzly.tcp.http11.GrizzlyRequest;
+import org.glassfish.grizzly.http.server.Request;
 
 import java.util.*;
 
@@ -47,13 +47,9 @@ import java.util.*;
  */
 class RequestHeaders extends Headers {
 
-    RequestHeaders(GrizzlyRequest request) {
-        Enumeration e = request.getHeaderNames();
-        while(e.hasMoreElements()) {
-            String name = (String)e.nextElement();
-            Enumeration ev = request.getHeaders(name);
-            while(ev.hasMoreElements()) {
-                String value = (String)ev.nextElement();
+    RequestHeaders(Request request) {
+        for(String name : request.getHeaderNames()) {
+            for(String value : request.getHeaders(name)) {
                 super.add(name, value);
             }
         }

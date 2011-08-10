@@ -35,7 +35,7 @@
  */
 package org.jvnet.jax_ws_commons.transport.grizzly_httpspi;
 
-import com.sun.grizzly.tcp.http11.GrizzlyResponse;
+import org.glassfish.grizzly.http.server.Response;
 
 import java.util.*;
 
@@ -45,9 +45,9 @@ import java.util.*;
  * @author Jitendra Kotamraju
  */
 class ResponseHeaders extends Headers {
-    private final GrizzlyResponse response;
+    private final Response response;
 
-    ResponseHeaders(GrizzlyResponse response) {
+    ResponseHeaders(Response response) {
         this.response = response;
     }
 

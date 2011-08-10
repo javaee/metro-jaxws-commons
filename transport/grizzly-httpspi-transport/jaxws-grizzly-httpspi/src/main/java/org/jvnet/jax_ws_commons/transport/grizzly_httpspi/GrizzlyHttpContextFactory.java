@@ -35,7 +35,7 @@
  */
 package org.jvnet.jax_ws_commons.transport.grizzly_httpspi;
 
-import com.sun.grizzly.http.embed.GrizzlyWebServer;
+import org.glassfish.grizzly.http.server.HttpServer;
 
 import javax.xml.ws.spi.http.HttpContext;
 
@@ -44,9 +44,9 @@ import javax.xml.ws.spi.http.HttpContext;
  */
 public class GrizzlyHttpContextFactory {
 
-    public static HttpContext createHttpContext(GrizzlyWebServer server, String contextPath, String path) {
+    public static HttpContext createHttpContext(HttpServer server, String contextPath, String path) {
         GrizzlyHttpContext context = new GrizzlyHttpContext(contextPath, path);
-        server.addGrizzlyAdapter(new HttpSpiAdapter(context), new String[] {contextPath+path});
+        server.getServerConfiguration().addHttpHandler(new HttpSpiAdapter(context), contextPath+path);
         return context;
     }
 

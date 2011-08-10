@@ -35,8 +35,9 @@
  */
 package grizzlytest;
 
-import com.sun.grizzly.http.embed.GrizzlyWebServer;
 import junit.framework.TestCase;
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.server.NetworkListener;
 import org.jvnet.jax_ws_commons.transport.grizzly_httpspi.GrizzlyHttpContextFactory;
 
 import javax.xml.bind.JAXBContext;
@@ -66,7 +67,9 @@ public class Test extends TestCase {
 
         String address = "http://localhost:"+port+contextPath+path;
 
-        GrizzlyWebServer server = new GrizzlyWebServer(port);
+        HttpServer server = new HttpServer();
+        NetworkListener listener = new NetworkListener("test", NetworkListener.DEFAULT_NETWORK_HOST, port);
+        server.addListener(listener);
         HttpContext context = GrizzlyHttpContextFactory.createHttpContext(server, contextPath, path);
 
         Endpoint endpoint = Endpoint.create(new EchoService());
