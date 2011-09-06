@@ -66,13 +66,14 @@ public class WSServletContainerInitializer implements ServletContainerInitialize
     private static final Logger LOGGER = Logger.getLogger(WSServletContainerInitializer.class.getName());
     private static final String JAXWS_WSDL_DD_DIR = "/WEB-INF/wsdl/";
     private static final String WEBSERVICES_XML = "/WEB-INF/webservices.xml";
+    private static final String SERVICE = "Service";
 
     public void onStartup(Set<Class<?>> wsClassSet, ServletContext context) throws ServletException {
         LOGGER.info("WAR has webservice classes: "+wsClassSet);
 
         // TODO Check if metadata-complete is true in web.xml
 
-        // Get the WSDL and schema documents
+        // Get the WSDL and schema documents in /WEB-INF/wsdl dir
         List<Source> metadata = new ArrayList<>();
         try {
             Set<URL> docs = new HashSet<>();
@@ -85,25 +86,33 @@ public class WSServletContainerInitializer implements ServletContainerInitialize
             throw new ServletException(me);
         }
 
-        // Parse webservices.xml
+        // Parse /WEB-INF/webservices.xml DD
         List<EndpointInfo> ddEndpointList = parseDD(context);
 
         // Consolidate endpoints from DD and annotations
-        List<EndpointInfo> endpointInfoList = getConsolidatedEndpoints(ddEndpointList, wsClassSet, metadata);
+        List<EndpointInfo> endpointInfoList = getConsolidatedEndpoints(context, ddEndpointList, wsClassSet, metadata);
         if (endpointInfoList.isEmpty()) {
             return;             // No web service endpoints
         }
-
-        ServletRegistration.Dynamic reg = context.addServlet("JAX-WS-Servlet", WSServlet.class);
 
         EndpointAdapterFactory factory = new EndpointAdapterFactory();
 
         List<EndpointAdapter> adapters = new ArrayList<>();
 
         for(EndpointInfo endpointInfo : endpointInfoList) {
+            ServletRegistration reg = context.getServletRegistration(endpointInfo.servletLink);
+            if (reg == null) {
+                reg = context.addServlet(endpointInfo.servletLink, WSServlet.class);
+            } else {
+                // NEED the following in servlet API to override <servlet-class>
+                // reg.setClassName(endpointInfo.implType);
+            }
+            Collection<String> mappings = reg.getMappings();
+            if (!mappings.contains(endpointInfo.urlPattern)) {
+                reg.addMapping(endpointInfo.urlPattern);
+            }
             EndpointAdapter adapter = factory.createAdapter(endpointInfo);
             adapters.add(adapter);
-            reg.addMapping(endpointInfo.urlPattern);
         }
 
         for(EndpointAdapter adapter : adapters) {
@@ -113,18 +122,48 @@ public class WSServletContainerInitializer implements ServletContainerInitialize
         context.setAttribute(WSServlet.JAXWS_RI_RUNTIME_INFO, adapters);
     }
 
-    private List<EndpointInfo> getConsolidatedEndpoints(
+    private List<EndpointInfo> getConsolidatedEndpoints(ServletContext context,
             List<EndpointInfo> ddEndpointList, Set<Class<?>> wsClassSet, List<Source> metadata) {
         List<EndpointInfo> consList = new ArrayList<>();
         for(Class<?> c : wsClassSet) {
-            EndpointInfo endpointInfo = new EndpointInfo();
+            EndpointInfo endpointInfo = findEndpointInfo(ddEndpointList, c);
             endpointInfo.implType = c;
-            endpointInfo.urlPattern = "/"+c.getName();
+            if (endpointInfo.servletLink == null) {
+                endpointInfo.servletLink = getDefaultServletLink(c);
+            }
+            ServletRegistration reg = context.getServletRegistration(endpointInfo.servletLink);
+            if (reg != null) {
+                Collection<String> mappings = reg.getMappings();
+                if (mappings.isEmpty()) {
+                    endpointInfo.urlPattern = getDefaultUrlPattern(c);
+                } else {
+                    endpointInfo.urlPattern = mappings.iterator().next();
+                }
+            } else {
+                endpointInfo.urlPattern = getDefaultUrlPattern(c);
+            }
             endpointInfo.features = new WebServiceFeature[0];
             endpointInfo.metadata = metadata;
             consList.add(endpointInfo);
         }
         return consList;
+    }
+
+    // Finds the corresponding endpoint in DD for a web service class
+    private EndpointInfo findEndpointInfo(List<EndpointInfo> ddEndpointList, Class<?> c) {
+        WebService service = c.getAnnotation(WebService.class);
+        String name = (service != null && service.name().length() > 0)
+            ? service.name()
+            : c.getSimpleName();
+
+        // For WebServiceProvider, it is fully qualified name of the impl class
+        for(EndpointInfo endpointInfo : ddEndpointList) {
+            if (endpointInfo.portComponentName.equals(name) ||
+                    endpointInfo.portComponentName.equals(c.getName())) {
+                return endpointInfo;    // Got one in DD
+            }
+        }
+        return new EndpointInfo();
     }
 
 
@@ -170,5 +209,26 @@ public class WSServletContainerInitializer implements ServletContainerInitialize
         } catch(IOException e) {
             throw new WebServiceException(e);
         }
+    }
+
+
+    // Returns the computed default <url-pattern>
+    private static String getDefaultUrlPattern(Class<?> c) {
+        String name;
+        WebService service = c.getAnnotation(WebService.class);
+        if (service != null) {
+            name = (service.serviceName().length() > 0)
+                ? service.serviceName() : c.getSimpleName()+SERVICE;
+        } else {
+            WebServiceProvider webServiceProvider = c.getAnnotation(WebServiceProvider.class);
+            name = (webServiceProvider.serviceName().length() > 0)
+                ? webServiceProvider.serviceName() : c.getSimpleName()+SERVICE;
+        }
+        return "/"+name;
+    }
+
+    // Returns the computed <servlet-link> default value
+    private static String getDefaultServletLink(Class<?> c) {
+        return c.getName();
     }
 }
