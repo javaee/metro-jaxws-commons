@@ -18,6 +18,19 @@
     <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/trunk/grizzly</developerConnection>
     <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/grizzly</url>
   </scm>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+          <encoding>${project.build.sourceEncoding}</encoding>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
   
   <modules>
     <module>jaxws-servlet3-httpspi</module>

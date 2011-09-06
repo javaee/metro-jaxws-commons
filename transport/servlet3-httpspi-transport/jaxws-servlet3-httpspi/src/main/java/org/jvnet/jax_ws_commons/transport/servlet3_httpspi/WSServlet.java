@@ -71,6 +71,9 @@ import java.util.logging.Logger;
  */
 public class WSServlet extends HttpServlet {
 
+
+    private static final Logger LOGGER = Logger.getLogger(WSServlet.class.getName());
+
     public static final String JAXWS_RI_RUNTIME_INFO =
         "com.sun.xml.ws.server.http.servletDelegate";
 
@@ -91,8 +94,8 @@ public class WSServlet extends HttpServlet {
         for(EndpointAdapter info : adapters) {
             registerEndpointUrlPattern(info);
         }
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info("Initializing Servlet for "+fixedUrlPatternEndpoints);
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Initializing Servlet for "+fixedUrlPatternEndpoints);
         }
     }
 
@@ -100,15 +103,15 @@ public class WSServlet extends HttpServlet {
     }
 
     public void destroy() {
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info("Destroying Servlet for "+fixedUrlPatternEndpoints);
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Destroying Servlet for "+fixedUrlPatternEndpoints);
         }
 
         for(EndpointAdapter a : adapters) {
             try {
                 a.dispose();
             } catch(Throwable e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
     }
@@ -119,18 +122,18 @@ public class WSServlet extends HttpServlet {
         try {
             EndpointAdapter target = getTarget(request);
             if (target != null) {
-                if (logger.isLoggable(Level.FINEST)) {
-                    logger.finest("Got request for endpoint "+target.getUrlPattern());
+                if (LOGGER.isLoggable(Level.FINEST)) {
+                    LOGGER.finest("Got request for endpoint "+target.getUrlPattern());
                 }
                 target.handle(context, request, response);
             } else {
                 writeNotFoundErrorPage(response, "Invalid Request");
             }
         } catch (WebServiceException e) {
-            logger.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } catch (Throwable e) {
-            logger.log(Level.SEVERE, "caught throwable", e);
+            LOGGER.log(Level.SEVERE, "caught throwable", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -159,8 +162,8 @@ public class WSServlet extends HttpServlet {
         try {
             EndpointAdapter target = getTarget(request);
             if (target != null) {
-                if (logger.isLoggable(Level.FINEST)) {
-                    logger.finest("Got request for endpoint "+target.getUrlPattern());
+                if (LOGGER.isLoggable(Level.FINEST)) {
+                    LOGGER.finest("Got request for endpoint "+target.getUrlPattern());
                 }
             } else {
                 writeNotFoundErrorPage(response, "Invalid request");
@@ -173,10 +176,10 @@ public class WSServlet extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             }
         } catch (WebServiceException e) {
-            logger.log(Level.SEVERE, e.getLocalizedMessage(), e);
+            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } catch (Throwable e) {
-            logger.log(Level.SEVERE, "caught throwable", e);
+            LOGGER.log(Level.SEVERE, "caught throwable", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
@@ -218,12 +221,12 @@ public class WSServlet extends HttpServlet {
         String urlPattern = a.getUrlPattern();
         if (urlPattern.indexOf("*.") != -1) {
             // cannot deal with implicit mapping right now
-            logger.warning("Ignoring implicit url-pattern "+urlPattern);
+            LOGGER.warning("Ignoring implicit url-pattern "+urlPattern);
         } else if (urlPattern.endsWith("/*")) {
             pathUrlPatternEndpoints.add(a);
         } else {
             if (fixedUrlPatternEndpoints.containsKey(urlPattern)) {
-                logger.warning("Ignoring duplicate url-pattern "+urlPattern);
+                LOGGER.warning("Ignoring duplicate url-pattern "+urlPattern);
             } else {
                 fixedUrlPatternEndpoints.put(urlPattern, a);
             }
@@ -263,7 +266,5 @@ public class WSServlet extends HttpServlet {
         return result;
     }
 
-    private static final Logger logger =
-        Logger.getLogger(WSServlet.class.getName());
 
 }

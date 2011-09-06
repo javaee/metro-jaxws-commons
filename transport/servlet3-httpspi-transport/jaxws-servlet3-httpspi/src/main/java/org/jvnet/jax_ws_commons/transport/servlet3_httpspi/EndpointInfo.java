@@ -41,62 +41,41 @@
 package org.jvnet.jax_ws_commons.transport.servlet3_httpspi;
 
 
+import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.ws.Endpoint;
+import javax.xml.ws.WebServiceFeature;
 import javax.xml.ws.spi.Provider;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
 /**
  * @author Jitendra Kotamraju
 */
-public final class EndpointAdapterFactory {
-    private static final Logger LOGGER = Logger.getLogger(EndpointAdapterFactory.class.getName());
+public final class EndpointInfo {
+    private static final Logger LOGGER = Logger.getLogger(EndpointInfo.class.getName());
 
-    private final EndpointContextImpl appContext;
+    String name;
+    String urlPattern;
+    Class implType;
 
-    public EndpointAdapterFactory() {
-        this.appContext = new EndpointContextImpl();
+    QName serviceName;
+    QName portName;
+    String bindingId;
+    List<Source> metadata;
+    WebServiceFeature[] features;
+    String wsdlFile;
+    String portComponentName;
+    QName wsdlPort;
+    String servletLink;
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("port-component-name=").append(name).append(",");
+        return builder.toString();
     }
-
-    public EndpointAdapter createAdapter(EndpointInfo endpointInfo) {
-
-        LOGGER.info("Creating Endpoint using JAX-WS 2.2 HTTP SPI");
-        InvokerImpl endpointInvoker = new InvokerImpl(endpointInfo.implType);
-        Endpoint endpoint = Provider.provider().createEndpoint(endpointInfo.bindingId,
-                endpointInfo.implType, endpointInvoker, endpointInfo.features);
-        appContext.add(endpoint);
-        endpoint.setEndpointContext(appContext);
-
-        // Use DD's service name, port names as WSDL_SERVICE and WSDL_PORT
-        if (endpointInfo.portName != null || endpointInfo.serviceName != null) {
-            Map<String, Object> props = new HashMap<String, Object>();
-            if (endpointInfo.portName != null) {
-                props.put(Endpoint.WSDL_PORT, endpointInfo.portName);
-            }
-            if (endpointInfo.serviceName != null) {
-                props.put(Endpoint.WSDL_SERVICE, endpointInfo.serviceName);
-            }
-            LOGGER.info("Setting Endpoint Properties="+props);
-            endpoint.setProperties(props);
-        }
-
-        // Set bundle's wsdl, xsd docs as metadata
-        if (endpointInfo.metadata != null) {
-            endpoint.setMetadata(endpointInfo.metadata);
-            List<String> docId = new ArrayList<String>();
-            for(Source source : endpointInfo.metadata) {
-                docId.add(source.getSystemId());
-            }
-            LOGGER.info("Setting metadata="+docId);
-        }
-
-        // Set DD's handlers
-        // endpoint.getBinding().setHandlerChain(binding.getHandlerChain());
-
-        return new EndpointAdapter(endpoint, endpointInfo.urlPattern);
-    }
-
 }

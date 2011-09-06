@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997-2011 Oracle and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -40,48 +40,38 @@
 
 package org.jvnet.jax_ws_commons.transport.servlet3_httpspi;
 
+import junit.framework.TestCase;
+
+import javax.xml.namespace.QName;
+import java.io.InputStream;
 import java.net.URL;
-import java.net.MalformedURLException;
-import java.util.Set;
+import java.util.List;
 
 /**
- * Used to locate resources for {@link DeploymentDescriptorParser}.
- *
- * <p>
- * This allows {@link DeploymentDescriptorParser} to be used outside a servlet container,
- * but it still needs to work with a layout similar to the web application.
- * If this can be abstracted away better, that would be nice.
- *
- * @author Kohsuke Kawaguchi
+ * @author Jitendra Kotamraju
  */
-public interface ResourceLoader {
-    /**
-     * Returns the actual location of the resource from the 'path'
-     * that represents a virtual locaion of a file inside a web application.
-     *
-     * @param path
-     *      Desiganates an absolute path within an web application, such as:
-     *      '/WEB-INF/web.xml' or some such.
-     *
-     * @return
-     *      the actual location, if found, or null if not found.
-     */
-    URL getResource(String path) throws MalformedURLException;
+public class DeploymentDescriptorParserTest extends TestCase {
 
-    /**
-     * Gets the catalog XML file that should be consulted when
-     * loading resources from this {@link ResourceLoader}.
-     */
-    URL getCatalogFile() throws MalformedURLException;
+    public void testFeatures() throws Exception {
+        URL url = getClass().getClassLoader().getResource("web-service-features.xml");
+        List<EndpointInfo> endpointInfoList = DeploymentDescriptorParser.parse(url.toExternalForm(), url.openStream());
+        assertEquals(1, endpointInfoList.size());
 
-    /**
-     * Returns the list of files in the given directory.
-     *
-     * @return
-     *      null if the path is invalid. empty if the path didn't contain
-     *      any entry in it.
-     *
-     * @see javax.servlet.http.ServletContext#getResourcePaths(String)
-     */
-    Set<String> getResourcePaths(String path);
+        EndpointInfo endpointInfo = endpointInfoList.get(0);
+
+        System.out.println(endpointInfoList.get(0));
+    }
+
+    public void testHandler() throws Exception {
+        URL url = getClass().getClassLoader().getResource("web-service-handler.xml");
+        List<EndpointInfo> endpointInfoList = DeploymentDescriptorParser.parse(url.toExternalForm(), url.openStream());
+        assertEquals(1, endpointInfoList.size());
+        System.out.println(endpointInfoList.get(0));
+
+        EndpointInfo endpointInfo = endpointInfoList.get(0);
+        assertEquals("WEB-INF/wsdl/HelloService.wsdl", endpointInfo.wsdlFile);
+        assertEquals("HelloPC", endpointInfo.portComponentName);
+        assertEquals(new QName("http://Hello.org", "HelloPort"), endpointInfo.wsdlPort);
+        assertEquals("XmlServletName", endpointInfo.servletLink);
+    }
 }

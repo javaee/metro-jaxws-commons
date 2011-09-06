@@ -50,21 +50,47 @@ import java.util.Set;
  *
  * @author Kohsuke Kawaguchi
  */
-public final class ServletResourceLoader implements ResourceLoader {
+public final class ServletResourceLoader {
     private final ServletContext context;
+
 
     public ServletResourceLoader(ServletContext context) {
         this.context = context;
     }
 
+    /**
+     * Returns the actual location of the resource from the 'path'
+     * that represents a virtual locaion of a file inside a web application.
+     *
+     * @param path
+     *      Desiganates an absolute path within an web application, such as:
+     *      '/WEB-INF/web.xml' or some such.
+     *
+     * @return
+     *      the actual location, if found, or null if not found.
+     */
     public URL getResource(String path) throws MalformedURLException {
         return context.getResource(path);
     }
 
+
+    /**
+     * Gets the catalog XML file that should be consulted when
+     * loading resources from this {@link ResourceLoader}.
+     */
     public URL getCatalogFile() throws MalformedURLException {
         return getResource("/WEB-INF/jax-ws-catalog.xml");
     }
 
+    /**
+     * Returns the list of files in the given directory.
+     *
+     * @return
+     *      null if the path is invalid. empty if the path didn't contain
+     *      any entry in it.
+     *
+     * @see javax.servlet.http.ServletContext#getResourcePaths(String)
+     */
     public Set<String> getResourcePaths(String path) {
         return context.getResourcePaths(path);
     }

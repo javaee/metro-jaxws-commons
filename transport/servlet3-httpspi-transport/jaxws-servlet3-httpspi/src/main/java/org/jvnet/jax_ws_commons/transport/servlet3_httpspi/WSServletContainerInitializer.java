@@ -46,34 +46,64 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 import javax.servlet.annotation.HandlesTypes;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.ws.WebServiceException;
+import javax.xml.ws.WebServiceFeature;
 import javax.xml.ws.WebServiceProvider;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * @author Jitendra Kotamraju
  */
 @HandlesTypes({WebService.class, WebServiceProvider.class})
 public class WSServletContainerInitializer implements ServletContainerInitializer {
+    private static final Logger LOGGER = Logger.getLogger(WSServletContainerInitializer.class.getName());
+    private static final String JAXWS_WSDL_DD_DIR = "/WEB-INF/wsdl/";
+    private static final String WEBSERVICES_XML = "/WEB-INF/webservices.xml";
 
     public void onStartup(Set<Class<?>> wsClassSet, ServletContext context) throws ServletException {
-System.out.println("GOT =============="+wsClassSet);
-        if (wsClassSet.isEmpty()) {
-            return;
+        LOGGER.info("WAR has webservice classes: "+wsClassSet);
+
+        // TODO Check if metadata-complete is true in web.xml
+
+        // Get the WSDL and schema documents
+        List<Source> metadata = new ArrayList<>();
+        try {
+            Set<URL> docs = new HashSet<>();
+            collectDocs(docs, new ServletResourceLoader(context), JAXWS_WSDL_DD_DIR);
+            for(URL url : docs) {
+                Source source = new StreamSource(url.openStream(), url.toExternalForm());
+                metadata.add(source);
+            }
+        } catch (IOException me) {
+            throw new ServletException(me);
+        }
+
+        // Parse webservices.xml
+        List<EndpointInfo> ddEndpointList = parseDD(context);
+
+        // Consolidate endpoints from DD and annotations
+        List<EndpointInfo> endpointInfoList = getConsolidatedEndpoints(ddEndpointList, wsClassSet, metadata);
+        if (endpointInfoList.isEmpty()) {
+            return;             // No web service endpoints
         }
 
         ServletRegistration.Dynamic reg = context.addServlet("JAX-WS-Servlet", WSServlet.class);
 
         EndpointAdapterFactory factory = new EndpointAdapterFactory();
 
-        List<EndpointAdapter> adapters = new ArrayList<EndpointAdapter>();
+        List<EndpointAdapter> adapters = new ArrayList<>();
 
-        for(Class<?> c : wsClassSet) {
-            String urlPattern = "/"+c.getName();
-            EndpointAdapter adapter = factory.createAdapter(c.getName(), urlPattern , c, null, null, null, null);
+        for(EndpointInfo endpointInfo : endpointInfoList) {
+            EndpointAdapter adapter = factory.createAdapter(endpointInfo);
             adapters.add(adapter);
-            reg.addMapping(urlPattern);
+            reg.addMapping(endpointInfo.urlPattern);
         }
 
         for(EndpointAdapter adapter : adapters) {
@@ -81,5 +111,64 @@ System.out.println("GOT =============="+wsClassSet);
         }
 
         context.setAttribute(WSServlet.JAXWS_RI_RUNTIME_INFO, adapters);
+    }
+
+    private List<EndpointInfo> getConsolidatedEndpoints(
+            List<EndpointInfo> ddEndpointList, Set<Class<?>> wsClassSet, List<Source> metadata) {
+        List<EndpointInfo> consList = new ArrayList<>();
+        for(Class<?> c : wsClassSet) {
+            EndpointInfo endpointInfo = new EndpointInfo();
+            endpointInfo.implType = c;
+            endpointInfo.urlPattern = "/"+c.getName();
+            endpointInfo.features = new WebServiceFeature[0];
+            endpointInfo.metadata = metadata;
+            consList.add(endpointInfo);
+        }
+        return consList;
+    }
+
+
+    /*
+     * Get all the WSDL & schema documents recursively.
+     */
+    private void collectDocs(Set<URL> docs, ServletResourceLoader loader, String dirPath) throws MalformedURLException {
+        Set<String> paths = loader.getResourcePaths(dirPath);
+        if (paths != null) {
+            for (String path : paths) {
+                if (path.endsWith("/")) {
+                    if(path.endsWith("/CVS/") || path.endsWith("/.svn/"))
+                        continue;
+                    collectDocs(docs, loader, path);
+                } else {
+                    URL res = loader.getResource(path);
+                    docs.add(res);
+                }
+            }
+        }
+    }
+
+
+    /*
+     * Parses the {@code webservices.xml} file and returns
+     * a list of {@link EndpointInfo}s.
+     */
+    private List<EndpointInfo> parseDD(ServletContext context) {
+        URL webservicesXml;
+        try {
+            webservicesXml = context.getResource(WEBSERVICES_XML);
+        } catch (MalformedURLException e) {
+            throw new WebServiceException(e);
+        }
+        if (webservicesXml==null) {
+            return Collections.emptyList();
+        }
+
+        // TODO validate against schema
+
+        try(InputStream is=webservicesXml.openStream()) {
+            return DeploymentDescriptorParser.parse(webservicesXml.toExternalForm(), is);
+        } catch(IOException e) {
+            throw new WebServiceException(e);
+        }
     }
 }
