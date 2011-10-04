@@ -2,18 +2,18 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.jvnet.jax-ws-commons</groupId>
   <artifactId>pom</artifactId>
-  <version>1.2</version>
+  <version>1.3-SNAPSHOT</version>
   <packaging>pom</packaging>
   
   <name>JAX-WS RI : super POM for the extension components</name>
-  <url>https://jax-ws-commons.dev.java.net/</url>
+  <url>http://jax-ws-commons.java.net/</url>
   
   <scm>
-    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons</developerConnection>
-    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons</url>
+    <connection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/trunk</connection>
+    <developerConnection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/trunk</developerConnection>
+    <url>http://java.net/projects/jax-ws-commons/sources/svn/show/trunk</url>
   </scm>
-  
+
   <repositories>
     <repository>
       <id>java.net</id>
