@@ -21,6 +21,13 @@
     <url>http://java.net/projects/jax-ws-commons/sources/svn/show/trunk</url>
   </scm>
 
+  <distributionManagement>
+    <site>
+      <id>jax-ws-commons-www</id>
+      <url>java-net:/jax-ws-commons/trunk/www/</url>
+    </site>
+  </distributionManagement>
+
   <build>
     <plugins>
       <plugin>
