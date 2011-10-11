@@ -52,6 +52,7 @@
   
   <name>HTTP session-scope extension</name>
   <description>Simplifies the development of services that are tied to HTTP session.</description>
+  <url>http://jax-ws-commons.java.net/http-session-scope/</url>
   
   <licenses>
     <license>
@@ -67,9 +68,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/trunk/http-session-scope</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/trunk/http-session-scope</developerConnection>
-    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/http-session-scope</url>
+    <connection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/trunk/http-session-scope</connection>
+    <developerConnection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/trunk/http-session-scope</developerConnection>
+    <url>http://java.net/projects/jax-ws-commons/sources/svn/show/trunk/http-session-scope</url>
   </scm>
 
   <dependencies>
