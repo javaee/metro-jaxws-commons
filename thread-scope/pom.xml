@@ -52,6 +52,7 @@
   
   <name>thread-scope extension</name>
   <description>Simplifies the development of services that are tied to Thread scope.</description>
+  <url>http://jax-ws-commons.java.net/thread-scope/</url>
 
   <licenses>
     <license>
@@ -67,9 +68,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/tags/thread-scope-1.2</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/tags/thread-scope-1.2</developerConnection>
-    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/tags/thread-scope-1.2</url>
+    <connection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/trunk/thread-scope</connection>
+    <developerConnection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/trunk/thread-scope</developerConnection>
+    <url>http://java.net/projects/jax-ws-commons/sources/svn/show/trunk/thread-scope</url>
   </scm>
 
   <dependencies>
