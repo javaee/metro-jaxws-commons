@@ -14,9 +14,9 @@
   <name>SMTP support extension</name>
   
   <scm>
-    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/trunk/smtp</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/trunk/smtp</developerConnection>
-    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/smtp</url>
+    <connection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/trunk/transport/smtp</connection>
+    <developerConnection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/trunk/transport/smtp</developerConnection>
+    <url>http://java.net/projects/jax-ws-commons/sources/svn/show/trunk/transport/smtp</url>
   </scm>
   
   <modules>
