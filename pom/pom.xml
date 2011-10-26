@@ -106,9 +106,9 @@
   </mailingLists>
 
   <scm>
-    <connection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/trunk</connection>
-    <developerConnection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/trunk</developerConnection>
-    <url>http://java.net/projects/jax-ws-commons/sources/svn/show/trunk</url>
+    <connection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/trunk/pom</connection>
+    <developerConnection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/trunk/pom</developerConnection>
+    <url>http://java.net/projects/jax-ws-commons/sources/svn/show/trunk/pom</url>
   </scm>
 
   <build>
