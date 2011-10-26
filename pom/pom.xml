@@ -48,7 +48,7 @@
   
   <groupId>org.jvnet.jax-ws-commons</groupId>
   <artifactId>pom</artifactId>
-  <version>1.4-SNAPSHOT</version>
+  <version>1.3-SNAPSHOT</version>
   <packaging>pom</packaging>
   
   <name>JAX-WS RI : super POM for the extension components</name>
