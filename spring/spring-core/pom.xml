@@ -6,27 +6,34 @@
     <version>1.9-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  
+
   <groupId>org.jvnet.jax-ws-commons.spring</groupId>
   <artifactId>jaxws-spring</artifactId>
   <packaging>jar</packaging>
   
   <name>Spring support extension</name>
   <description>Configure JAX-WS with Spring</description>
-  
+
+  <properties>
+    <jax-ws-version>2.2.8</jax-ws-version>
+    <metro-version>2.2.8-promoted-b146</metro-version>
+    <spring-version>3.1.3.RELEASE</spring-version>
+    <xbean-version>3.12</xbean-version>
+  </properties>
+
   <distributionManagement>
     <site>
       <id>jax-ws-commons-www</id>
       <url>java-net:/jax-ws-commons/trunk/www/spring/</url>
     </site>
   </distributionManagement>
-  
+
   <build>
     <plugins>
       <plugin>
-        <groupId>org.jvnet.jax-ws-commons.spring</groupId>
+        <groupId>org.apache.xbean</groupId>
         <artifactId>maven-xbean-plugin</artifactId>
-        <version>2.8-patched</version><!-- to work around https://issues.apache.org/jira/browse/XBEAN-71 and http://jira.codehaus.org/browse/QDOX-110 -->
+        <version>${xbean-version}</version>
         <executions>
           <!-- for servlet -->
           <execution>
@@ -98,14 +105,19 @@
 
   <dependencies>
     <dependency>
+      <groupId>javax.xml.ws</groupId>
+      <artifactId>jaxws-api</artifactId>
+      <version>${jax-ws-version}</version>
+    </dependency>
+    <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-rt</artifactId>
-      <version>2.1.3</version>
+      <version>${metro-version}</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-local-transport</artifactId>
-      <version>2.1.3</version>
+      <version>${metro-version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -115,28 +127,33 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring</artifactId>
-      <version>2.0</version>
+      <artifactId>spring-core</artifactId>
+      <version>${spring-version}</version><!-- doesn't really matter -->
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>2.0</version><!-- doesn't really matter -->
+      <artifactId>spring-beans</artifactId>
+      <version>${spring-version}</version><!-- doesn't really matter -->
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>2.0</version>
+      <version>${spring-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>${spring-version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.xbean</groupId>
       <artifactId>xbean-spring</artifactId>
-      <version>2.7</version>
+      <version>${xbean-version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8</version>
+      <version>4.11</version>
       <scope>test</scope>
     </dependency>
     <!-- shouldn't be needed once JAX-WS RT POM properly declares the dependency -->
@@ -145,49 +162,8 @@
       <artifactId>jsr181-api</artifactId>
       <version>1.0-MR1</version>
     </dependency>
-    <dependency>
-      <groupId>javax.xml.soap</groupId>
-      <artifactId>saaj-api</artifactId>
-      <version>1.3</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.messaging.saaj</groupId>
-      <artifactId>saaj-impl</artifactId>
-      <version>1.3</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.stream.buffer</groupId>
-      <artifactId>streambuffer</artifactId>
-      <version>0.4</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.stream</groupId>
-      <artifactId>sjsxp</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.org.apache.xml.internal</groupId>
-      <artifactId>resolver</artifactId>
-      <version>20050927</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jvnet.staxex</groupId>
-      <artifactId>stax-ex</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>jsr250-api</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <!-- SAAJ 1.3 asks for activation 1.0.2, which we don't have, so use 1.1 -->
-    <dependency>
-      <groupId>javax.activation</groupId>
-      <artifactId>activation</artifactId>
-      <version>1.1</version>
-    </dependency>
   </dependencies>
-  
+
   <!-- sorcerer needs Mustang, but Mustang won't work with JAXB/WS 2.1
   <reporting>
     <plugins>

@@ -12,7 +12,9 @@ Plain bean definition syntax
 
 XBean syntax
 
-  JAX-WS spring extension supports {{{http://geronimo.apache.org/xbean/}XBean}}-based alternative syntax, which is more concise. If you are not familiar with XBean, refer to its website for the general idea. This notation can be mixed with the standard bean definition syntax.
+  JAX-WS spring extension supports {{{http://geronimo.apache.org/xbean/}XBean}}-based alternative syntax, which is
+  more concise. If you are not familiar with XBean, refer to its website for the general idea. This notation can be
+  mixed with the standard bean definition syntax.
 
   The elements are split into two namespaces. One is {{{references/spring-jax-ws-core.xsd.html}for the transport-neutral base part}}, and the other is {{{references/spring-jax-ws-servlet.xsd.html}for the servlet transport specific part}}.
   

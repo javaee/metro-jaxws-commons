@@ -34,10 +34,8 @@ License
 Quick Start
 
   Let's consider the most typical case, where you develop a web
-pplication and you want to deploy JAX-WS services. First your
-<<<web.xml>>> needs to have a JAX-WS servlet registered (if servlet
-could be deployed from Spring without <<<web.xml>>>, we could have
-gotten rid of this altogether!)
+application and you want to deploy JAX-WS services. First your
+<<<web.xml>>> needs to have a JAX-WS servlet registered.
 
 ---------------------------
 <web-app>
@@ -69,11 +67,11 @@ gotten rid of this altogether!)
   xmlns:wss="http://jax-ws.dev.java.net/spring/servlet"
   xsi:schemaLocation="
     http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-    http://jax-ws.dev.java.net/spring/core
-    http://jax-ws.dev.java.net/spring/core.xsd
-    http://jax-ws.dev.java.net/spring/servlet
-    http://jax-ws.dev.java.net/spring/servlet.xsd">
+    http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+    http://jax-ws.java.net/spring/core
+    http://jax-ws.java.net/spring/core.xsd
+    http://jax-ws.java.net/spring/servlet
+    http://jax-ws.java.net/spring/servlet.xsd">
 
   <wss:binding url="/add" service="#addService" />
   <wss:binding url="/sub">
@@ -104,4 +102,4 @@ configure your own service beans.
 
 Sample Project
 
-  {{{https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/spring/test-app/}A complete sample application}} is also available.
+  {{{https://svn.java.net/svn/jax-ws-commons~svn/trunk/spring/test-app/}A complete sample application}} is also available.

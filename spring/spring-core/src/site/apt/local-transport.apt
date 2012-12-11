@@ -4,7 +4,9 @@
                                     ------
                                     ------
 
-  In-VM local transport allows TCP loop-back like SOAP communication between the client and the server in the same virtual machine. It is primarily designed to enable testing of web service endpoints without using a fully-fledged web container.
+  In-VM local transport allows TCP loop-back like SOAP communication between the client and the server in the same
+  virtual machine. It is primarily designed to enable testing of web service endpoints without using a fully-fledged
+  web container.
 
   To use this transport, you need to declare one more namespace URI:
 
@@ -27,4 +29,6 @@
 </wsl:bindings>
 ---------------------------
 
-  These services can be accessed by setting the endpoint address URI as <<<in-vm://test-local-endpoint/>>> (the spring bean ID becomes a part of the URI.) If multiple endpoints are deployed in a single local transport server, you can distinguish them by using the local name of the port QName as the query parameter, like <<<?port1>>>
+  These services can be accessed by setting the endpoint address URI as <<<in-vm://test-local-endpoint/>>> (the Spring
+  bean ID becomes a part of the URI.) If multiple endpoints are deployed in a single local transport server, you can
+  distinguish them by using the local name of the port QName as the query parameter, like <<<?port1>>>
