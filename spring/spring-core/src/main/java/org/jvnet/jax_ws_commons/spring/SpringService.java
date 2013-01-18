@@ -77,7 +77,7 @@ import java.util.ArrayList;
  * @author Kohsuke Kawaguchi
  */
 // javadoc for this class is used to auto-generate documentation.
-public class SpringService implements FactoryBean, ServletContextAware, InitializingBean {
+public class SpringService implements FactoryBean<WSEndpoint>, ServletContextAware, InitializingBean {
 
     @NotNull
     private Class<?> implType;
@@ -322,7 +322,7 @@ public class SpringService implements FactoryBean, ServletContextAware, Initiali
      */
     private WSEndpoint<?> endpoint;
 
-    public WSEndpoint getObject() throws Exception {
+    public WSEndpoint<?> getObject() throws Exception {
         if(endpoint==null) {
             if(binding==null) {
                 if(bindingID==null)
@@ -491,7 +491,7 @@ public class SpringService implements FactoryBean, ServletContextAware, Initiali
         return true;
     }
 
-    public Class getObjectType() {
+    public Class<WSEndpoint> getObjectType() {
         return WSEndpoint.class;
     }
 

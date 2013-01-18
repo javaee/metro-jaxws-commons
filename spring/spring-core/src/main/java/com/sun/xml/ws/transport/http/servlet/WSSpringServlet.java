@@ -44,7 +44,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -58,6 +57,8 @@ import java.util.Set;
  */
 public class WSSpringServlet extends HttpServlet {
 
+    private static final long serialVersionUID = -2786173009814679147L;
+
     private WSServletDelegate delegate;
 
     public void init(ServletConfig servletConfig) throws ServletException {
@@ -70,14 +71,14 @@ public class WSSpringServlet extends HttpServlet {
         Set<SpringBinding> bindings = new LinkedHashSet<SpringBinding>();
 
         // backward compatibility. recognize all bindings
-        Map m = wac.getBeansOfType(SpringBindingList.class);
-        for (SpringBindingList sbl : (Collection<SpringBindingList>)m.values())
+        Map<String, SpringBindingList> m = wac.getBeansOfType(SpringBindingList.class);
+        for (SpringBindingList sbl : m.values())
             bindings.addAll(sbl.getBindings());
 
         bindings.addAll( wac.getBeansOfType(SpringBinding.class).values() );
 
         // create adapters
-        ServletAdapterList l = new ServletAdapterList();
+        ServletAdapterList l = new ServletAdapterList(getServletContext());
         for (SpringBinding binding : bindings)
             binding.create(l);
 

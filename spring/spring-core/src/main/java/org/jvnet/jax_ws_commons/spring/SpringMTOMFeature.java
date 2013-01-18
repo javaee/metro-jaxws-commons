@@ -48,7 +48,7 @@ import javax.xml.ws.soap.MTOM;
  */
 // this kind of wrapping is unnecessary if we can perform XBean processing on the feature bean
 // itself. But MTOMFeature is a spec feature and we can't do anything about it, so this is a wrapper
-public class SpringMTOMFeature implements FactoryBean {
+public class SpringMTOMFeature implements FactoryBean<MTOMFeature> {
 
     private boolean enabled = true;
     private int threshold;
@@ -81,7 +81,7 @@ public class SpringMTOMFeature implements FactoryBean {
         return feature;
     }
 
-    public Class getObjectType() {
+    public Class<MTOMFeature> getObjectType() {
         return MTOMFeature.class;
     }
 }

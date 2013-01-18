@@ -47,7 +47,7 @@ import javax.xml.ws.soap.AddressingFeature;
  * @author Kohsuke Kawaguchi
  */
 // See SpringMTOMFeature why this is needed
-public class SpringAddressingFeature implements FactoryBean {
+public class SpringAddressingFeature implements FactoryBean<AddressingFeature> {
 
     private boolean enabled = true;
     private boolean required;
@@ -80,7 +80,7 @@ public class SpringAddressingFeature implements FactoryBean {
         return feature;
     }
 
-    public Class getObjectType() {
+    public Class<AddressingFeature> getObjectType() {
         return AddressingFeature.class;
     }
 }
