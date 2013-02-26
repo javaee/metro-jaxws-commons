@@ -54,10 +54,10 @@ public class SmtpTest extends TestCase {
         Dispatch dispatch = service.createDispatch(new QName("FakePort"), jaxbCtx, Service.Mode.PAYLOAD,
                 feature);
         dispatch.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, add);
-        Book resp = (Book) dispatch.invoke(new Book("Midnight's Children", "Salman Rushdie", "Unknown"));
+        Book resp = (Book) dispatch.invoke(new Book("čáp - Midnight's Children", "Salman Rushdie", "Unknown"));
 
         assertNotNull(resp);
-        assertTrue(resp.getTitle().equals("Midnight's Children") &&
+        assertTrue(resp.getTitle().equals("čáp - Midnight's Children") &&
             resp.getPublisher().equals("Unknown") &&
             resp.getAuthor().equals("Salman Rushdie"));
     }

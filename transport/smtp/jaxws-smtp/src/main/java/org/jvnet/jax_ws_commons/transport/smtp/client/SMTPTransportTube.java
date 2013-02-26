@@ -148,7 +148,7 @@ public class SMTPTransportTube extends AbstractTubeImpl {
         public void onNewMail(MimeMessage message) {
             Packet reply = request.createClientResponse(null);
             try {
-                codec.decode(message.getRawInputStream(), message.getContentType(), reply);
+                codec.decode(message.getInputStream(), message.getContentType(), reply);
             } catch (Exception e) {
                 e.printStackTrace();
             }
