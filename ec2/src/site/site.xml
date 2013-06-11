@@ -1,8 +1,0 @@
-<?xml version="1.0" ?>
-<project name="JAX-WS commons - Amazon EC2">
-  <skin>
-    <groupId>com.sun.enterprise.glassfish</groupId>
-    <artifactId>maven-skin</artifactId>
-    <version>1.1</version>
-  </skin>
-</project>
