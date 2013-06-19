@@ -148,8 +148,6 @@
                     <artifactId>glassfish-copyright-maven-plugin</artifactId>
                     <version>1.39</version>
                     <configuration>
-                        <templateFile>${project.basedir}/copyright.txt</templateFile>
-                        <excludeFile>${project.basedir}/copyright-exclude</excludeFile>
                         <!-- skip files not under SCM-->
                         <scmOnly>true</scmOnly>
                         <!-- turn off warnings -->
