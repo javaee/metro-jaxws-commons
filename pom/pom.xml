@@ -48,7 +48,7 @@
   
     <groupId>org.jvnet.jax-ws-commons</groupId>
     <artifactId>pom</artifactId>
-    <version>1.5-SNAPSHOT</version>
+    <version>1.4-SNAPSHOT</version>
     <packaging>pom</packaging>
   
     <name>JAX-WS RI: super POM for the extension components</name>
@@ -116,7 +116,7 @@
         <findbugs.exclude>${project.basedir}/exclude.xml</findbugs.exclude>
         <findbugs.threshold>Low</findbugs.threshold>
         <!-- additional arguments for performing a release-->
-        <release.arguments />
+        <release.arguments></release.arguments>
     </properties>
 
     <build>
