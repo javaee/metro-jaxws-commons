@@ -115,6 +115,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <findbugs.exclude>${project.basedir}/exclude.xml</findbugs.exclude>
         <findbugs.threshold>Low</findbugs.threshold>
+        <!-- additional arguments for performing a release-->
+        <release.arguments></release.arguments>
     </properties>
 
     <build>
