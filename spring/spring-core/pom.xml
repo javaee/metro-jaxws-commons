@@ -17,8 +17,8 @@
   <properties>
     <jax-ws-version>2.2.8</jax-ws-version>
     <metro-version>2.2.8-promoted-b146</metro-version>
-    <spring-version>3.1.3.RELEASE</spring-version>
-    <xbean-version>3.12</xbean-version>
+    <spring-version>3.2.3.RELEASE</spring-version>
+    <xbean-version>3.14</xbean-version>
   </properties>
 
   <distributionManagement>
@@ -34,6 +34,23 @@
         <groupId>org.apache.xbean</groupId>
         <artifactId>maven-xbean-plugin</artifactId>
         <version>${xbean-version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring-version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring-version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring-version}</version>
+          </dependency>
+        </dependencies>
         <executions>
           <!-- for servlet -->
           <execution>
