@@ -36,7 +36,6 @@
 import org.apache.xbean.spring.context.impl.XBeanXmlBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 import junit.framework.TestCase;
-import com.sun.xml.ws.api.server.WSEndpoint;
 import com.sun.xml.ws.transport.http.servlet.SpringBinding;
 
 import java.util.Map;

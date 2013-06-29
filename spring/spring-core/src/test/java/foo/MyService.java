@@ -35,7 +35,6 @@
  */
 package foo;
 
-import static javax.jws.soap.SOAPBinding.ParameterStyle.BARE;
 import static javax.jws.soap.SOAPBinding.Use.LITERAL;
 import static javax.jws.soap.SOAPBinding.Style.RPC;
 import javax.jws.WebService;
