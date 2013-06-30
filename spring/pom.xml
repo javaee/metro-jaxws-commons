@@ -20,6 +20,11 @@
     <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/spring</url>
   </scm>
 
+  <issueManagement>
+    <system>JIRA</system>
+    <url>https://java.net/jira/browse/JAX_WS_COMMONS</url>
+  </issueManagement>
+
   <build>
     <plugins>
       <plugin>

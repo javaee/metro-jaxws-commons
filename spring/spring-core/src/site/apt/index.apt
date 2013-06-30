@@ -25,7 +25,9 @@ allow users to configure your extensions.
 
   This deployment mechanism supercedes <<<sun-jaxws.xml>>> and JSR-109 deployment.
 
+Changes / Release Notes
 
+  The list of changes can be found in the {{{./changes-report.html}release notes}}.
 
 License
 

@@ -1,0 +1,27 @@
+<document xmlns="http://maven.apache.org/changes/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
+	<properties>
+		<title>JAX-WS Commons Spring - Release Notes</title>
+	</properties>
+	<body>
+		<release version="1.9" date="2013-06-30" description="Maintenance Release: Spring 3.2, XBean 3.14">
+			<action type="update" dev="derkoe" issue="JAX_WS_COMMONS-48">
+				Update to current Spring version (3.2.3.RELEASE)
+			</action>
+			<action type="update" dev="derkoe" issue="JAX_WS_COMMONS-92">
+				Update to current XBean version (3.14)
+			</action>
+			<action type="fix" dev="derkoe" issue="JAX_WS_COMMONS-90">
+				Spring: URL to Spring Schema XSDs is poitining to wrong direction
+			</action>
+		</release>
+		<release version="1.8" date="2008-01-15" description="Bugfix Release">
+			<action type="fix" dev="kohsuke" issue="JAX_WS_COMMONS-5">
+				Missing entries in spring.schemas and spring.handlers for local transport in jaxws-spring 1.4
+			</action>
+			<action type="fix" dev="kohsuke" issue="JAX_WS_COMMONS-14">
+				SpringService.ContainerWrapper must handle getSPI(ServletContext.class)
+			</action>
+		</release>
+	</body>
+</document>
