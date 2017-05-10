@@ -1,0 +1,16 @@
+theme: jekyll-theme-architect
+
+title: [metro-jaxws-commons]
+description: [Subproject of Jax-ws: JAX-WS commons]
+
+# sidebar links url
+links:
+  source: https://github.com/javaee/metro-jaxws-commons
+  #download:
+  #mailinglist:
+  #javadocs:
+  #docs:
+  #faq:
+  #mailinglist:
+  #hide_issuetracker: true #set explicitly to 'true' if you don't want to have the issue tracker link displayed
+
