@@ -35,7 +35,6 @@
  */
 package org.jvnet.jax_ws_commons.spring;
 
-import com.sun.istack.NotNull;
 import com.sun.xml.ws.api.BindingID;
 import com.sun.xml.ws.api.WSBinding;
 import com.sun.xml.ws.api.pipe.TubelineAssembler;
@@ -79,7 +78,6 @@ import java.util.ArrayList;
 // javadoc for this class is used to auto-generate documentation.
 public class SpringService implements FactoryBean<WSEndpoint>, ServletContextAware, InitializingBean {
 
-    @NotNull
     private Class<?> implType;
 
     // everything else can be null
@@ -531,7 +529,7 @@ public class SpringService implements FactoryBean<WSEndpoint>, ServletContextAwa
         private final Module module = new Module() {
             private final List<BoundEndpoint> endpoints = new ArrayList<BoundEndpoint>();
 
-            public @NotNull List<BoundEndpoint> getBoundEndpoints() {
+            public List<BoundEndpoint> getBoundEndpoints() {
                 return endpoints;
             }
         };

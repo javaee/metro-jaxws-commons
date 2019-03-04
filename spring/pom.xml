@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jvnet.jax-ws-commons</groupId>
     <artifactId>pom</artifactId>
-    <version>1.3</version>
+    <version>1.4</version>
     <relativePath>../pom/pom.xml</relativePath>
   </parent>
 
@@ -24,6 +24,7 @@
     <system>JIRA</system>
     <url>https://java.net/jira/browse/JAX_WS_COMMONS</url>
   </issueManagement>
+
 
   <build>
     <plugins>

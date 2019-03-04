@@ -15,9 +15,9 @@
   <description>Configure JAX-WS with Spring</description>
 
   <properties>
-    <jax-ws-version>2.2.8</jax-ws-version>
-    <metro-version>2.2.8-promoted-b146</metro-version>
-    <spring-version>3.2.3.RELEASE</spring-version>
+    <jax-ws-version>2.3.1</jax-ws-version>
+    <metro-version>2.3.1</metro-version>
+    <spring-version>4.3.22.RELEASE</spring-version>
     <xbean-version>3.14</xbean-version>
   </properties>
 
@@ -139,14 +139,14 @@
       <version>${jax-ws-version}</version>
     </dependency>
     <dependency>
-      <groupId>com.sun.xml.ws</groupId>
-      <artifactId>jaxws-rt</artifactId>
+      <groupId>org.glassfish.metro</groupId>
+      <artifactId>webservices-rt</artifactId>
       <version>${metro-version}</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-local-transport</artifactId>
-      <version>${metro-version}</version>
+      <version>${jax-ws-version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -182,24 +182,9 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <version>4.12</version>
       <scope>test</scope>
-    </dependency>
-    <!-- shouldn't be needed once JAX-WS RT POM properly declares the dependency -->
-    <dependency>
-      <groupId>javax.jws</groupId>
-      <artifactId>jsr181-api</artifactId>
-      <version>1.0-MR1</version>
     </dependency>
   </dependencies>
 
-  <!-- sorcerer needs Mustang, but Mustang won't work with JAXB/WS 2.1
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.jvnet.sorcerer</groupId>
-        <artifactId>maven-sorcerer-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </reporting>-->
 </project>
