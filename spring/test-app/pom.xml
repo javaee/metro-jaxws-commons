@@ -18,13 +18,6 @@
     
     <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.mortbay.jetty</groupId> 
         <artifactId>maven-jetty-plugin</artifactId>
         <version>6.1.26</version>
@@ -33,21 +26,6 @@
           <scanIntervalSeconds>1</scanIntervalSeconds>
         </configuration>
       </plugin>
-      <!--plugin>
-        <groupId>eviware</groupId>
-        <artifactId>maven-soapui-plugin</artifactId>
-        <version>1.0-beta1</version>
-        <executions>
-          <execution>
-            <id>ui-test</id>
-            <phase>test</phase>
-            <configuration>
-              <projectFile>soapui.xml</projectFile>
-              <host>http://localhost:8080/</host>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin-->
     </plugins>
   </build>
   
@@ -58,16 +36,6 @@
       <artifactId>jaxws-spring</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <!--
-      for this test to run correctly we need more recent SJSXP,
-      but having that dependency prevents our release. So this
-      is commented out.
-    -->
-    <!--dependency>
-      <groupId>com.sun.xml.stream</groupId>
-      <artifactId>sjsxp</artifactId>
-      <version>SNAPSHOT</version>
-    </dependency-->
   </dependencies>
   
   <pluginRepositories>
